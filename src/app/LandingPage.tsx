@@ -1,6 +1,8 @@
+"use client"
 import NextLink from "next/link"
 import Image from "next/image"
-import { Box, styled, Typography, Link } from "@mui/material"
+import { Box, Typography, Link } from "@mui/material"
+import { styled } from "@mui/material/styles"
 
 const StyledImgContainer = styled(Box)({
 	width: "130px",

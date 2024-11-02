@@ -1,5 +1,5 @@
 "use client"
-
+import { SnackbarProvider } from "@mcc/context"
 
 /* All providers would be listed here */
 export default function RootLayout({
@@ -8,6 +8,8 @@ export default function RootLayout({
 	children: React.ReactNode
 }) {
 	return (
-		<>{children}</>
+		<>
+			<SnackbarProvider>{children}</SnackbarProvider>
+		</>
 	)
 }

@@ -1,5 +1,8 @@
 "use client"
 import { SnackbarProvider } from "@mcc/context"
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
+
+const queryClient = new QueryClient()
 
 /* All providers would be listed here */
 export default function RootLayout({
@@ -9,7 +12,9 @@ export default function RootLayout({
 }) {
 	return (
 		<>
-			<SnackbarProvider>{children}</SnackbarProvider>
+			<QueryClientProvider client={queryClient}>
+				<SnackbarProvider>{children}</SnackbarProvider>
+			</QueryClientProvider>
 		</>
 	)
 }

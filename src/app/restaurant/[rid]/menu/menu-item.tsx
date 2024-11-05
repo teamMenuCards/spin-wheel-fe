@@ -51,7 +51,7 @@ function MenuItem({ product }) {
 									alignItems: "center"
 								}}
 							>
-								{/* veg/ non veg */}
+								{/* veg/ non veg icon */}
 								<>{getProductType()}</>
 
 								{/* bestseller tag */}
@@ -84,8 +84,7 @@ function MenuItem({ product }) {
 
 							{/* price */}
 							<Typography pt={1} variant="SPP_Caption" color="secondary">
-								{/* Rs.{product.price[0]?.value} */}
-								Rs.200
+								Rs.{product.variants[0]?.price}
 							</Typography>
 
 							{/* nutrients */}

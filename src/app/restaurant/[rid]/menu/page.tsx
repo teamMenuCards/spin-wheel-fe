@@ -59,7 +59,7 @@ function App() {
 											id={item.name.replaceAll(" ", "-")}
 											style={{ fontWeight: "bold" }}
 										>
-											{item.name}
+											{item.display_name}
 										</AccordionSummary>
 										<AccordionDetails>
 											{item.products.map((prd) => {

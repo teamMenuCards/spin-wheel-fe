@@ -61,14 +61,6 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 		})
 	)
 
-	const action = (
-		<Button sx={{ fontSize: "12px" }} color="inherit">
-			<Link href={"/cart"} component={NextLink} underline="none" color="white">
-				Go to cart
-			</Link>
-		</Button>
-	)
-
 	// Function to open snackbar
 	const showSnackbar = (data: { message: string; variant: string }) => {
 		setShowContent(true)

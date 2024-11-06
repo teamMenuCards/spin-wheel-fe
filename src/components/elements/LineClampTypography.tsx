@@ -1,7 +1,7 @@
 import React from "react"
 import { Typography, styled } from "@mui/material"
 
-const StyledTypography = styled(Typography)(({ theme, lines }) => {
+const StyledTypography = styled(Typography)(({ lines }) => {
 	return {
 		display: "-webkit-box",
 

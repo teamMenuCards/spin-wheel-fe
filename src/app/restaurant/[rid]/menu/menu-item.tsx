@@ -12,6 +12,14 @@ const StyledContainer = styled(Box)({
 	justifyContent: "space-between"
 })
 
+const StyledImageBox = styled(Box)({
+	height: "150px",
+	width: "150px",
+	background: "lightSteelBlue",
+	position: "relative",
+	borderRadius: "15px"
+})
+
 function MenuItem({ product }) {
 	const getVegIcon = () => {
 		return (
@@ -39,10 +47,27 @@ function MenuItem({ product }) {
 		return product.veg ? getVegIcon() : getNonVegIcon()
 	}
 
+	const prdImage = product?.variants[0]?.image_url
+
+	console.log("prdImagekk---", prdImage)
+
 	return (
 		<>
 			<Box mb={4}>
 				<Box sx={{ display: "flex", flex: 1, flexDirection: "row-reverse" }}>
+					{prdImage && (
+						<StyledImageBox>
+							<Image
+								fill
+								priority
+								// src={prdImage}
+								src="https://res.cloudinary.com/dmybw97n6/image/upload/v1730918019/wrap_mmlvh1.jpg"
+								alt="food_img"
+								style={{ objectFit: "cover", borderRadius: "15px" }}
+							/>
+						</StyledImageBox>
+					)}
+
 					<StyledContainer pr={1}>
 						<Box>
 							<Box

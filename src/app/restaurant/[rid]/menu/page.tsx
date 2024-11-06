@@ -8,6 +8,7 @@ import Loading from "@mcc/app/loading"
 import React, { useEffect } from "react"
 import { useParams } from "next/navigation"
 import { isSafeArray } from "@mcc/helpers/utils"
+import FloatingMenu from "./floating-menu"
 
 const key = "ADDED_FIRST_ITEM"
 
@@ -50,28 +51,27 @@ function App() {
 				{isSafeArray(data.categories) &&
 					data.categories.map((item) => {
 						return (
-							<>
-								<Box id={item._id} key={item._id}>
-									<Accordion defaultExpanded elevation={0} id="salads">
-										<AccordionSummary
-											expandIcon={<ExpandMoreIcon />}
-											aria-controls="panel1-content"
-											id={item.name.replaceAll(" ", "-")}
-											style={{ fontWeight: "bold" }}
-										>
-											{item.display_name}
-										</AccordionSummary>
-										<AccordionDetails>
-											{item.products.map((prd) => {
-												return <MenuItem product={prd} key={prd.id} />
-											})}
-										</AccordionDetails>
-									</Accordion>
-								</Box>
-							</>
+							<Box id={item._id} key={item._id}>
+								<Accordion defaultExpanded elevation={0} id="salads">
+									<AccordionSummary
+										expandIcon={<ExpandMoreIcon />}
+										aria-controls="panel1-content"
+										id={item.name.replaceAll(" ", "-")}
+										style={{ fontWeight: "bold" }}
+									>
+										{item.display_name}
+									</AccordionSummary>
+									<AccordionDetails>
+										{item.products.map((prd) => {
+											return <MenuItem product={prd} key={prd.id} />
+										})}
+									</AccordionDetails>
+								</Accordion>
+							</Box>
 						)
 					})}
 			</Box>
+			{isSafeArray(data?.categories) && <FloatingMenu categories={data.categories} />}
 		</>
 	)
 }

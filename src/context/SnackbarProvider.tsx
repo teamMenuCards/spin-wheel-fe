@@ -1,6 +1,5 @@
 import React, { useState, useContext, createContext, ReactNode } from "react"
-import { Button, Link, Snackbar, SnackbarContent } from "@mui/material"
-import NextLink from "next/link"
+import { Snackbar, SnackbarContent } from "@mui/material"
 import { useTheme, styled } from "@mui/material/styles"
 
 interface SnackbarContextType {

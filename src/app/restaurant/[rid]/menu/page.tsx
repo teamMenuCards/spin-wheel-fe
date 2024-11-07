@@ -5,7 +5,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import useMenu from "@mcc/hooks/useMenu"
 import MenuItem from "./menu-item"
 import Loading from "@mcc/app/loading"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { isSafeArray } from "@mcc/helpers/utils"
 import FloatingMenu from "./floating-menu"
@@ -14,8 +14,9 @@ const key = "ADDED_FIRST_ITEM"
 
 function App() {
 	const { rid } = useParams()
-
 	const { menuData: { data } = {}, isLoadingMenu, menuError } = useMenu(rid)
+
+	const [currentCategory, setCurrentCategory] = useState<string | undefined>(undefined)
 
 	console.log("ridjj--", data)
 
@@ -50,14 +51,23 @@ function App() {
 			<Box mb={8} id="mainMenu" key="mainMenu">
 				{isSafeArray(data.categories) &&
 					data.categories.map((item) => {
+						const categoryId = item.id
 						return (
-							<Box id={item._id} key={item._id}>
-								<Accordion defaultExpanded elevation={0} id="salads">
+							<Box 
+								key={categoryId}
+								id={categoryId}
+								data-category-id={categoryId}
+							>
+								<Accordion 
+									defaultExpanded 
+									elevation={0}
+								>
 									<AccordionSummary
 										expandIcon={<ExpandMoreIcon />}
-										aria-controls="panel1-content"
-										id={item.name.replaceAll(" ", "-")}
+										aria-controls={`${categoryId}-content`}
+										id={categoryId}
 										style={{ fontWeight: "bold" }}
+										onClick={() => setCurrentCategory(categoryId)}
 									>
 										{item.display_name}
 									</AccordionSummary>
@@ -71,7 +81,7 @@ function App() {
 						)
 					})}
 			</Box>
-			{isSafeArray(data?.categories) && <FloatingMenu categories={data.categories} />}
+			{isSafeArray(data?.categories) && <FloatingMenu categories={data.categories} currentCategory={currentCategory} />}
 		</>
 	)
 }

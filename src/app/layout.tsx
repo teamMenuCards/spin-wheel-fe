@@ -6,8 +6,8 @@ import CssBaseline from "@mui/material/CssBaseline"
 import theme from "@mcc/components/ThemeRegistry/theme"
 
 export const metadata = {
-	title: "TheGreenBowl",
-	description: "TheGreenBowl"
+	title: "MenuCards",
+	description: "MenuCards"
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

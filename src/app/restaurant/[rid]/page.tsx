@@ -47,7 +47,7 @@ const getPath = (rid) => {
 		{
 			id: 4,
 			value: "Follow on Instagram!",
-			path: "https://www.instagram.com/thegreenbowl_co/"
+			path: "https://www.instagram.com/"
 		}
 	]
 

@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography"
 interface LineClampTypographyProps {
 	lines: number
 	children: React.ReactNode
+	[key: string]: unknown
 }
 
 const StyledTypography = styled(Typography, {

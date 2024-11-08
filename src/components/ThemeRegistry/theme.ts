@@ -304,16 +304,6 @@ const theme = createTheme({
 			}
 		},
 
-		MuiAccordion: {
-			styleOverrides: {
-				root: {
-					".mui-10gfn9n-MuiPaper-root-MuiAccordion-root": {
-						boxShadow: "none"
-					}
-				}
-			}
-		},
-
 		MuiChip: {
 			styleOverrides: {
 				root: {
@@ -425,7 +415,10 @@ const theme = createTheme({
 			styleOverrides: {
 				root: {
 					borderColor: globalTheme.palette.outline.light,
-					borderRadius: "0px !important"
+					borderRadius: "0px !important",
+					".mui-10gfn9n-MuiPaper-root-MuiAccordion-root": {
+						boxShadow: "none"
+					}
 				}
 			}
 		}

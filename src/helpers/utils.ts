@@ -1,3 +1,3 @@
-export const isSafeArray = (arr: any) => {
+export const isSafeArray = (arr) => {
 	return Array.isArray(arr) && arr.length
 }

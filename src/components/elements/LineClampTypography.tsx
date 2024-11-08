@@ -1,17 +1,26 @@
-import React from "react"
-import { Typography, styled } from "@mui/material"
+import { styled } from "@mui/system"
+import Typography from "@mui/material/Typography"
 
-const StyledTypography = styled(Typography)(({ theme, lines }) => {
-	return {
-		display: "-webkit-box",
+interface LineClampTypographyProps {
+	lines: number
+	children: React.ReactNode
+	[key: string]: unknown
+}
 
-		"-webkit-line-clamp": `${Number(lines)}`, // Use numberOfLines prop here
-		"-webkit-box-orient": "vertical",
-		overflow: "hidden"
-	}
-})
+const StyledTypography = styled(Typography, {
+	shouldForwardProp: (prop) => prop !== "lines"
+})(({ lines }: { lines: number }) => ({
+	display: "-webkit-box",
+	"-webkit-line-clamp": `${lines}`,
+	"-webkit-box-orient": "vertical",
+	overflow: "hidden"
+}))
 
-const LineClampTypography = ({ lines, children, ...props }) => {
+const LineClampTypography: React.FC<LineClampTypographyProps> = ({
+	lines,
+	children,
+	...props
+}) => {
 	return (
 		<StyledTypography lines={lines} {...props}>
 			{children}

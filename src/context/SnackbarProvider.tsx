@@ -1,6 +1,5 @@
 import React, { useState, useContext, createContext, ReactNode } from "react"
-import { Button, Link, Snackbar, SnackbarContent } from "@mui/material"
-import NextLink from "next/link"
+import { Snackbar, SnackbarContent } from "@mui/material"
 import { useTheme, styled } from "@mui/material/styles"
 
 interface SnackbarContextType {
@@ -59,14 +58,6 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 				right: "-15px"
 			}
 		})
-	)
-
-	const action = (
-		<Button sx={{ fontSize: "12px" }} color="inherit">
-			<Link href={"/cart"} component={NextLink} underline="none" color="white">
-				Go to cart
-			</Link>
-		</Button>
 	)
 
 	// Function to open snackbar

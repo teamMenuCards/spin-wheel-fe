@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material"
 import Dot from "./dot"
-import { log } from "console"
 
 function NutrientComponent({ info }) {
 	const { carbs, energy, fats, fibre, protein } = info

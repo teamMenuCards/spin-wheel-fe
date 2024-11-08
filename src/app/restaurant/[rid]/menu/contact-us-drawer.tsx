@@ -17,7 +17,7 @@ const DrawerContainer = styled("div")({
 })
 
 const FullPageDrawerComponent = ({ isOpen = true }) => {
-	const toggleDrawer = () => (event: any) => {
+	const toggleDrawer = () => (event: { type?: string; key?: string }) => {
 		if (
 			event.type === "keydown" &&
 			(event.key === "Tab" || event.key === "Shift")

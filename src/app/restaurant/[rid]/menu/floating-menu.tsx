@@ -1,19 +1,13 @@
-import {
-	Dialog,
-	Fab,
-	List,
-	ListItemButton,
-	ListItemText,
-	Typography
-} from "@mui/material"
+import { Box, Dialog, Fab, List, ListItemButton, ListItemText, Typography } from "@mui/material"
 import { useState } from "react"
 import { styled } from "@mui/material/styles"
 import CloseIcon from "@mui/icons-material/Close"
 
 interface Category {
-	_id: string
+	id: string
 	name: string
 	display_name: string
+	products?: any[]
 }
 
 interface FloatingMenuProps {
@@ -65,7 +59,7 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 				PaperProps={{
 					sx: {
 						position: "fixed",
-						bottom: 72,
+						bottom: "80px",
 						right: 16,
 						m: 0,
 						width: "280px",
@@ -75,44 +69,58 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 						color: "#FFFFFF",
 						boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
 						borderRadius: "8px",
-						transform: "translateY(50%)",
-						"& .MuiDialog-paper": {
-							margin: 0
+						transform: 'translateY(50%)',
+						'& .MuiDialog-paper': {
+							margin: 0,
 						}
 					}
 				}}
 				BackdropProps={{
 					sx: {
-						backgroundColor: "transparent"
+						backgroundColor: 'transparent'
+					}
+				}}
+				sx={{
+					'& .MuiDialog-container': {
+						alignItems: 'flex-end',
+						justifyContent: 'flex-end'
 					}
 				}}
 			>
 				<List sx={{ py: 0.5 }}>
 					{categories.map((category) => (
 						<ListItemButton
-							key={category._id}
-							onClick={() => handleClick(category._id)}
+							key={category.id} // Using id
+							onClick={() => handleClick(category.id)}
 							sx={{
 								py: 0.75,
 								px: 2,
-								minHeight: "36px",
-								"&:hover": {
-									backgroundColor: "rgba(255, 255, 255, 0.1)"
+								minHeight: '36px',
+								'&:hover': {
+									backgroundColor: 'rgba(255, 255, 255, 0.1)'
 								}
 							}}
 						>
-							<ListItemText
+							<ListItemText 
 								primary={category.display_name}
 								primaryTypographyProps={{
 									variant: "body2",
-									sx: {
-										color:
-											category._id === currentCategory ? "#ff4444" : "#ffffff",
+									sx: { 
+										color: category.id === currentCategory ? '#ff4444' : '#ffffff',
 										fontWeight: 400,
-										fontSize: "0.875rem"
+										fontSize: '0.875rem'
 									}
 								}}
 							/>
+							<Typography 
+								variant="body2" 
+								sx={{ 
+									color: category.id === currentCategory ? '#ff4444' : 'rgba(255, 255, 255, 0.7)',
+									ml: 2
+								}}
+							>
+								{category.products?.length || 0}
+							</Typography>
 						</ListItemButton>
 					))}
 				</List>

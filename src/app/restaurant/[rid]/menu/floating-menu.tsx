@@ -1,4 +1,11 @@
-import { Box, Dialog, Fab, List, ListItemButton, ListItemText, Typography } from "@mui/material"
+import {
+	Dialog,
+	Fab,
+	List,
+	ListItemButton,
+	ListItemText,
+	Typography
+} from "@mui/material"
 import { useState } from "react"
 import { styled } from "@mui/material/styles"
 import CloseIcon from "@mui/icons-material/Close"
@@ -7,7 +14,7 @@ interface Category {
 	id: string
 	name: string
 	display_name: string
-	products?: any[]
+	products?: []
 }
 
 interface FloatingMenuProps {
@@ -69,21 +76,21 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 						color: "#FFFFFF",
 						boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.3)",
 						borderRadius: "8px",
-						transform: 'translateY(50%)',
-						'& .MuiDialog-paper': {
-							margin: 0,
+						transform: "translateY(50%)",
+						"& .MuiDialog-paper": {
+							margin: 0
 						}
 					}
 				}}
 				BackdropProps={{
 					sx: {
-						backgroundColor: 'transparent'
+						backgroundColor: "transparent"
 					}
 				}}
 				sx={{
-					'& .MuiDialog-container': {
-						alignItems: 'flex-end',
-						justifyContent: 'flex-end'
+					"& .MuiDialog-container": {
+						alignItems: "flex-end",
+						justifyContent: "flex-end"
 					}
 				}}
 			>
@@ -95,31 +102,35 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 							sx={{
 								py: 0.75,
 								px: 2,
-								minHeight: '36px',
-								'&:hover': {
-									backgroundColor: 'rgba(255, 255, 255, 0.1)'
+								minHeight: "36px",
+								"&:hover": {
+									backgroundColor: "rgba(255, 255, 255, 0.1)"
 								}
 							}}
 						>
-							<ListItemText 
+							<ListItemText
 								primary={category.display_name}
 								primaryTypographyProps={{
 									variant: "body2",
-									sx: { 
-										color: category.id === currentCategory ? '#ff4444' : '#ffffff',
+									sx: {
+										color:
+											category.id === currentCategory ? "#ff4444" : "#ffffff",
 										fontWeight: 400,
-										fontSize: '0.875rem'
+										fontSize: "0.875rem"
 									}
 								}}
 							/>
-							<Typography 
-								variant="body2" 
-								sx={{ 
-									color: category.id === currentCategory ? '#ff4444' : 'rgba(255, 255, 255, 0.7)',
+							<Typography
+								variant="body2"
+								sx={{
+									color:
+										category.id === currentCategory
+											? "#ff4444"
+											: "rgba(255, 255, 255, 0.7)",
 									ml: 2
 								}}
 							>
-								{category.products?.length || 0}
+								{(category?.products && category?.products?.length) || 0}
 							</Typography>
 						</ListItemButton>
 					))}

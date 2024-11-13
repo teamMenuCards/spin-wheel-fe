@@ -44,6 +44,7 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 		}
 	}
 
+	//test commit
 	return (
 		<>
 			<StyledFab

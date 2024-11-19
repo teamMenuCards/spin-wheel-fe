@@ -15,7 +15,9 @@ const encodedMessage = encodeURIComponent(message)
 
 async function getProjects(rid: string) {
 	try {
-		const res = await instance.get(`/restaurants/menu-details/${rid}`)
+		const res = await instance.get(
+			`${process.env.NEXT_PUBLIC_API_BASE_URL}/restaurants/menu-details/${rid}`
+		)
 		const data = await res.data.data
 		console.log("Response Data:", data)
 		return data
@@ -28,7 +30,7 @@ async function getProjects(rid: string) {
 const getPath = (rid) => {
 	console.log("getPath called with rid:", rid)
 
-	const list = [
+	const options = [
 		{
 			id: 1,
 			value: "Place Direct Order (Menu)",
@@ -51,7 +53,7 @@ const getPath = (rid) => {
 		}
 	]
 
-	return list
+	return options
 }
 
 const StyledContainer = styled(Box)(() => ({
@@ -73,7 +75,7 @@ export default function Page({ params }: { params: { rid: string } }) {
 	console.log("restData==", restData)
 
 	// Call getPath directly and pass the list
-	const list = getPath(params.rid)
+	const options = getPath(params.rid)
 
 	return (
 		<StyledContainer
@@ -83,7 +85,7 @@ export default function Page({ params }: { params: { rid: string } }) {
 				textAlign: "center"
 			}}
 		>
-			<LandingPage list={list} />
+			<LandingPage options={options} />
 		</StyledContainer>
 	)
 }

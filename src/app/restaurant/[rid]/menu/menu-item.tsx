@@ -60,8 +60,7 @@ function MenuItem({ product }) {
 							<Image
 								fill
 								priority
-								// src={prdImage}
-								src="https://res.cloudinary.com/dmybw97n6/image/upload/v1730918019/wrap_mmlvh1.jpg"
+								src={prdImage}
 								alt="food_img"
 								style={{ objectFit: "cover", borderRadius: "15px" }}
 							/>

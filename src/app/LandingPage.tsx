@@ -20,7 +20,7 @@ const MenuContainer = styled(Box)(({ theme }) => ({
 	backgroundColor: theme.palette.primary.contrastText
 }))
 
-function LandingPage({ list }) {
+function LandingPage({ options }) {
 	return (
 		<Box pt={8}>
 			<StyledImgContainer mb={2} mt={2}>
@@ -38,8 +38,8 @@ function LandingPage({ list }) {
 			</Typography>
 
 			<Box mt={4}>
-				{list &&
-					list.map((item, index) => {
+				{options &&
+					options.map((item, index) => {
 						return (
 							<MenuContainer
 								key={index}

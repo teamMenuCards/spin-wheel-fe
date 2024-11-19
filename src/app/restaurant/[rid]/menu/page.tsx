@@ -16,9 +16,9 @@ function App() {
 	const { rid } = useParams()
 	const { menuData: { data } = {}, isLoadingMenu, menuError } = useMenu(rid)
 
-	const [currentCategory, setCurrentCategory] = useState<string | undefined>(undefined)
-
-	console.log("ridjj--", data)
+	const [currentCategory, setCurrentCategory] = useState<string | undefined>(
+		undefined
+	)
 
 	// Clear localStorage on page refresh
 	useEffect(() => {
@@ -53,15 +53,12 @@ function App() {
 					data.categories.map((item) => {
 						const categoryId = item.id
 						return (
-							<Box 
+							<Box
 								key={categoryId}
 								id={categoryId}
 								data-category-id={categoryId}
 							>
-								<Accordion 
-									defaultExpanded 
-									elevation={0}
-								>
+								<Accordion defaultExpanded elevation={0}>
 									<AccordionSummary
 										expandIcon={<ExpandMoreIcon />}
 										aria-controls={`${categoryId}-content`}
@@ -81,7 +78,12 @@ function App() {
 						)
 					})}
 			</Box>
-			{isSafeArray(data?.categories) && <FloatingMenu categories={data.categories} currentCategory={currentCategory} />}
+			{isSafeArray(data?.categories) && (
+				<FloatingMenu
+					categories={data.categories}
+					currentCategory={currentCategory}
+				/>
+			)}
 		</>
 	)
 }

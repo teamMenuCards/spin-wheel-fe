@@ -10,8 +10,8 @@ const instance = axios.create({
 	timeout: 1000
 })
 
-const message = "Hi. I want to enquire about the subscription plan"
-const encodedMessage = encodeURIComponent(message)
+// const message = "Hi. I want to enquire about the subscription plan"
+// const encodedMessage = encodeURIComponent(message)
 
 async function getProjects(rid: string) {
 	try {

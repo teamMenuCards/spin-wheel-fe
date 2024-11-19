@@ -55,7 +55,7 @@ function MenuNavBar() {
 				) : (
 					<IconButton onClick={setContactUs} sx={{ padding: 0 }}>
 						<Image
-							src="/logo.png"
+							src="/coco.jpg"
 							alt="App Logo"
 							width={55}
 							height={45}

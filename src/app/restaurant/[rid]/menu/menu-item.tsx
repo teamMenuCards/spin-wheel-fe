@@ -44,12 +44,10 @@ function MenuItem({ product }) {
 	)
 
 	const getProductType = () => {
-		return product.veg ? getVegIcon() : getNonVegIcon()
+		return product?.variants[0].is_veg ? getVegIcon() : getNonVegIcon()
 	}
 
 	const prdImage = product?.variants[0]?.image_url
-
-	console.log("prdImagekk---", prdImage)
 
 	return (
 		<>

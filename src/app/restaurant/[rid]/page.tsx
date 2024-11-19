@@ -36,20 +36,20 @@ const getPath = (rid) => {
 			value: "Place Direct Order (Menu)",
 			path: `/restaurant/${rid}/menu`
 		},
-		{
-			id: 2,
-			value: "Subscription Enquiry",
-			path: `https://wa.me/919324995221?text=${encodedMessage}`
-		},
-		{
-			id: 3,
-			value: "Whatsapp us!",
-			path: `https://wa.me/919324995221`
-		},
+		// {
+		// 	id: 2,
+		// 	value: "Subscription Enquiry",
+		// 	path: `https://wa.me/919324995221?text=${encodedMessage}`
+		// },
+		// {
+		// 	id: 3,
+		// 	value: "Whatsapp us!",
+		// 	path: `https://wa.me/919324995221`
+		// },
 		{
 			id: 4,
 			value: "Follow on Instagram!",
-			path: "https://www.instagram.com/"
+			path: "https://www.instagram.com/caramel_nd_coco/"
 		}
 	]
 

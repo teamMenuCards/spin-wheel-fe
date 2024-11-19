@@ -8,7 +8,7 @@ export default function Loading() {
 			<Box margin="auto" textAlign="center">
 				<Box mb={2} mt={2}>
 					<Image
-						src="/logo.png"
+						src="/coco.jpg"
 						alt="App Logo"
 						width={140}
 						height={120}

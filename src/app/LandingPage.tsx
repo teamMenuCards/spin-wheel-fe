@@ -9,7 +9,7 @@ const StyledImgContainer = styled(Box)({
 	height: "120px",
 	borderRadius: "50%",
 	overflow: "hidden",
-	backgroundImage: 'url("/logo.png")',
+	backgroundImage: 'url("/coco.jpg")',
 	backgroundSize: "cover",
 	backgroundPosition: "center",
 	margin: "auto"
@@ -25,7 +25,8 @@ function LandingPage({ options }) {
 		<Box pt={8}>
 			<StyledImgContainer mb={2} mt={2}>
 				<Image
-					src="/logo_green_bg.jpeg"
+					// src="/logo_green_bg.jpeg"
+					src="/coco.jpg"
 					alt="App Logo"
 					width={130}
 					height={120}
@@ -34,7 +35,8 @@ function LandingPage({ options }) {
 			</StyledImgContainer>
 
 			<Typography mt={2} variant="SPP_H4" color="secondary">
-				The Green Bowl
+				{/* The Green Bowl */}
+				Caramel and Coco
 			</Typography>
 
 			<Box mt={4}>

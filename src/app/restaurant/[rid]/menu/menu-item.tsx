@@ -4,12 +4,29 @@ import LineClampTypography from "@mcc/components/elements/LineClampTypography"
 import Image from "next/image"
 import { Ic_nonveg, Ic_veg } from "@mcc/icons"
 import NutrientComponent from "./nutrients"
+import theme from "@mcc/components/ThemeRegistry/theme"
+import React from "react"
+import { useCart } from "@mcc/context/cart-context"
 
 const StyledContainer = styled(Box)({
 	flex: 1,
 	display: "flex",
 	flexDirection: "column",
 	justifyContent: "space-between"
+})
+const StyledAdd = styled(Box)({
+	zIndex: 999,
+	position: "absolute",
+	left: "50%",
+	transform: "translateX(-50%)",
+	bottom: "-12px",
+	width: "100px",
+	textAlign: "center",
+	fontWeight: "bold",
+	borderRadius: "2px",
+	border: `2px solid ${theme.palette.primary.main}`,
+	color: theme.palette.primary.contrastText,
+	background: theme.palette.primary.main
 })
 
 const StyledImageBox = styled(Box)({
@@ -20,7 +37,19 @@ const StyledImageBox = styled(Box)({
 	borderRadius: "15px"
 })
 
+const AddButton = styled(Box)({
+	width: "100px",
+	borderRadius: "2px",
+	textAlign: "center",
+	fontWeight: "bold",
+	border: `2px solid ${theme.palette.primary.main}`,
+	color: theme.palette.primary.contrastText,
+	background: theme.palette.primary.main
+})
+
 function MenuItem({ product }) {
+	const { openCart, setSelectedProduct } = useCart()
+
 	const getVegIcon = () => {
 		return (
 			<Image
@@ -49,20 +78,31 @@ function MenuItem({ product }) {
 
 	const prdImage = product?.variants[0]?.image_url
 
+	const handleAdd = () => {
+		openCart()
+		setSelectedProduct(product)
+	}
+
 	return (
 		<>
 			<Box mb={4}>
 				<Box sx={{ display: "flex", flex: 1, flexDirection: "row-reverse" }}>
-					{prdImage && (
-						<StyledImageBox>
+					{prdImage ? (
+						<StyledImageBox onClick={(e) => handleAdd(e)}>
 							<Image
 								fill
 								priority
-								src={prdImage}
+								src={product.image}
 								alt="food_img"
 								style={{ objectFit: "cover", borderRadius: "15px" }}
 							/>
+
+							<StyledAdd onClick={(e) => handleAdd(e)}>ADD+</StyledAdd>
 						</StyledImageBox>
+					) : (
+						<Box sx={{ display: "flex", alignItems: "center" }}>
+							<AddButton onClick={(e) => handleAdd(e)}>ADD+</AddButton>
+						</Box>
 					)}
 
 					<StyledContainer pr={1}>
@@ -98,11 +138,6 @@ function MenuItem({ product }) {
 									{product.description}
 								</LineClampTypography>
 							)}
-
-							{/* Taste */}
-							{/* <Typography mt={1} variant="SPP_Display_3" color="secondary">
-								TANGY
-							</Typography> */}
 
 							{/* price */}
 							<Typography pt={1} variant="SPP_Caption" color="secondary">

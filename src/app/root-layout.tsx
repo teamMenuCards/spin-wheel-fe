@@ -1,5 +1,6 @@
 "use client"
 import { SnackbarProvider } from "@mcc/context"
+import { CartProvider } from "@mcc/context/cart-context"
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
 
 const queryClient = new QueryClient()
@@ -13,7 +14,9 @@ export default function RootLayout({
 	return (
 		<>
 			<QueryClientProvider client={queryClient}>
-				<SnackbarProvider>{children}</SnackbarProvider>
+				<CartProvider>
+					<SnackbarProvider>{children}</SnackbarProvider>
+				</CartProvider>
 			</QueryClientProvider>
 		</>
 	)

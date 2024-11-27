@@ -6,7 +6,7 @@ import { Ic_nonveg, Ic_veg } from "@mcc/icons"
 import NutrientComponent from "./nutrients"
 import theme from "@mcc/components/ThemeRegistry/theme"
 import React from "react"
-import { useCart } from "@mcc/context/cart-context"
+import { useCart } from "@mcc/context"
 
 const StyledContainer = styled(Box)({
 	flex: 1,

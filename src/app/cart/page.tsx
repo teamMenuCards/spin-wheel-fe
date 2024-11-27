@@ -10,26 +10,19 @@ import {
 	Typography,
 	styled
 } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
-import useCart from "@spp/context/cart-context/useCart"
-import { isSafeArray } from "@spp/helpers/Utils"
+import { useEffect, useState } from "react"
+import { useCart } from "@mcc/context"
 import ProductCard from "./product-card"
 import NextLink from "next/link"
 import Navbar from "../../fragments/NavBar"
-import Popup from "@spp/components/elements/Popup"
 import ApplyCouponCard from "./apply-coupon-card"
-import { WhatsappMssgContext } from "@spp/context/whatsapp-context/WhatsappMssgProvider"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
-import { useSnackbar, useConfetti } from "@spp/context"
-import ApplyGreenPass from "./apply-green-pass-card"
+import { useSnackbar, useConfetti, useWhatsapp } from "@mcc/context"
 import CompleteMealCards from "./complete-meal"
-import BuyGreenPass from "./buy-greenpass"
 import { useRouter } from "next/navigation"
-import { PATHS } from "@spp/services/paths"
-
-const cashbackCheckbox = [
-	{ name: "applyCashback", label: "Get 10% cashback on my order" }
-]
+import { isSafeArray } from "@mcc/helpers/utils"
+import Popup from "@mcc/components/elements/Popup"
+import { PATHS } from "@mcc/services/paths"
 
 const StyledPopUp = styled(Popup)(({ theme }) => ({
 	display: "flex",
@@ -82,7 +75,7 @@ function CartPage() {
 		pickup,
 		setPickup,
 		setCashback
-	} = useContext(WhatsappMssgContext)
+	} = useWhatsapp()
 
 	const [showModal, setShowModal] = useState(false)
 
@@ -101,24 +94,21 @@ function CartPage() {
 	}, [])
 
 	useEffect(() => {
-		if (products.length) {
-			let sum = 0
-			/* check if variants */
-			products.forEach((prod) => {
-				const hasVariant = prod.variant.selected
-
-				if (hasVariant) {
-					sum += hasVariant.value * prod.quantity
-				} else {
-					sum += prod.variant.value * prod.quantity
-				}
-			})
-
-			setCartValue(sum)
-
-			const cb = Math.floor(Number(0.1 * Number(sum)))
-			setCashback(cb)
-		}
+		// if (products && products?.length) {
+		const sum = 0
+		// /* check if variants */
+		// products.forEach((prod) => {
+		// 	const hasVariant = prod?.variant?.selected
+		// 	if (hasVariant) {
+		// 		sum += hasVariant?.value * prod?.quantity
+		// 	} else {
+		// 		sum += prod?.variant?.value * prod?.quantity
+		// 	}
+		// })
+		// setCartValue(sum)
+		// const cb = Math.floor(Number(0.1 * Number(sum)))
+		// setCashback(cb)
+		// }
 	}, [products])
 
 	useEffect(() => {
@@ -230,57 +220,12 @@ function CartPage() {
 						)}
 					</Box>
 
-					{/* cashback checkbox */}
-					{/* {products.length ? (
-						<Box
-							sx={{ backgroundColor: "white", borderRadius: "10px" }}
-							px={2}
-							py={1}
-							mt={1}
-						>
-							{cashbackCheckbox.map((item) => (
-								<FormControlLabel
-									key={item.name}
-									control={
-										<Checkbox
-											checked={!!userOptions[item.name]}
-											onChange={handleChange}
-											name={item.name}
-										/>
-									}
-									label={
-										<Typography variant="SPP_Caption" color="secondary">
-											{item.label}
-										</Typography>
-									}
-									style={{ height: "10px" }}
-								/>
-							))}
-						</Box>
-					) : null} */}
-
 					{/* Apply couppons card */}
 					{products?.length ? (
 						<Box mt={1}>
 							<ApplyCouponCard coupon={couponCode || appliedDiscount} />
 						</Box>
 					) : null}
-
-					{/* Apply Greenpass card */}
-					{/* {products?.length ? (
-						<Box mt={1}>
-							<ApplyGreenPass coupon={greenpassCoupon || passFiftyDiscount} />
-						</Box>
-					) : null} */}
-
-					{/* buy Greenpass card */}
-					{/* {products?.length ? (
-						<Box mt={1}>
-							<BuyGreenPass />
-						</Box>
-					) : null} */}
-
-					{/* on cart value above Rs.249 */}
 
 					{/* Complete meal cards */}
 					<Box mt={1} sx={{ backgroundColor: "white" }} p={1}>

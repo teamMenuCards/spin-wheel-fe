@@ -1,8 +1,8 @@
 import { Card, Box, Link, styled, Typography } from "@mui/material"
 import NextLink from "next/link"
 import { useContext } from "react"
-import { WhatsappMssgContext } from "@spp/context/whatsapp-context/WhatsappMssgProvider"
-import IcDiscount from "@spp/icons/discount.svg"
+import { WhatsappMssgContext } from "@mcc/context/whatsapp-context/WhatsappMssgProvider"
+import IcDiscount from "@mcc/icons/discount.svg"
 
 function ApplyGreenPass() {
 	const { setGreenpassCoupon, setAppliedDiscount } =

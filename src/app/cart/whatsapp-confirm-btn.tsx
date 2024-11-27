@@ -1,9 +1,8 @@
-import { isSafeArray } from "@spp/helpers/Utils"
-import useCart from "@spp/context/cart-context/useCart"
+import { useCart, useWhatsapp } from "@mcc/context"
 import { Button } from "@mui/material"
 import { getValue, getVariant } from "./utils"
 import { useContext } from "react"
-import { WhatsappMssgContext } from "@spp/context/whatsapp-context/WhatsappMssgProvider"
+import { isSafeArray } from "@mcc/helpers/utils"
 
 function WhatsappConfirmComponent({ checkDisabled = false }) {
 	const { products, userAddress, userOptions } = useCart()
@@ -14,7 +13,7 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 		pickup,
 		offerCode,
 		couponCode
-	} = useContext(WhatsappMssgContext)
+	} = useWhatsapp
 
 	const { name, phone, addressLine1, addressLine2, comment } = userAddress
 	const { dontSendCutlery, dontSendNapkins } = userOptions

@@ -14,11 +14,11 @@ import {
 	IconButton
 } from "@mui/material"
 import Image from "next/image"
-import { useCart } from "@mcc/context/cart-context"
 import CloseIcon from "@mui/icons-material/Close"
 import NutrientComponent from "./nutrients"
 import { Ic_nonveg, Ic_veg } from "@mcc/icons"
 import { isSafeArray } from "@mcc/helpers/utils"
+import { useCart } from "@mcc/context"
 
 const StyledContainer = styled(Box)(() => ({
 	display: "flex",

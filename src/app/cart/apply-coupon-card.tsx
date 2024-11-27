@@ -1,13 +1,11 @@
 import { Card, Box, styled, Link, Typography } from "@mui/material"
 import NextLink from "next/link"
-import { useContext } from "react"
-import { WhatsappMssgContext } from "@spp/context/whatsapp-context/WhatsappMssgProvider"
-import IcDiscount from "@spp/icons/discount.svg"
-
+import IcDiscount from "@mcc/icons/other/discount.svg"
+import { useWhatsapp } from "@mcc/context"
 import "../style.css"
 
 const ApplyCouponCard = ({ coupon }) => {
-	const { setAppliedDiscount, setCouponcode } = useContext(WhatsappMssgContext)
+	const { setAppliedDiscount, setCouponcode } = useWhatsapp()
 
 	const StyledContainer = styled(Card)(() => ({
 		display: "flex",
@@ -44,29 +42,31 @@ const ApplyCouponCard = ({ coupon }) => {
 		)
 	}
 	return (
-		// <Link href="/coupons" component={NextLink} underline="none">
-		<StyledContainer>
-			<ApplyCouponBox>
-				<IcDiscount />
+		<>
+			{/* <Link href="/coupons" component={NextLink} underline="none"> */}
+			<StyledContainer>
+				<ApplyCouponBox>
+					{/* <IcDiscount /> */}
 
-				<Typography variant="SPP_Caption" ml={1}>
-					{!!coupon ? `Applied discount worth Rs.${coupon}` : getTitle()}
-				</Typography>
-			</ApplyCouponBox>
-
-			{!!coupon ? (
-				<Typography variant="SPP_Caption" mr={2} onClick={handleRemove}>
-					Remove
-				</Typography>
-			) : (
-				<Link href="/coupons" component={NextLink} underline="none">
-					<Typography variant="SPP_Caption" mr={2}>
-						Select
+					<Typography variant="SPP_Caption" ml={1}>
+						{!!coupon ? `Applied discount worth Rs.${coupon}` : getTitle()}
 					</Typography>
-				</Link>
-			)}
-		</StyledContainer>
-		// </Link>
+				</ApplyCouponBox>
+
+				{!!coupon ? (
+					<Typography variant="SPP_Caption" mr={2} onClick={handleRemove}>
+						Remove
+					</Typography>
+				) : (
+					<Link href="/coupons" component={NextLink} underline="none">
+						<Typography variant="SPP_Caption" mr={2}>
+							Select
+						</Typography>
+					</Link>
+				)}
+			</StyledContainer>
+			{/* </Link> */}
+		</>
 	)
 }
 

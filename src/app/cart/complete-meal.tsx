@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { Box, styled, Snackbar } from "@mui/material"
-import LineClampTypography from "@spp/components/elements/LineClampTypography"
+import LineClampTypography from "@mcc/components/elements/LineClampTypography"
 import Typography from "@mui/material/Typography"
 import { list } from "./smoothieDetails"
 import Image from "next/image"
-import { useCart } from "@spp/context/cart-context"
-import theme from "@spp/components/ThemeRegistry/theme"
+import { useCart } from "@mcc/context"
+import theme from "@mcc/components/ThemeRegistry/theme"
 
 const StyledAdd = styled(Box)({
 	textAlign: "center",

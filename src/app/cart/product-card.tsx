@@ -1,10 +1,10 @@
 import { Box, styled, Typography } from "@mui/material"
 import Image from "next/image"
-import IncrementOperator from "../dashboard/increment-operator"
-import { useCart } from "@spp/context/cart-context"
-import { isSafeArray } from "@spp/helpers/Utils"
-import { Ic_nonveg, Ic_veg } from "@spp/icons"
+import { Ic_nonveg, Ic_veg } from "@mcc/icons"
 import { getValue, getVariant } from "./utils"
+import { isSafeArray } from "@mcc/helpers/utils"
+import { useCart } from "@mcc/context"
+import IncrementOperator from "@mcc/fragments/IncrDecrementOperator"
 
 const StyledContainer = styled(Box)({
 	flex: 1,

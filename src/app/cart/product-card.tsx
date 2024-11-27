@@ -18,9 +18,9 @@ function ProductCard({ product }) {
 		useCart()
 
 	const getTotalAmount = (product) => {
-		const { variant = "", quantity = "" } = product
+		const { variants = [], quantity = "" } = product
 
-		const total = getValue(variant) * quantity
+		const total = Number(variants[0].price) * quantity
 		return total
 	}
 
@@ -60,10 +60,8 @@ function ProductCard({ product }) {
 
 	const getProductType = () => {
 		/* If product is superbowl/ Pasta then return both icons */
-		if (product.categoryType == 2 || product.categoryType == 20) {
-			return null
-		}
-		return product.veg ? getVegIcon() : getNonVegIcon()
+
+		return product.variants[0].is_veg ? getVegIcon() : getNonVegIcon()
 	}
 
 	return (
@@ -84,16 +82,12 @@ function ProductCard({ product }) {
 
 							<Box ml={1}>
 								<Typography variant="SPP_Caption" color="secondary">
-									{product.itemName}
+									{product.name}
 								</Typography>
-								{isSafeArray(product.price) && (
+								{product.variants[0].price && (
 									<Box sx={{ display: "flex" }}>
-										<Typography variant="SPP_Body_2" color="secondary">
-											{getVariant(product.variant)}
-										</Typography>
-
 										<Typography variant="SPP_Body_2" color="secondary" ml={2}>
-											{`Rs.${getValue(product.variant)}`}
+											{`Rs.${product.variants[0].price}`}
 										</Typography>
 									</Box>
 								)}

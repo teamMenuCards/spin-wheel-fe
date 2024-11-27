@@ -315,28 +315,7 @@ function CartPage() {
 					</StyledPopUp>
 				)}
 
-				<ButtonBox pt={1}>
-					{/* {pickup && <CutleryCheckbox />} */}
-					<FormControlLabel
-						sx={{ marginBottom: "10px", paddingLeft: "5px" }}
-						key="pickup"
-						control={
-							<Checkbox
-								checked={pickup}
-								onChange={handlePickup}
-								name="pickup"
-							/>
-						}
-						label={
-							<Typography variant="SPP_Caption" color="secondary">
-								I WILL PICKUP THE ORDER MYSELF
-							</Typography>
-						}
-						style={{ height: "20px" }}
-					/>
-
-					{getButtonValue()}
-				</ButtonBox>
+				<ButtonBox pt={1}>{getButtonValue()}</ButtonBox>
 			</StyledContainer>
 		</>
 	)

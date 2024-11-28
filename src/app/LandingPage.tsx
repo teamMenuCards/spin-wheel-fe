@@ -1,16 +1,14 @@
 "use client"
 import NextLink from "next/link"
 import Image from "next/image"
-import { Box, Typography, Link, IconButton } from "@mui/material"
+import { Box, Typography, Link } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import PhoneIcon from '@mui/icons-material/Phone'
-
 import PeopleIcon from '@mui/icons-material/People'
 
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { useState } from 'react'
+import React,{ useState } from 'react'
 
 // Background Section
 const HeaderContainer = styled(Box)({
@@ -38,7 +36,9 @@ const InfoSection = styled(Box)({
 	padding: '60px 16px 16px',
 	'& > *': {
 		maxWidth: '100%'
-	}
+	},
+	boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
+	border: '1px solid rgba(0,0,0,0.05)',
 })
 
 // Logo Container 
@@ -53,7 +53,12 @@ const LogoContainer = styled(Box)({
 	overflow: 'hidden',
 	border: '2px solid white',
 	backgroundColor: 'white',
-	zIndex: 4
+	zIndex: 4,
+	boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+	transition: 'transform 0.3s ease',
+	'&:hover': {
+		transform: 'translateX(-50%) scale(1.02)'
+	}
 })
 
 // Wrapper to handle scrolling
@@ -100,6 +105,7 @@ const CuisineText = styled(Typography)({
 
 const PhoneContainer = styled(Box)({
 	textAlign: 'left',
+	
 
 })
 
@@ -151,11 +157,11 @@ const TimeContainer = styled(Box)({
 const TimeBox = styled(Box)({
 	display: 'inline-flex',
 	alignItems: 'center',
-	padding: '1px 8px',
-	border: '1px solid #e0e0e0',
+	padding: '1px 5px',
+	//border: '1px solid #e0e0e0',
 	borderRadius: '4px',
 	'& .MuiTypography-root': {
-		fontSize: '0.775rem',
+		fontSize: '0.82rem',
 		color: '#000'
 	}
 })
@@ -174,8 +180,8 @@ const LocationContainer = styled(Box)({
 const LocationLink = styled(Link)({
 	display: 'inline-flex',
 	alignItems: 'center',
-	padding: '1px 8px',
-	border: '1px solid #e0e0e0',
+	padding: '1px 5px',
+	//border: '1px solid #e0e0e0',
 	borderRadius: '4px',
 	color: '#000',
 	textDecoration: 'none',
@@ -183,7 +189,7 @@ const LocationLink = styled(Link)({
 		whiteSpace: 'nowrap',
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
-		fontSize: '0.775rem',
+		fontSize: '0.82rem',
 		color: '#000'
 	}
 })
@@ -196,27 +202,32 @@ const MenuButton = styled(Box)({
 	backgroundColor: 'white',
 	borderRadius: '12px',
 	marginBottom: '12px',
-	boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+	boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
 	width: '100%',
 	maxWidth: '400px',
-	margin: '0 auto 12px',
-	transition: 'all 0.2s ease',
+	margin: '0 auto 16px',
+	transition: 'all 0.3s ease',
 	cursor: 'pointer',
 	position: 'relative',
+	border: '1px solid rgba(0,0,0,0.05)',
+	backdropFilter: 'blur(8px)',
 	'&:hover': {
-		boxShadow: '0 2px 4px rgba(0,0,0,0.12)',
-		transform: 'translateY(-1px)'
+		boxShadow: '0 8px 16px rgba(0,0,0,0.12)',
+		transform: 'translateY(-2px)',
+		backgroundColor: '#fafafa',
 	},
 	'& img': {
 		marginRight: '16px',
+		filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))'
 	},
 	'& .MuiTypography-root': {
 		color: '#2e2e2e',
-		fontWeight: 500,
+		fontWeight: 600,
 		position: 'absolute',
 		left: '50%',
 		transform: 'translateX(-50%)',
-		width: 'auto'
+		width: 'auto',
+		fontSize: '0.95rem'
 	}
 })
 
@@ -227,8 +238,18 @@ const MenuOptionsContainer = styled(Box)({
 	alignItems: 'center',
 	width: '100%',
 	maxWidth: '400px',
-	margin: '24px auto 0',
-	padding: '0 16px'
+	margin: '32px auto 0',
+	padding: '0 16px',
+	position: 'relative',
+	'&::before': {
+		content: '""',
+		position: 'absolute',
+		top: -16,
+		left: 0,
+		right: 0,
+		height: '1px',
+		background: 'linear-gradient(to right, transparent, rgba(0,0,0,0.05), transparent)'
+	}
 })
 
 // Reviews Section Styles
@@ -287,13 +308,10 @@ function LandingPage({ options, restaurantInfo }) {
 		'/review2.jpeg'
 	]
 
-	const handleNext = () => {
-		setCurrentReview((prev) => (prev + 1) % reviews.length)
-	}
+	
 
-	const handlePrev = () => {
-		setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length)
-	}
+	// Add a ref for scrolling
+	const reviewsRef = React.useRef<HTMLDivElement | null>(null);
 
 	return (
 		<PageWrapper>
@@ -377,7 +395,7 @@ function LandingPage({ options, restaurantInfo }) {
 							Ratings & Review
 						</Typography>
 						<Box>
-							<RatingItem>
+							<RatingItem onClick={() => reviewsRef.current?.scrollIntoView({ behavior: 'smooth' })}>
 								<Image 
 									src="/zomato-logo.png" 
 									alt="Zomato" 
@@ -385,17 +403,11 @@ function LandingPage({ options, restaurantInfo }) {
 									height={20}
 									style={{ marginLeft: 'auto' }}
 								/>
-								<Link 
-									href="https://www.zomato.com/restaurant-review" 
-									target="_blank"
-									rel="noopener noreferrer"
-									className="rating-text"
-									underline="none"
-								>
+								<Typography variant="body2">
 									{restaurantInfo.ratings.zomato.rating} ({restaurantInfo.ratings.zomato.count})
-								</Link>
+								</Typography>
 							</RatingItem>
-							<RatingItem>
+							<RatingItem onClick={() => reviewsRef.current?.scrollIntoView({ behavior: 'smooth' })}>
 								<Image 
 									src="/swiggy-logo.png" 
 									alt="Swiggy" 
@@ -403,17 +415,11 @@ function LandingPage({ options, restaurantInfo }) {
 									height={20}
 									style={{ marginLeft: 'auto' }}
 								/>
-								<Link 
-									href="https://www.swiggy.com/city/mumbai/caramel-and-coco-mahim-dadar-rest947982"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="rating-text"
-									underline="none"
-								>
+								<Typography variant="body2">
 									{restaurantInfo.ratings.swiggy.rating} ({restaurantInfo.ratings.swiggy.count})
-								</Link>
+								</Typography>
 							</RatingItem>
-							<RatingItem>
+							<RatingItem onClick={() => reviewsRef.current?.scrollIntoView({ behavior: 'smooth' })}>
 								<Image 
 									src="/google-logo.png" 
 									alt="Google" 
@@ -421,15 +427,9 @@ function LandingPage({ options, restaurantInfo }) {
 									height={20}
 									style={{ marginLeft: 'auto' }}
 								/>
-								<Link 
-									href="https://g.co/kgs/GBwnWYV"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="rating-text"
-									underline="none"
-								>
+								<Typography variant="body2">
 									{restaurantInfo.ratings.google.rating} ({restaurantInfo.ratings.google.count})
-								</Link>
+								</Typography>
 							</RatingItem>
 						</Box>
 					</Box>
@@ -487,7 +487,7 @@ function LandingPage({ options, restaurantInfo }) {
 				</MenuOptionsContainer>
 
 				{/* Reviews Section */}
-				<ReviewsSection>
+				<ReviewsSection ref={reviewsRef}>
 					<ReviewsTitle>
 						<Typography variant="subtitle1">
 							Verified Reviews

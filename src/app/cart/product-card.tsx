@@ -1,8 +1,6 @@
 import { Box, styled, Typography } from "@mui/material"
 import Image from "next/image"
 import { Ic_nonveg, Ic_veg } from "@mcc/icons"
-import { getValue, getVariant } from "./utils"
-import { isSafeArray } from "@mcc/helpers/utils"
 import { useCart } from "@mcc/context"
 import IncrementOperator from "@mcc/fragments/IncrDecrementOperator"
 

@@ -20,19 +20,16 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 
 	const handleConfirm = () => {
 		let message = `/******** NEW ORDER ********/\n`
-		isSafeArray(products) &&
+
+		if (isSafeArray(products)) {
 			products.forEach((item) => {
-				const { itemName, quantity, variant } = item
+				const { name, quantity, variants } = item
+
 				message =
 					message +
-					`${itemName} - (${getVariant(variant)}) - ${getValue(
-						variant
-					)} X *${quantity} Qty*` +
+					`${name} - Rs.${variants[0].price} X *${quantity} Qty*` +
 					"\n"
 			})
-
-		if (comment) {
-			message += `\n*Comment* - ${comment} \n`
 		}
 
 		// Add cashbacks
@@ -48,31 +45,11 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 					passFiftyDiscount || greenpassCoupon
 				}\n`
 			}
-
-			// if (cashbackAmt) {
-			// 	message += `**Cashback** (credited in wallet) - Rs.${cashbackAmt}\n`
-			// }
 		}
 
 		// Coupon code
 		if (offerCode) {
 			message += `\n*Coupon code* - ${offerCode} \n`
-		}
-
-		// Add address
-		if (name || addressLine1 || addressLine2 || phone)
-			message += `\n${name}\n${phone}\n`
-
-		if (addressLine1) {
-			message += `${addressLine1}`
-			if (addressLine2) {
-				message += `, ${addressLine2}`
-			}
-		}
-
-		// Handle pickup
-		if (pickup) {
-			message += `\n*SELF PICKUP*\n`
 		}
 
 		message += `\n`
@@ -88,7 +65,7 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 		}
 
 		const encodedMessage = encodeURIComponent(message)
-		const whatsappUrl = `https://wa.me/919324995221?text=${encodedMessage}`
+		const whatsappUrl = `https://wa.me/919757024944?text=${encodedMessage}`
 		window.open(whatsappUrl, "_blank")
 	}
 

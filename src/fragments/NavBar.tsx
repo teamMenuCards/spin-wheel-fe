@@ -36,7 +36,8 @@ export default function NavBar({ backLink }: { backLink?: string }) {
 						<BackIcon fontSize="small" />
 					</IconButton>
 					<Typography variant="SPP_H6" color="secondary">
-						The Green Bowl
+						{/* The Green Bowl */}
+						Caramel and coco
 					</Typography>
 				</Toolbar>
 			</AppBar>

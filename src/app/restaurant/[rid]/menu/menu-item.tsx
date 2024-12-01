@@ -30,11 +30,11 @@ const StyledAdd = styled(Box)({
 })
 
 const StyledImageBox = styled(Box)({
-	height: "150px",
-	width: "150px",
+	height: "105px",
+	width: "105px",
 	background: "lightSteelBlue",
 	position: "relative",
-	borderRadius: "15px"
+	borderRadius: "5px"
 })
 
 const AddButton = styled(Box)({
@@ -48,6 +48,8 @@ const AddButton = styled(Box)({
 })
 
 function MenuItem({ product }) {
+	console.log("productkk-", product)
+
 	const { openCart, setSelectedProduct } = useCart()
 
 	const getVegIcon = () => {
@@ -92,7 +94,7 @@ function MenuItem({ product }) {
 							<Image
 								fill
 								priority
-								src={product.image}
+								src={prdImage}
 								alt="food_img"
 								style={{ objectFit: "cover", borderRadius: "15px" }}
 							/>

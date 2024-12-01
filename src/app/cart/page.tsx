@@ -15,14 +15,13 @@ import { useCart } from "@mcc/context"
 import ProductCard from "./product-card"
 import NextLink from "next/link"
 import Navbar from "../../fragments/NavBar"
-import ApplyCouponCard from "./apply-coupon-card"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { useSnackbar, useConfetti, useWhatsapp } from "@mcc/context"
-import CompleteMealCards from "./complete-meal"
 import { useRouter } from "next/navigation"
 import { isSafeArray } from "@mcc/helpers/utils"
 import Popup from "@mcc/components/elements/Popup"
 import { PATHS } from "@mcc/services/paths"
+import WhatsappConfirmComponent from "./whatsapp-confirm-btn"
 
 const StyledPopUp = styled(Popup)(({ theme }) => ({
 	display: "flex",
@@ -66,16 +65,7 @@ function CartPage() {
 	const { hideSnackbar } = useSnackbar()
 	const { showConfetti } = useConfetti()
 
-	const {
-		cashbackAmt,
-		appliedDiscount,
-		passFiftyDiscount,
-		couponCode,
-		greenpassCoupon,
-		pickup,
-		setPickup,
-		setCashback
-	} = useWhatsapp()
+	const { couponCode, greenpassCoupon } = useWhatsapp()
 
 	const [showModal, setShowModal] = useState(false)
 
@@ -92,24 +82,6 @@ function CartPage() {
 		/* Hide snackbar for cart page */
 		hideSnackbar()
 	}, [])
-
-	useEffect(() => {
-		// if (products && products?.length) {
-		const sum = 0
-		// /* check if variants */
-		// products.forEach((prod) => {
-		// 	const hasVariant = prod?.variant?.selected
-		// 	if (hasVariant) {
-		// 		sum += hasVariant?.value * prod?.quantity
-		// 	} else {
-		// 		sum += prod?.variant?.value * prod?.quantity
-		// 	}
-		// })
-		// setCartValue(sum)
-		// const cb = Math.floor(Number(0.1 * Number(sum)))
-		// setCashback(cb)
-		// }
-	}, [products])
 
 	useEffect(() => {
 		if (discountValue) {
@@ -155,43 +127,6 @@ function CartPage() {
 		)
 	}
 
-	const getButton = ({ link, text }) => {
-		return (
-			<Button
-				style={{ width: "100%" }}
-				variant="contained"
-				color="primary"
-				type="submit"
-			>
-				<Link href={link} component={NextLink} underline="none" color="white">
-					{text}
-				</Link>
-			</Button>
-		)
-	}
-
-	const getButtonValue = () => {
-		if (isSafeArray(products)) {
-			return getButton({ link: "/address", text: "Proceed to add Address" })
-		} else {
-			/* IF CART IS EMPTY */
-			return goBackBtn()
-		}
-	}
-
-	const handleChange = (event) => {
-		const { name, checked } = event.target
-
-		setUserOptions((prevFormData: any) => ({
-			...prevFormData,
-			[name]: checked
-		}))
-	}
-
-	const handlePickup = () => {
-		setPickup(!pickup)
-	}
-
 	return (
 		<>
 			<StyledContainer p={1}>
@@ -218,31 +153,6 @@ function CartPage() {
 								<Typography>Your cart is empty!!</Typography>
 							</Box>
 						)}
-					</Box>
-
-					{/* Apply couppons card */}
-					{products?.length ? (
-						<Box mt={1}>
-							<ApplyCouponCard coupon={couponCode || appliedDiscount} />
-						</Box>
-					) : null}
-
-					{/* Complete meal cards */}
-					<Box mt={1} sx={{ backgroundColor: "white" }} p={1}>
-						<Typography variant="SPP_Caption" color={"red"} ml={2}>
-							Get Extra 20% Off on Smoothies
-						</Typography>
-						<Typography
-							variant="SPP_Caption"
-							color={"red"}
-							ml={2}
-							mb={1}
-							style={{ fontSize: 12 }}
-						>
-							(On cart value above Rs.249)
-						</Typography>
-
-						<CompleteMealCards />
 					</Box>
 				</Box>
 
@@ -283,26 +193,6 @@ function CartPage() {
 								Discount - Rs.{discountValue}
 							</Typography>
 
-							{/* <Typography variant="SPP_H6" color="secondary">
-								Added Cashback - Rs.{cashbackAmt}
-							</Typography> */}
-
-							{/* <Typography
-								variant="SPP_Caption"
-								color="secondary"
-								sx={{ color: "red" }}
-								mt={3}
-								px={1}
-							>
-								<span style={{ textDecoration: "underline" }}>Note </span> -
-								Discount will be applicable only if you have cashback in your
-								Greenbowl wallet
-							</Typography> */}
-
-							{/* <Typography mt={1} variant="SPP_Display_2" color="secondary">
-								Terms & conditions applied
-							</Typography> */}
-
 							<Typography
 								variant="SPP_Display_3"
 								color="blue"
@@ -315,7 +205,8 @@ function CartPage() {
 					</StyledPopUp>
 				)}
 
-				<ButtonBox pt={1}>{getButtonValue()}</ButtonBox>
+				{/* <ButtonBox pt={1}>{getButtonValue()}</ButtonBox> */}
+				<WhatsappConfirmComponent />
 			</StyledContainer>
 		</>
 	)

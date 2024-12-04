@@ -3,5 +3,5 @@
 import React from "react"
 
 export default function Home() {
-	return <></>
+	return <>Menu Cards Home Page</>
 }

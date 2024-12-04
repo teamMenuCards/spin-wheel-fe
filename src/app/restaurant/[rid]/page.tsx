@@ -57,9 +57,9 @@ const getPath = (rid: string) => {
 }
 
 const StyledContainer = styled(Box)(() => ({
-	width: '100%',
-	minHeight: '100vh',
-	backgroundColor: 'white'
+	width: "100%",
+	minHeight: "100vh",
+	backgroundColor: "white"
 }))
 
 export default function Page({ params }: { params: { rid: string } }) {
@@ -67,10 +67,10 @@ export default function Page({ params }: { params: { rid: string } }) {
 	const [restaurantInfo, setRestaurantInfo] = React.useState({
 		name: "Caramel & Coco",
 		cuisine: ["Bakery, Desserts"],
-		ratings: {
-			zomato: { rating: 4.1, count: "12 reviews" },
-			swiggy: { rating: 4.7, count: "16 reviews" },
-			google: { rating: 4.9, count: "14 reviews" }
+		reviews: {
+			zomato: { rating: 4.2, count: " 12 reviews " },
+			swiggy: { rating: 4.7, count: " 16 reviews " },
+			google: { rating: 4.9, count: " 14 reviews " }
 		},
 		timing: "11:00 am - 08:30 pm",
 		phone: "9821404990",

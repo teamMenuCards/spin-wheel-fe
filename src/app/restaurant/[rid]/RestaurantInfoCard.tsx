@@ -66,7 +66,7 @@ const PhoneContainer = styled(Box)({
 const PhoneLink = styled(Link)({
 	display: "inline-flex",
 	alignItems: "center",
-	gap: "4px",
+	gap: "8px",
 	color: "#000",
 	textDecoration: "underline"
 })

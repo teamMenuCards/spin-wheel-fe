@@ -27,29 +27,29 @@ async function getProjects(rid: string) {
 	}
 }
 
-const getPath = (rid) => {
+const getPath = (rid: string) => {
 	console.log("getPath called with rid:", rid)
 
 	const options = [
 		{
 			id: 1,
-			value: "Place Direct Order (Menu)",
+			value: "Menu",
 			path: `/restaurant/${rid}/menu`
 		},
-		// {
-		// 	id: 2,
-		// 	value: "Subscription Enquiry",
-		// 	path: `https://wa.me/919324995221?text=${encodedMessage}`
-		// },
-		// {
-		// 	id: 3,
-		// 	value: "Whatsapp us!",
-		// 	path: `https://wa.me/919324995221`
-		// },
+		{
+			id: 2,
+			value: "Zomato",
+			path: "https://www.zomato.com/mumbai/caramel-coco-dadar-shivaji-park/order"
+		},
+		{
+			id: 3,
+			value: "Swiggy",
+			path: "https://www.swiggy.com/city/mumbai/caramel-and-coco-mahim-dadar-rest947982"
+		},
 		{
 			id: 4,
-			value: "Follow on Instagram!",
-			path: "https://www.instagram.com/caramel_nd_coco/"
+			value: "Whatsapp us!",
+			path: "https://wa.me/9821404990"
 		}
 	]
 
@@ -57,11 +57,27 @@ const getPath = (rid) => {
 }
 
 const StyledContainer = styled(Box)(() => ({
-	backgroundColor: "#EBEEF1"
+	width: "100%",
+	minHeight: "100vh",
+	backgroundColor: "white"
 }))
 
 export default function Page({ params }: { params: { rid: string } }) {
 	const [restData, setRestData] = React.useState(null)
+
+	const restaurantInfo = {
+		name: "Caramel & Coco",
+		cuisine: ["Bakery, Desserts"],
+		reviews: {
+			zomato: { rating: 4.2, count: " 12 reviews " },
+			swiggy: { rating: 4.7, count: " 16 reviews " },
+			google: { rating: 4.9, count: " 14 reviews " }
+		},
+		timing: "11:00 am - 08:30 pm",
+		phone: "9821404990",
+		location: "Dadar Shivaji Park, Mumbai",
+		priceForTwo: 300
+	}
 
 	React.useEffect(() => {
 		async function fetchData() {
@@ -74,18 +90,11 @@ export default function Page({ params }: { params: { rid: string } }) {
 
 	console.log("restData==", restData)
 
-	// Call getPath directly and pass the list
 	const options = getPath(params.rid)
 
 	return (
-		<StyledContainer
-			sx={{
-				px: 3,
-				height: "100vh",
-				textAlign: "center"
-			}}
-		>
-			<LandingPage options={options} />
+		<StyledContainer>
+			<LandingPage options={options} restaurantInfo={restaurantInfo} />
 		</StyledContainer>
 	)
 }

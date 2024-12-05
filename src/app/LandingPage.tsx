@@ -1,75 +1,59 @@
 "use client"
-import NextLink from "next/link"
-import Image from "next/image"
-import { Box, Typography, Link } from "@mui/material"
+import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles"
+import React, { useState, useRef } from "react"
+import Header from "./restaurant/[rid]/Header"
+import RestaurantInfoCard from "./restaurant/[rid]/RestaurantInfoCard"
+import RestaurantButtons from "./restaurant/[rid]/RestaurantButtons"
+import VerifiedReviews from "./restaurant/[rid]/VerifiedReviews"
 
-const StyledImgContainer = styled(Box)({
-	width: "130px",
-	height: "120px",
-	borderRadius: "50%",
-	overflow: "hidden",
-	backgroundImage: 'url("/coco.jpg")',
-	backgroundSize: "cover",
-	backgroundPosition: "center",
-	margin: "auto"
+const PageWrapper = styled(Box)({
+	width: "100vw",
+	minHeight: "100vh",
+	position: "relative",
+	overflow: "hidden"
 })
 
-const MenuContainer = styled(Box)(({ theme }) => ({
-	borderRadius: "20px",
-	backgroundColor: theme.palette.primary.contrastText
-}))
+const InfoSection = styled(Box)({
+	width: "100%",
+	backgroundColor: "white",
+	position: "relative",
+	marginTop: "180px",
+	zIndex: 3,
+	minHeight: "calc(100vh - 180px)",
+	borderTopLeftRadius: "16px",
+	borderTopRightRadius: "16px",
+	padding: "60px 16px 16px",
+	"& > *": {
+		maxWidth: "100%"
+	},
+	boxShadow: "0 -4px 20px rgba(0,0,0,0.1)",
+	border: "1px solid rgba(0,0,0,0.05)"
+})
 
-function LandingPage({ options }) {
+// Main Component
+function LandingPage({ options, restaurantInfo }) {
+	const [currentReview, setCurrentReview] = useState(0)
+	const reviewsRef = useRef<HTMLDivElement | null>(null)
+	const reviews = ["/review1.jpeg", "/review2.jpeg"] // Example review images
+
 	return (
-		<Box pt={8}>
-			<StyledImgContainer mb={2} mt={2}>
-				<Image
-					// src="/logo_green_bg.jpeg"
-					src="/coco.jpg"
-					alt="App Logo"
-					width={130}
-					height={120}
-					priority
+		<PageWrapper>
+			<Header />
+			<InfoSection>
+				<RestaurantInfoCard
+					restaurantInfo={restaurantInfo}
+					reviewsRef={reviewsRef}
 				/>
-			</StyledImgContainer>
-
-			<Typography mt={2} variant="SPP_H4" color="secondary">
-				{/* The Green Bowl */}
-				Caramel and Coco
-			</Typography>
-
-			<Box mt={4}>
-				{options &&
-					options.map((item, index) => {
-						return (
-							<MenuContainer
-								key={index}
-								sx={{
-									borderRadius: "20px"
-								}}
-								p={2}
-								my={2}
-								className={item.showGlow ? "glowContainer" : ""}
-							>
-								<Box
-									sx={{
-										display: "flex",
-										justifyContent: "center",
-										alignItems: "center"
-									}}
-								>
-									<Link href={item.path} component={NextLink} underline="none">
-										<Typography color="secondary" key={item.value}>
-											{item.value}
-										</Typography>
-									</Link>
-								</Box>
-							</MenuContainer>
-						)
-					})}
-			</Box>
-		</Box>
+				<RestaurantButtons options={options} />
+				<VerifiedReviews
+					reviews={reviews}
+					currentReview={currentReview}
+					setCurrentReview={setCurrentReview}
+					ref={reviewsRef}
+				/>
+			</InfoSection>
+		</PageWrapper>
 	)
 }
 

@@ -65,8 +65,7 @@ const StyledContainer = styled(Box)(() => ({
 export default function Page({ params }: { params: { rid: string } }) {
 	const [restData, setRestData] = React.useState(null)
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [restaurantInfo, setRestaurantInfo] = React.useState({
+	const restaurantInfo = {
 		name: "Caramel & Coco",
 		cuisine: ["Bakery, Desserts"],
 		reviews: {
@@ -78,7 +77,7 @@ export default function Page({ params }: { params: { rid: string } }) {
 		phone: "9821404990",
 		location: "Dadar Shivaji Park, Mumbai",
 		priceForTwo: 300
-	})
+	}
 
 	React.useEffect(() => {
 		async function fetchData() {

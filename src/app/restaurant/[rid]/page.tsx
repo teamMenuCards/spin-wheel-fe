@@ -64,6 +64,8 @@ const StyledContainer = styled(Box)(() => ({
 
 export default function Page({ params }: { params: { rid: string } }) {
 	const [restData, setRestData] = React.useState(null)
+
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [restaurantInfo, setRestaurantInfo] = React.useState({
 		name: "Caramel & Coco",
 		cuisine: ["Bakery, Desserts"],

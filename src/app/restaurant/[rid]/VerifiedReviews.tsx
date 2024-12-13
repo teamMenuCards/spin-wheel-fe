@@ -101,4 +101,6 @@ const VerifiedReviews = forwardRef<
 	)
 })
 
+VerifiedReviews.displayName = "VerifiedReviews"
+
 export default VerifiedReviews

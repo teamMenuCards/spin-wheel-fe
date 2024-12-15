@@ -62,7 +62,7 @@ const MenuButton = styled(Box)({
 })
 
 // Main Component
-const RestaurantButtons = ({ options }) => (
+const DineInButtons = ({ options }) => (
 	<MenuOptionsContainer>
 		{options?.map((item, index) => (
 			<Link
@@ -76,7 +76,7 @@ const RestaurantButtons = ({ options }) => (
 					{item.value === "Menu" && (
 						<Image src="/menu-icon.png" alt="Menu" width={24} height={24} />
 					)}
-					{item.value === "Zomato" && (
+					{item.value === "Review us on Zomato" && (
 						<Image
 							src="/zomato-logo.png"
 							alt="Reserve"
@@ -84,17 +84,17 @@ const RestaurantButtons = ({ options }) => (
 							height={24}
 						/>
 					)}
-					{item.value === "Swiggy" && (
+					{item.value === "Review us on Google" && (
 						<Image
-							src="/swiggy-logo.png"
+							src="/google-logo.png"
 							alt="Website"
 							width={24}
 							height={24}
 						/>
 					)}
-					{item.value === "Whatsapp us!" && (
+					{item.value === "Instagram" && (
 						<Image
-							src="/whatsapp-icon.png"
+							src="/instagram-icon.png"
 							alt="WhatsApp"
 							width={24}
 							height={24}
@@ -107,4 +107,4 @@ const RestaurantButtons = ({ options }) => (
 	</MenuOptionsContainer>
 )
 
-export default RestaurantButtons
+export default DineInButtons

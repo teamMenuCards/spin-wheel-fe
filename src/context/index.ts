@@ -1,5 +1,6 @@
-export { default as useSnackbar } from "./SnackbarProvider"
-export { SnackbarProvider } from "./SnackbarProvider"
+
+export { SnackbarProvider, default as useSnackbar } from "./SnackbarProvider"
+
 
 export { default as useCart } from "./cart-context/useCart"
 export { CartProvider } from "./cart-context/CartContextProvider"

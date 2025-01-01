@@ -1,10 +1,10 @@
 "use client"
-import axios from "axios"
-import React from "react"
-import { Box } from "@mui/material"
-import LandingPage from "@mcc/app/dine-in/DineInLandingPage"
-import { styled } from "@mui/material/styles"
-import DineInLandingPage from "@mcc/app/dine-in/DineInLandingPage"
+import axios from 'axios';
+import React from 'react';
+
+import LandingPage from '@mcc/app/dine-in/DineInLandingPage';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 const instance = axios.create({
 	baseURL: "http://localhost:4200/",

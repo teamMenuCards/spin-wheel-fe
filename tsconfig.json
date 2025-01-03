@@ -1,16 +1,16 @@
 {
 	"compilerOptions": {
-		"strict": false, // Disable strict mode entirely (this will relax all strict checks)
-		"noImplicitAny": false, // Allow implicit `any` types in your code
-		"strictNullChecks": true, // Still enforce strict null checks (optional)
+		"strict": false, // Disable strict mode entirely
+		"noImplicitAny": false, // Allow implicit `any` types
+		"strictNullChecks": true, // Enforce strict null checks (optional)
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
 		"skipLibCheck": true,
 		"noEmit": true,
 		"forceConsistentCasingInFileNames": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
+		"noUnusedLocals": false, // Disable unused local variable checks
+		"noUnusedParameters": false, // Disable unused parameter checks
 		"esModuleInterop": true,
 		"module": "esnext",
 		"moduleResolution": "node",

@@ -90,7 +90,7 @@ function MenuItem({ product }) {
 			<Box mb={4}>
 				<Box sx={{ display: "flex", flex: 1, flexDirection: "row-reverse" }}>
 					{prdImage ? (
-						<StyledImageBox onClick={(e) => handleAdd(e)}>
+						<StyledImageBox onClick={() => handleAdd()}>
 							<Image
 								fill
 								priority
@@ -99,11 +99,11 @@ function MenuItem({ product }) {
 								style={{ objectFit: "cover", borderRadius: "15px" }}
 							/>
 
-							<StyledAdd onClick={(e) => handleAdd(e)}>ADD+</StyledAdd>
+							<StyledAdd onClick={() => handleAdd()}>ADD+</StyledAdd>
 						</StyledImageBox>
 					) : (
 						<Box sx={{ display: "flex", alignItems: "center" }}>
-							<AddButton onClick={(e) => handleAdd(e)}>ADD+</AddButton>
+							<AddButton onClick={() => handleAdd()}>ADD+</AddButton>
 						</Box>
 					)}
 

@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { useTheme, styled } from "@mui/material/styles"
 
 interface SnackbarContextType {
-	showSnackbar: (data: { message: string; variant: string }) => void
+	showSnackbar: (data: { message: ReactNode; variant: string }) => void
 	hideSnackbar: () => void
 }
 
@@ -27,8 +27,10 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 	const theme = useTheme()
 
 	const [showContent, setShowContent] = useState(false)
-	const [state, setState] = useState({ message: "", variant: "default" })
-
+	const [state, setState] = useState<{ message: ReactNode; variant: string }>({
+		message: "", // initial message as a string or any valid ReactNode
+		variant: "default"
+	})
 	const CustomSnackbarContent = styled(SnackbarContent)<{ bgcolor?: string }>(
 		({ theme, bgcolor }) => ({
 			backgroundColor: bgcolor || theme.palette.primary.main,
@@ -71,7 +73,7 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
 	)
 
 	// Function to open snackbar
-	const showSnackbar = (data: { message: string; variant: string }) => {
+	const showSnackbar = (data: { message: ReactNode; variant: string }) => {
 		setShowContent(true)
 		setState({
 			message: data.message,

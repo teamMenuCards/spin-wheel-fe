@@ -1,50 +1,67 @@
-import React, { useContext, createContext, useState } from "react"
+import React, { useContext, createContext, useState, ReactNode } from "react"
 
-const useWhatsappMssgContext = () => useContext(WhatsappMssgContext)
+// Define the context and state types
+interface WhatsappMssgContextType {
+	appliedDiscount: number
+	passFiftyDiscount: number
+	couponCode: string
+	greenpassCoupon: string
+	offerCode: string | undefined
+	setAppliedDiscount: React.Dispatch<React.SetStateAction<number>>
+	setCouponcode: React.Dispatch<React.SetStateAction<string>>
+	setPassFiftyDiscount: React.Dispatch<React.SetStateAction<number>>
+	setGreenpassCoupon: React.Dispatch<React.SetStateAction<string>>
+	setOfferCode: React.Dispatch<React.SetStateAction<string | undefined>>
+}
 
-const WhatsappMssgContext = createContext({
-	cashbackAmt: "",
-	appliedDiscount: "",
-	passFiftyDiscount: "",
-	pickup: false,
+// Default context value
+const defaultContextValue: WhatsappMssgContextType = {
+	appliedDiscount: 0,
+	passFiftyDiscount: 0,
 	couponCode: "",
 	greenpassCoupon: "",
 	offerCode: "",
-	// for handling 50% discount in Coupons page
-	setAppliedDiscount: (value: string) => undefined,
+	setAppliedDiscount: () => {},
+	setCouponcode: () => {},
+	setPassFiftyDiscount: () => {},
+	setGreenpassCoupon: () => {},
+	setOfferCode: () => {}
+}
 
-	// for handling coupon discount in Coupons page
-	setCouponcode: (value: number) => undefined,
+// Create the context
+const WhatsappMssgContext =
+	createContext<WhatsappMssgContextType>(defaultContextValue)
 
-	// for handling 50% discount in GreenPassCoupons page
-	setPassFiftyDiscount: (value: string) => undefined,
-	// for handling coupon discount in GreenPassCoupons page
-	setGreenpassCoupon: (value: number) => undefined,
+// Custom hook to use the context
+const useWhatsappMssgContext = () => {
+	const context = useContext(WhatsappMssgContext)
 
-	// get the coupon code of pamphlet
-	setOfferCode: (value: number) => undefined
-})
+	if (!context) {
+		throw new Error(
+			"useWhatsappMssgContext must be used within a WhatsappMssgProvider"
+		)
+	}
 
-// Create a provider component to wrap your application
-export const WhatsappMssgProvider = ({ children }) => {
-	const [cashbackAmt, setCashback] = useState("")
-	/* this is for showing the value on "Apply discount" Card on cart page */
-	const [appliedDiscount, setAppliedDiscount] = useState(0)
-	const [passFiftyDiscount, setPassFiftyDiscount] = useState(0)
+	return context
+}
 
-	const [pickup, setPickup] = useState(false)
-	const [couponCode, setCouponcode] = useState("")
-	const [greenpassCoupon, setGreenpassCoupon] = useState("")
-	// get the coupon code of pamphlet
-	const [offerCode, setOfferCode] = useState()
+// Provider component
+interface WhatsappMssgProviderProps {
+	children: ReactNode
+}
 
-	const values = {
-		cashbackAmt,
-		setCashback,
+export const WhatsappMssgProvider: React.FC<WhatsappMssgProviderProps> = ({
+	children
+}) => {
+	const [appliedDiscount, setAppliedDiscount] = useState<number>(0)
+	const [passFiftyDiscount, setPassFiftyDiscount] = useState<number>(0)
+	const [couponCode, setCouponcode] = useState<string>("")
+	const [greenpassCoupon, setGreenpassCoupon] = useState<string>("")
+	const [offerCode, setOfferCode] = useState<string | undefined>(undefined)
+
+	const values: WhatsappMssgContextType = {
 		appliedDiscount,
 		setAppliedDiscount,
-		pickup,
-		setPickup,
 		couponCode,
 		setCouponcode,
 		offerCode,

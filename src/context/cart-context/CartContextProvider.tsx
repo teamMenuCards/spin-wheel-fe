@@ -1,34 +1,6 @@
-import React, { useContext, FC, useState } from "react"
+import React, { useContext, useState, ReactNode } from "react"
 
-interface UserOptions {
-	dontSendCutlery: boolean
-	dontSendNapkins: boolean
-	applyCashback: boolean
-	// redeemCashback: boolean
-}
-
-interface IAddress {
-	name: string
-	phone: number
-	addressLine1?: string
-	addressLine2?: string
-}
-interface ContextState {
-	isOpen: boolean
-	setIsOpen: (isOpen: boolean) => void
-	cartValue: number
-	setCartValue: (value) => void
-
-	products: Product[]
-	selectedProduct: Product | null
-	setSelectedProduct: (product: Product | null) => void
-	total: Total
-	userOptions: UserOptions
-	setUserOptions: (prevFormData: any) => any
-	userAddress: IAddress
-	setUserAddress: (address: string) => void // Define the setter function
-}
-
+// Define initial state values
 const totalInitialValues = {
 	productQuantity: 0,
 	installments: 0,
@@ -37,11 +9,11 @@ const totalInitialValues = {
 	currencyFormat: "$"
 }
 
-const initialState: ContextState = {
+const initialState = {
 	isOpen: false,
 	products: [],
 	cartValue: 0,
-	selectedProduct: null, // Or initial selected product
+	selectedProduct: null,
 	total: totalInitialValues,
 	userOptions: {
 		dontSendCutlery: false,
@@ -49,15 +21,19 @@ const initialState: ContextState = {
 		applyCashback: false
 	},
 	userAddress: {},
-	setCartValue: () => {},
-	setIsOpen: () => {}, // Define setIsOpen setter function
-	setSelectedProduct: () => {}, // Define setSelectedProduct setter function
-	setUserOptions: () => {}, // Define setUserOptions setter function
-	setUserAddress: () => {}
+	setCartValue: (sum: number) => {},
+	setProducts: (value) => {},
+	setTotal: (value) => {},
+	setIsOpen: (open: boolean) => {}, // Now typed to accept a boolean
+	setSelectedProduct: (product: any) => {},
+	setUserOptions: (options: any) => {},
+	setUserAddress: (address: any) => {}
 }
 
-const CartContext = React.createContext<ContextState>(initialState)
+// Define the CartContext with the correct typing
+const CartContext = React.createContext(initialState)
 
+// Custom hook to access CartContext
 const useCartContext = () => {
 	const context = useContext(CartContext)
 
@@ -68,19 +44,23 @@ const useCartContext = () => {
 	return context
 }
 
-const CartProvider: FC = (props: any) => {
-	const [isOpen, setIsOpen] = useState(false)
-	const [products, setProducts] = useState([])
-	const [cartValue, setCartValue] = useState(0)
-	const [selectedProduct, setSelectedProduct] = useState({})
+// Define the CartProvider component and type its props
+interface CartProviderProps {
+	children: ReactNode
+}
+
+const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+	const [isOpen, setIsOpen] = useState<boolean>(false)
+	const [products, setProducts] = useState<any[]>([])
+	const [cartValue, setCartValue] = useState<number>(0)
+	const [selectedProduct, setSelectedProduct] = useState<any>(null)
 	const [total, setTotal] = useState(totalInitialValues)
 	const [userOptions, setUserOptions] = useState({
 		dontSendCutlery: false,
 		dontSendNapkins: false,
-		applyCashback: true // setting applyCashback checked by default
-		// redeemCashback: false
+		applyCashback: true // default value
 	})
-	const [userAddress, setUserAddress] = useState("")
+	const [userAddress, setUserAddress] = useState<any>({})
 
 	const CartContextValue = {
 		isOpen,
@@ -100,8 +80,8 @@ const CartProvider: FC = (props: any) => {
 	}
 
 	return (
-		<CartContext.Provider value={CartContextValue} {...props}>
-			{props.children}
+		<CartContext.Provider value={CartContextValue}>
+			{children}
 		</CartContext.Provider>
 	)
 }

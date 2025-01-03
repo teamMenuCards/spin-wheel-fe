@@ -36,8 +36,12 @@
 	},
 	"eslintConfig": {
 		"extends": [
-			"next/core-web-vitals"
-		]
+			"next/core-web-vitals",
+			"next/typescript"
+		],
+		"rules": {
+			"@typescript-eslint/no-unused-vars": "warn"
+		}
 	},
 	"prettier": {
 		"tabWidth": 2,

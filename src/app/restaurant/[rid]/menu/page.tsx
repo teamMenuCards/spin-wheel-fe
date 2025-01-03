@@ -32,7 +32,11 @@ function App() {
 		total
 	} = useCart()
 
-	const { menuData: { data } = {}, isLoadingMenu, menuError } = useMenu(rid)
+	const {
+		menuData: { data } = {},
+		isLoadingMenu,
+		menuError
+	} = useMenu(rid as string)
 
 	const [currentCategory, setCurrentCategory] = useState<string | undefined>(
 		undefined

@@ -1,6 +1,5 @@
 import { Card, Box, styled, Link, Typography } from "@mui/material"
 import NextLink from "next/link"
-import IcDiscount from "@mcc/icons/other/discount.svg"
 import { useWhatsapp } from "@mcc/context"
 import "../style.css"
 

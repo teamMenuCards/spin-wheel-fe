@@ -37,7 +37,17 @@
 	"eslintConfig": {
 		"extends": [
 			"next/core-web-vitals"
-		]
+		],
+		"rules": {
+			"no-unused-vars": [
+				"warn",
+				{
+					"vars": "all",
+					"args": "none",
+					"ignoreRestSiblings": true
+				}
+			]
+		}
 	},
 	"prettier": {
 		"tabWidth": 2,

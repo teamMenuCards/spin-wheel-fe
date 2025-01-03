@@ -4,6 +4,7 @@ import React from "react"
 import { Box } from "@mui/material"
 import LandingPage from "@mcc/app/LandingPage"
 import { styled } from "@mui/material/styles"
+import { useRestaurantDetails } from "@mcc/context"
 
 const instance = axios.create({
 	baseURL: "http://localhost:4200/",
@@ -16,7 +17,7 @@ const instance = axios.create({
 async function getProjects(rid: string) {
 	try {
 		const res = await instance.get(
-			`${process.env.NEXT_PUBLIC_API_BASE_URL}/restaurants/menu-details/${rid}`
+			`${process.env.NEXT_PUBLIC_API_BASE_URL}/restaurants/${rid}/details`
 		)
 		const data = await res.data.data
 		console.log("Response Data:", data)
@@ -63,18 +64,33 @@ const StyledContainer = styled(Box)(() => ({
 }))
 
 export default function Page({ params }: { params: { rid: string } }) {
-	const [restData, setRestData] = React.useState(null)
+	const { restaurantDetails, setRestaurantDetails } = useRestaurantDetails()
 
 	const restaurantInfo = {
 		name: "Caramel & Coco",
 		cuisine: ["Bakery, Desserts"],
-		reviews: {
-			zomato: { rating: 4.2, count: " 12 reviews " },
-			swiggy: { rating: 4.7, count: " 16 reviews " },
-			google: { rating: 4.9, count: " 14 reviews " }
-		},
+		reviews: [
+			{
+				platform: "Zomato",
+				rating: 4.2,
+				count: 12,
+				logo: "/zomato-logo.png"
+			},
+			{
+				platform: "Swiggy",
+				rating: 4.7,
+				count: 20,
+				logo: "/swiggy-logo.png"
+			},
+			{
+				platform: "Google",
+				rating: 4.7,
+				count: 20,
+				logo: "/google-logo.png"
+			}
+		],
 		timing: "11:00 am - 08:30 pm",
-		phone: "9821404990",
+		phone_no: "",
 		location: "Dadar Shivaji Park, Mumbai",
 		priceForTwo: 300
 	}
@@ -82,19 +98,20 @@ export default function Page({ params }: { params: { rid: string } }) {
 	React.useEffect(() => {
 		async function fetchData() {
 			const data = await getProjects(params.rid)
-			window?.localStorage.setItem("Resto_Id", params.rid)
-			setRestData(data)
+			setRestaurantDetails(data)
+			window?.localStorage.setItem("Resto_Id", data.id)
 		}
 		fetchData()
 	}, [params.rid])
-
-	console.log("restData==", restData)
 
 	const options = getPath(params.rid)
 
 	return (
 		<StyledContainer>
-			<LandingPage options={options} restaurantInfo={restaurantInfo} />
+			<LandingPage
+				options={options}
+				restaurantInfo={{ ...restaurantInfo, ...restaurantDetails?.detail }}
+			/>
 		</StyledContainer>
 	)
 }

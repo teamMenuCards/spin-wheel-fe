@@ -3,6 +3,14 @@ const getUrl = (url: string) => {
 	return `${baseUrl}/${url}`
 }
 
+const prefix = "restaurants"
+
 export const apiRoutes = {
-	menuItemtList: getUrl("restaurants/menu-details")
+	menuItemtList: getUrl(`${prefix}`),
+	restaurantDetails: getUrl(`${prefix}`)
+}
+
+export const suffix = {
+	menuItemtList: "menu",
+	restaurantDetails: "details"
 }

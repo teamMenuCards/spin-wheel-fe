@@ -1,22 +1,20 @@
-import { useCart, useWhatsapp } from "@mcc/context"
+import { useCart, useRestaurantDetails, useWhatsapp } from "@mcc/context"
 import { Button } from "@mui/material"
-import { getValue, getVariant } from "./utils"
-import { useContext } from "react"
 import { isSafeArray } from "@mcc/helpers/utils"
 
 function WhatsappConfirmComponent({ checkDisabled = false }) {
-	const { products, userAddress, userOptions } = useCart()
+	const { products, userOptions } = useCart()
 	const {
 		appliedDiscount,
 		passFiftyDiscount,
 		greenpassCoupon,
-		pickup,
 		offerCode,
 		couponCode
 	} = useWhatsapp
 
-	const { name, phone, addressLine1, addressLine2, comment } = userAddress
 	const { dontSendCutlery, dontSendNapkins } = userOptions
+
+	const { restaurantDetails } = useRestaurantDetails()
 
 	const handleConfirm = () => {
 		let message = `/******** NEW ORDER ********/\n`
@@ -65,7 +63,7 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 		}
 
 		const encodedMessage = encodeURIComponent(message)
-		const whatsappUrl = `https://wa.me/919757024944?text=${encodedMessage}`
+		const whatsappUrl = `https://wa.me/${restaurantDetails?.detail?.phone_no}?text=${encodedMessage}`
 		window.open(whatsappUrl, "_blank")
 	}
 

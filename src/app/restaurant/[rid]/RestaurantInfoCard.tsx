@@ -52,7 +52,7 @@ const DetailsColumn = styled(Box)({
 const CuisineText = styled(Typography)({
 	textAlign: "left",
 	color: "#666",
-	fontSize: "0.875rem",
+	fontSize: "0.82rem",
 	display: "flex",
 	flexWrap: "wrap",
 	gap: "4px",
@@ -127,7 +127,7 @@ const RatingItem = styled(Box)({
 		objectFit: "contain"
 	},
 	"& .rating-text": {
-		fontSize: "0.875rem",
+		fontSize: "0.82rem",
 		color: "#000",
 		whiteSpace: "nowrap",
 		minWidth: "120px",
@@ -144,7 +144,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => (
 	<Box
 		className="details-section"
 		display="grid"
-		gridTemplateColumns="1fr 150px"
+		gridTemplateColumns="1fr"
 		alignItems="flex-start"
 		gap={1}
 	>
@@ -177,9 +177,9 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => (
 				</TimeContainer>
 
 				<PhoneContainer>
-					<PhoneLink href={`tel:${restaurantInfo.phone}`} underline="always">
+					<PhoneLink href={`tel:${restaurantInfo.phone_no}`} underline="always">
 						<PhoneIcon sx={{ fontSize: "14px" }} />
-						<Typography variant="body2">{restaurantInfo.phone}</Typography>
+						<Typography variant="body2">{restaurantInfo.phone_no}</Typography>
 					</PhoneLink>
 				</PhoneContainer>
 
@@ -212,59 +212,28 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => (
 
 		{/* Ratings Section */}
 		<Box className="ratings-section">
-			<Box>
-				<RatingItem
-					onClick={() =>
-						reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-					}
-				>
-					<Image
-						src="/zomato-logo.png"
-						alt="Zomato"
-						width={20}
-						height={20}
-						style={{ marginLeft: "auto", borderRadius: "4px" }}
-					/>
-					<Typography variant="body2">
-						{restaurantInfo.reviews.zomato.rating} (
-						{restaurantInfo.reviews.zomato.count})
-					</Typography>
-				</RatingItem>
-				<RatingItem
-					onClick={() =>
-						reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-					}
-				>
-					<Image
-						src="/swiggy-logo.png"
-						alt="Swiggy"
-						width={20}
-						height={20}
-						style={{ marginLeft: "auto" }}
-					/>
-					<Typography variant="body2">
-						{restaurantInfo.reviews.swiggy.rating} (
-						{restaurantInfo.reviews.swiggy.count})
-					</Typography>
-				</RatingItem>
-				<RatingItem
-					onClick={() =>
-						reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-					}
-				>
-					<Image
-						src="/google-logo.png"
-						alt="Google"
-						width={20}
-						height={20}
-						style={{ marginLeft: "auto" }}
-					/>
-					<Typography variant="body2">
-						{restaurantInfo.reviews.google.rating} (
-						{restaurantInfo.reviews.google.count})
-					</Typography>
-				</RatingItem>
-			</Box>
+			{restaurantInfo.reviews.map((item, index) => {
+				return (
+					<Box key={index}>
+						<RatingItem
+							onClick={() =>
+								reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
+							}
+						>
+							<Image
+								src={item.logo}
+								alt={item.platform}
+								width={20}
+								height={20}
+								style={{ marginLeft: "auto" }}
+							/>
+							<Typography variant="body2">
+								{item.rating} ({item.count})
+							</Typography>
+						</RatingItem>
+					</Box>
+				)
+			})}
 		</Box>
 	</Box>
 )

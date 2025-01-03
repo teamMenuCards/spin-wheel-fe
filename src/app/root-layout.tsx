@@ -2,6 +2,7 @@
 import {
 	CartProvider,
 	ConfettiProvider,
+	RestaurantDetailsProvider,
 	SnackbarProvider,
 	WhatsappMssgProvider
 } from "@mcc/context"
@@ -20,9 +21,11 @@ export default function RootLayout({
 			<QueryClientProvider client={queryClient}>
 				<WhatsappMssgProvider>
 					<CartProvider>
-						<ConfettiProvider>
-							<SnackbarProvider>{children}</SnackbarProvider>
-						</ConfettiProvider>
+						<RestaurantDetailsProvider>
+							<ConfettiProvider>
+								<SnackbarProvider>{children}</SnackbarProvider>
+							</ConfettiProvider>
+						</RestaurantDetailsProvider>
 					</CartProvider>
 				</WhatsappMssgProvider>
 			</QueryClientProvider>

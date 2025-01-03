@@ -1,26 +1,14 @@
 "use client"
-import {
-	Toolbar,
-	Link,
-	Button,
-	FormControlLabel,
-	IconButton,
-	Checkbox,
-	Box,
-	Typography,
-	styled
-} from "@mui/material"
+import { Toolbar, IconButton, Box, Typography, styled } from "@mui/material"
 import { useEffect, useState } from "react"
-import { useCart } from "@mcc/context"
+import { useCart, useRestaurantDetails } from "@mcc/context"
 import ProductCard from "./product-card"
-import NextLink from "next/link"
 import Navbar from "../../fragments/NavBar"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { useSnackbar, useConfetti, useWhatsapp } from "@mcc/context"
 import { useRouter } from "next/navigation"
 import { isSafeArray } from "@mcc/helpers/utils"
 import Popup from "@mcc/components/elements/Popup"
-import { PATHS } from "@mcc/services/paths"
 import WhatsappConfirmComponent from "./whatsapp-confirm-btn"
 
 const StyledPopUp = styled(Popup)(({ theme }) => ({
@@ -60,8 +48,9 @@ const StyledContainer = styled(Box)(() => ({
 
 function CartPage() {
 	const router = useRouter()
+	const { restaurantDetails } = useRestaurantDetails()
 
-	const { products, userOptions, setUserOptions, setCartValue } = useCart()
+	const { products } = useCart()
 	const { hideSnackbar } = useSnackbar()
 	const { showConfetti } = useConfetti()
 
@@ -70,13 +59,6 @@ function CartPage() {
 	const [showModal, setShowModal] = useState(false)
 
 	const discountValue = couponCode || greenpassCoupon
-	let width = "",
-		height = ""
-
-	if (typeof window !== "undefined") {
-		width = window.innerWidth
-		height = window.innerHeight
-	}
 
 	useEffect(() => {
 		/* Hide snackbar for cart page */
@@ -96,7 +78,7 @@ function CartPage() {
 		/* This is for avoiding page reload, on click of phone's back btn */
 		const handlePopState = (event) => {
 			event.preventDefault()
-			router.push("/dashboard") // Programmatically navigate
+			router.push(`/restaurant/${restaurantDetails.display_name}/menu`) // Programmatically navigate
 		}
 
 		window.addEventListener("popstate", handlePopState)
@@ -107,30 +89,12 @@ function CartPage() {
 		}
 	}, [router])
 
-	const goBackBtn = () => {
-		return (
-			<Button
-				style={{ width: "100%" }}
-				variant="contained"
-				color="primary"
-				type="submit"
-			>
-				<Link
-					href={"/dashboard"}
-					component={NextLink}
-					underline="none"
-					color="white"
-				>
-					Go Back
-				</Link>
-			</Button>
-		)
-	}
-
 	return (
 		<>
 			<StyledContainer p={1}>
-				<Navbar backLink={PATHS.dashboard} />
+				<Navbar
+					backLink={`/restaurant/${restaurantDetails.display_name}/menu`}
+				/>
 
 				<Box component="main" sx={{ flex: 1 }}>
 					<Toolbar />

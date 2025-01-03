@@ -20,7 +20,7 @@ const StyledAdd = styled(Box)({
 	left: "50%",
 	transform: "translateX(-50%)",
 	bottom: "-12px",
-	width: "100px",
+	width: "70px",
 	textAlign: "center",
 	fontWeight: "bold",
 	borderRadius: "2px",

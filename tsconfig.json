@@ -1,52 +1,42 @@
 {
-  "compilerOptions": {
-    "strict": false, // Disable all strict mode checks (this disables noImplicitAny, strictNullChecks, etc.)
-    "noImplicitAny": false, // Allow implicit 'any' type
-    "strictNullChecks": false, // Disable strict null checks
-    "noUnusedLocals": false, // Disable unused variable checks (including unused imports)
-    "noUnusedParameters": false, // Disable unused parameter checks
-    "noImplicitThis": false, // Allow `this` to be implicitly typed as `any`
-    "skipLibCheck": true, // Skip type checking of declaration files (.d.ts)
-    "esModuleInterop": true, // Ensure compatibility with CommonJS modules
-    "allowJs": true, // Allow JavaScript files to be compiled (even without types)
-    "module": "esnext", // Specify the module system
-    "target": "es5", // Specify ECMAScript target version
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ], // Include these libraries
-    "moduleResolution": "node", // Resolve modules using Node.js resolution logic
-    "resolveJsonModule": true, // Allow importing JSON files as modules
-    "isolatedModules": true, // Ensure each file can be treated as an isolated module
-    "jsx": "preserve", // Preserve JSX syntax for frameworks like React
-    "incremental": true, // Enable incremental compilation
-    "noEmitOnError": false, // Allow emitting output files even if there are errors
-    "forceConsistentCasingInFileNames": true, // Ensure consistent casing of file names
-    "paths": {
-      "@mcc/*": [
-        "./src/*"
-      ],
-      "types/*": [
-        "./@types/*"
-      ]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "noEmit": true
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "next.config.js",
-    "build/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+	"compilerOptions": {
+		"strict": false, // Disable all strict mode checks (this disables noImplicitAny, strictNullChecks, etc.)
+		"noImplicitAny": false, // Allow implicit 'any' type
+		"strictNullChecks": false, // Disable strict null checks
+		"noUnusedLocals": false, // Disable unused variable checks (including unused imports)
+		"noUnusedParameters": false, // Disable unused parameter checks
+		"noImplicitThis": false, // Allow `this` to be implicitly typed as `any`
+		"skipLibCheck": true, // Skip type checking of declaration files (.d.ts)
+		"esModuleInterop": true, // Ensure compatibility with CommonJS modules
+		"allowJs": true, // Allow JavaScript files to be compiled (even without types)
+		"module": "esnext", // Specify the module system
+		"target": "es5", // Specify ECMAScript target version
+		"lib": ["dom", "dom.iterable", "esnext"], // Include these libraries
+		"moduleResolution": "node", // Resolve modules using Node.js resolution logic
+		"resolveJsonModule": true, // Allow importing JSON files as modules
+		"isolatedModules": true, // Ensure each file can be treated as an isolated module
+		"jsx": "preserve", // Preserve JSX syntax for frameworks like React
+		"incremental": true, // Enable incremental compilation
+		"noEmitOnError": false, // Allow emitting output files even if there are errors
+		"forceConsistentCasingInFileNames": true, // Ensure consistent casing of file names
+		"paths": {
+			"@mcc/*": ["./src/*"],
+			"types/*": ["./@types/*"]
+		},
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"noEmit": true
+	},
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".next/types/**/*.ts",
+		"next.config.js",
+		"build/types/**/*.ts"
+	],
+	"exclude": ["node_modules"]
 }

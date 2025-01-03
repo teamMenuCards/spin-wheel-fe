@@ -21,12 +21,12 @@ const useCartProducts = () => {
 	}
 
 	const addProduct = (newProduct) => {
-		let updatedProducts, isProductAlreadyInCart
+		let updatedProducts
 
 		// creating unique ids for every option , variant
 		newProduct.id = newProduct.id + newProduct?.variant?.id
 
-		isProductAlreadyInCart = products.some(
+		const isProductAlreadyInCart = products.some(
 			(product) => newProduct.id === product.id
 		)
 

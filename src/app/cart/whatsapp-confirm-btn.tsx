@@ -10,7 +10,7 @@ function WhatsappConfirmComponent({ checkDisabled = false }) {
 		greenpassCoupon,
 		offerCode,
 		couponCode
-	} = useWhatsapp
+	} = useWhatsapp()
 
 	const { dontSendCutlery, dontSendNapkins } = userOptions
 

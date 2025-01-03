@@ -1,18 +1,10 @@
 import React, { useContext, FC, useState } from "react"
 
-interface Total {
-	// Define the structure of your total object
-}
-
 interface UserOptions {
 	dontSendCutlery: boolean
 	dontSendNapkins: boolean
 	applyCashback: boolean
 	// redeemCashback: boolean
-}
-
-interface Product {
-	// Define the structure of your product object
 }
 
 interface IAddress {

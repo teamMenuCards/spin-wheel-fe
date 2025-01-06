@@ -1,3 +1,4 @@
+"use client";
 import { Compare } from './components/landing-page/Compare';
 import { HeroSection } from './components/landing-page/HeroSection';
 import { NavBar } from './components/landing-page/NavBar';
@@ -30,7 +31,10 @@ export default function Home() {
               />
             </div>
 
-            <button className="px-4 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200">
+            <button
+              onClick={() => navigator.vibrate([2000, 100, 200])}
+              className="px-4 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+            >
               Join Waitlist
             </button>
           </HeroSection>

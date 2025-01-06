@@ -5,15 +5,17 @@ import React, { JSX, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
+export type NavItem = {
+  name: string;
+  link: string;
+  icon?: JSX.Element;
+};
+
 export const NavBar = ({
   navItems,
   className,
 }: {
-  navItems: {
-    name: string;
-    link: string;
-    icon?: JSX.Element;
-  }[];
+  navItems: NavItem[];
   className?: string;
 }) => {
   const { scrollYProgress } = useScroll();
@@ -56,7 +58,7 @@ export const NavBar = ({
           className
         )}
       >
-        {navItems.map((navItem: any, idx: number) => (
+        {navItems.map((navItem: NavItem, idx: number) => (
           <Link
             key={`link=${idx}`}
             href={navItem.link}

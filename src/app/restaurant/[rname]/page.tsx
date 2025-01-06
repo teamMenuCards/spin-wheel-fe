@@ -3,8 +3,6 @@
 
 // import { useGetRestaurantDetailByNameQuery } from '@/services/restaurant/get-restaurant-detail';
 
-console.log("vikasasas");
-
 export default function BaseRestaurantPage() {
   // const { rname } = useParams<{ rname: string }>();
 

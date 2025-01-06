@@ -1,4 +1,4 @@
-import { ProductType, ProductVariantType, RestaurantDetailType, RestaurantType } from '@/types';
+import { ProductCategoryType, ProductType, ProductVariantType, RestaurantType } from '@/types';
 import { createApi } from '@reduxjs/toolkit/query/react';
 
 import { apiRoutes } from '../api-routes';
@@ -6,15 +6,16 @@ import { axiosBaseQuery } from '../http-client';
 import { parseDynamicURL } from '../utils';
 
 export type MenuListResponseType = {
-  detail: RestaurantDetailType;
   categories:
-    | Array<{
-        products:
-          | ({
-              variants: ProductVariantType[] | [];
-            } & ProductType[])
-          | [];
-      }>
+    | Array<
+        ProductCategoryType & {
+          products: Array<
+            ProductType & {
+              variants: ProductVariantType[];
+            }
+          >;
+        }
+      >
     | [];
 } & RestaurantType;
 

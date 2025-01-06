@@ -1,8 +1,8 @@
 import svgToDataUri from 'mini-svg-data-uri';
 import { default as flattenColorPalette } from 'tailwindcss/lib/util/flattenColorPalette';
+import { PluginAPI } from 'tailwindcss/types/config';
 
 import type { Config } from "tailwindcss";
-
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -25,7 +25,13 @@ export default {
   },
   plugins: [
     addVariablesForColors,
-    function ({ matchUtilities, theme }: any) {
+    function ({
+      matchUtilities,
+      theme,
+    }: {
+      matchUtilities: PluginAPI["matchUtilities"];
+      theme: PluginAPI["theme"];
+    }) {
       matchUtilities(
         {
           "bg-dot-thick": (value: string) => ({
@@ -40,7 +46,13 @@ export default {
   ],
 } satisfies Config;
 
-function addVariablesForColors({ addBase, theme }: any) {
+function addVariablesForColors({
+  addBase,
+  theme,
+}: {
+  addBase: PluginAPI["addBase"];
+  theme: PluginAPI["theme"];
+}) {
   const allColors = flattenColorPalette(theme("colors"));
   const newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])

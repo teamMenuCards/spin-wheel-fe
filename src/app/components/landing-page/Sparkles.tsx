@@ -1,6 +1,6 @@
 "use client";
 import { motion, useAnimation } from 'framer-motion';
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
@@ -80,7 +80,9 @@ export const SparklesCore = (props: ParticlesProps) => {
                   enable: false,
                   mode: "repulse",
                 },
-                resize: true as any,
+                resize: {
+                  enable: true,
+                },
               },
               modes: {
                 push: {

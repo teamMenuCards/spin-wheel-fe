@@ -111,24 +111,18 @@ export const Compare = ({
     [slideMode, isDragging]
   );
 
-  const handleMouseDown = useCallback(
-    (e: React.MouseEvent) => handleStart(),
-    [handleStart]
-  );
+  const handleMouseDown = useCallback(() => handleStart(), [handleStart]);
   const handleMouseUp = useCallback(() => handleEnd(), [handleEnd]);
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => handleMove(e.clientX),
     [handleMove]
   );
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      if (!autoplay) {
-        handleStart();
-      }
-    },
-    [handleStart, autoplay]
-  );
+  const handleTouchStart = useCallback(() => {
+    if (!autoplay) {
+      handleStart();
+    }
+  }, [handleStart, autoplay]);
 
   const handleTouchEnd = useCallback(() => {
     if (!autoplay) {

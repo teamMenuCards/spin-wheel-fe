@@ -39,6 +39,12 @@ export const NavBar = ({
     }
   });
 
+  // Function to scroll smoothly to the top
+  const handleScrollToTop = (event: React.MouseEvent) => {
+    event.preventDefault(); // Prevent the default link behavior
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -65,6 +71,7 @@ export const NavBar = ({
             className={cn(
               "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
             )}
+            onClick={navItem.name === "Home" ? handleScrollToTop : undefined}
           >
             <span className="block sm:hidden">{navItem.icon}</span>
             <span className="hidden sm:block text-sm">{navItem.name}</span>

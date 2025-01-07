@@ -12,12 +12,14 @@ export default function Home() {
         <section>
           <HeroSection className="text-center">
             <div className="mb-20">
-              <span className="text-4xl font-serif mb-6 block">
+              <span className="text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
-              <h1 className="text-7xl font-black font-sans">MenuCard</h1>
+              <h1 className="text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black font-sans bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
+                MenuCard
+              </h1>
               <p className="mt-3">
-                <span className="inline-block p-2 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500">
+                <span className="inline-block font-bold p-2 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-white mt-6">
                   Save 30% in Commissions
                 </span>
               </p>
@@ -62,7 +64,7 @@ export default function Home() {
             ]}
           />
         </section>
-        <section>
+        <section className="flex justify-center items-center" style={{ height: "50vh" }}>
           <div className="relative" style={{ width: "25vw" }}>
             <Compare
               secondImage="/linktreeUI.png"

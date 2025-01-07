@@ -40,15 +40,12 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
-  
-
-  const backgroundColors = ["var(--white)"];
+  const backgroundColors = ["var(--neutral-600)"];
   const linearGradients = useMemo(
     () => [
       "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
       "linear-gradient(to bottom right, var(--pink-500), var(--indigo-500))",
       "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
-      "linear-gradient(to bottom right, var(--purple-500), var(--red-500))",
     ],
     []
   );
@@ -61,21 +58,13 @@ export const StickyScroll = ({
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
   }, [activeCard, linearGradients]);
 
-  const featureIcons = [
-    "/feature-icon1.png",
-    "/feature-icon2.png",
-    "/feature-icon3.png",
-    "/feature-icon4.png",
-  ];
-
   return (
     <motion.div
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
-      className="p-6 font-montserrat"
     >
-      <h2 className="text-2xl text-center font-bold text-black">{title}</h2>
+      <h2 className="text-2xl text-center font-bold text-slate-100">{title}</h2>
       <div
         ref={ref}
         className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
@@ -91,7 +80,7 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
-                  className="text-2xl font-bold text-black"
+                  className="text-2xl font-bold text-white"
                 >
                   {item.title}
                 </motion.h2>
@@ -102,7 +91,7 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
-                  className="text-kg  text-black max-w-sm mt-10"
+                  className="text-kg  text-slate-100 max-w-sm mt-10"
                 >
                   {item.description}
                 </motion.p>
@@ -118,15 +107,6 @@ export const StickyScroll = ({
             contentClassName
           )}
         >
-          <motion.img
-            key={featureIcons[activeCard]}
-            src={featureIcons[activeCard]}
-            alt={`Feature Icon ${activeCard + 1}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute inset-0 m-auto h-24 w-24"
-          />
           {content[activeCard].content ?? null}
         </div>
       </div>

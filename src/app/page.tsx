@@ -3,6 +3,7 @@ import { HeroSection } from './components/landing-page/HeroSection';
 import { NavBar } from './components/landing-page/NavBar';
 import { StickyScroll } from './components/landing-page/StickyScroll';
 import { TextGeneratorEffect } from './components/landing-page/TextGeneratorEffect';
+import PricingSectionComponent from './components/landing-page/PricingSection';
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
               <span className="text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
-              <h1 className="text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black font-sans bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
+              <h1 className="text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
                 MenuCard
               </h1>
               <p className="mt-3">
@@ -37,9 +38,9 @@ export default function Home() {
             </button>
           </HeroSection>
         </section>
-        <section style={{ height: "90vh" }}>
+        <section style={{ height: "90vh", background: "white"}}>
           <StickyScroll
-            title="Why Choose Us"
+            title="Why Choose Us?"
             content={[
               {
                 title: "Food Item Rating",
@@ -64,14 +65,22 @@ export default function Home() {
             ]}
           />
         </section>
-        <section className="flex justify-center items-center" style={{ height: "50vh" }}>
-          <div className="relative" style={{ width: "25vw" }}>
-            <Compare
-              secondImage="/linktreeUI.png"
-              firstImage="/MenuCardsUI.png"
-              slideMode="drag"
-            />
-          </div>
+        <section className="flex flex-col justify-center items-center" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh" }} > 
+          <div className="relative text-center mb-8" style={{ width: "100%", background: "white" }}> 
+            <h2 className="text-4xl font-bold font-montserrat text-black w-auto whitespace-nowrap text-center"> 
+              Why use MenuCards instead of Linktree? 
+            </h2>
+            <h4 className="text-1xl text-black font-montserrat w-auto whitespace-nowrap text-center mt-5"> 
+            Move beyond static links - Make a better impression of your
+						restaurant with menu cards within seconds.
+            </h4>
+          </div> 
+          <div className="relative" style={{ width: "20%", maxWidth: "800px", height: "auto", background: "white" }}> 
+            <Compare secondImage="/linktreeUI.png" firstImage="/MenuCardsUI.png" slideMode="drag" /> 
+          </div> 
+        </section>
+        <section className="pt-20">
+          <PricingSectionComponent />
         </section>
       </main>
     </div>

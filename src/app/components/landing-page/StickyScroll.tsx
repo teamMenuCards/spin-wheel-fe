@@ -21,12 +21,13 @@ export const StickyScroll = ({
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     container: ref,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
   const cardLength = content.length;
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const cardsBreakpoints = content.map((_, index) => index / cardLength);
+    // Adjusted breakpoint calculation
+    const cardsBreakpoints = content.map((_, index) => index / (cardLength - 1));
     const closestBreakpointIndex = cardsBreakpoints.reduce(
       (acc, breakpoint, index) => {
         const distance = Math.abs(latest - breakpoint);
@@ -75,7 +76,7 @@ export const StickyScroll = ({
       }}
       className="p-6 font-montserrat"
     >
-      <h2 className="text-2xl text-center font-bold text-black">{title}</h2>
+      <h2 className="text-4xl text-center font-bold text-black mb-8">{title}</h2>
       <div
         ref={ref}
         className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"

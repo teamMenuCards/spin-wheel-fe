@@ -4,6 +4,7 @@ import { NavBar } from './components/landing-page/NavBar';
 import { StickyScroll } from './components/landing-page/StickyScroll';
 import { TextGeneratorEffect } from './components/landing-page/TextGeneratorEffect';
 import PricingSectionComponent from './components/landing-page/PricingSection';
+import Footer from './components/landing-page/Footer';
 
 export default function Home() {
   return (
@@ -16,10 +17,10 @@ export default function Home() {
               <span className="text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
-              <h1 className="text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
+              <h1 className="mt-7 text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
                 MenuCard
               </h1>
-              <p className="mt-3">
+              <p className="mt-8 mb-3">
                 <span className="inline-block font-bold p-2 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-white mt-6">
                   Save 30% in Commissions
                 </span>
@@ -81,6 +82,9 @@ export default function Home() {
         </section>
         <section className="pt-20">
           <PricingSectionComponent />
+        </section>
+        <section className="pt-20">
+          <Footer />
         </section>
       </main>
     </div>

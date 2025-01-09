@@ -899,6 +899,11 @@ export default function Home() {
 							Limited Policies.
 						</u>
 					</Typography>
+					<Typography variant="body2" style={{ color: "black" }}>
+						<span>getmenucards@gmail.com</span>
+
+						<span style={{ paddingLeft: "15px" }}>9757024944</span>
+					</Typography>
 				</Link>
 			</Footer>
 		</>

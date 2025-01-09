@@ -16,8 +16,10 @@ import {
 	useTheme,
 	useMediaQuery,
 	Container,
-	Paper
+	Paper,
+	Link
 } from "@mui/material"
+import NextLink from "next/link"
 import MenuIcon from "@mui/icons-material/Menu"
 import Image from "next/image"
 import { styled } from "@mui/material/styles"
@@ -275,9 +277,9 @@ export default function Home() {
 								button
 								key={link}
 								onClick={() => {
-									const element = document.getElementById(link.toLowerCase());
+									const element = document.getElementById(link.toLowerCase())
 									if (element) {
-										element.scrollIntoView({ behavior: "smooth" });
+										element.scrollIntoView({ behavior: "smooth" })
 									}
 								}}
 							>
@@ -882,9 +884,22 @@ export default function Home() {
 			</PricingSection>
 
 			<Footer>
-				<Typography variant="body2">
-					© 2024 MenuCards. All rights reserved.
-				</Typography>
+				<Link
+					href={"/privacy-policy"}
+					component={NextLink}
+					underline="none"
+					color="white"
+					style={{
+						color: "black"
+					}}
+				>
+					<Typography variant="body2">
+						<u>
+							© 2024 MenuCards. All rights reserved by Welnia Food Private
+							Limited Policies.
+						</u>
+					</Typography>
+				</Link>
 			</Footer>
 		</>
 	)

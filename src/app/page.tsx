@@ -746,7 +746,7 @@ export default function Home() {
 								<Typography variant="h6">Advanced</Typography>
 							</Box>
 							<Typography variant="h4" fontWeight="bold">
-								1 Large Pizza
+								₹499
 								<Image
 									src="/pizza-icon.png"
 									alt="Prize Icon"
@@ -823,7 +823,7 @@ export default function Home() {
 								alignItems="center"
 								justifyContent="center"
 							>
-								1 kg Biryani
+								₹1499
 								<Image
 									src="/biryani-icon.png"
 									alt="Prize Icon"

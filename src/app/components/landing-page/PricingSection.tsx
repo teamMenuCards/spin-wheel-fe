@@ -98,10 +98,10 @@ const PricingSectionComponent = () => {
             sx={{
               transform:
                 hovered === "pro"
-                  ? "scale(1.1)"
+                  ? "scale(1)"
                   : hovered
                   ? "scale(0.9)"
-                  : "scale(1)",
+                  : "scale(0.9)",
             }}
           >
             <Box bgcolor="#2E7D32" color="#fff" p={1} borderRadius={1} mb={2}>
@@ -176,9 +176,9 @@ const PricingSectionComponent = () => {
             sx={{
               transform:
                 hovered === "advanced"
-                  ? "scale(1.1)"
+                  ? "scale(1)"
                   : hovered
-                  ? "scale(0.9)"
+                  ? "scale(1)"
                   : "scale(1)",
               border: "2px solid #FB8C00",
               backgroundColor: "#FFF3E0",
@@ -265,10 +265,10 @@ const PricingSectionComponent = () => {
             sx={{
               transform:
                 hovered === "premium"
-                  ? "scale(1.1)"
+                  ? "scale(1)"
                   : hovered
                   ? "scale(0.9)"
-                  : "scale(1)",
+                  : "scale(0.9)",
             }}
           >
             <Box bgcolor="#D32F2F" color="#fff" p={1} borderRadius={1} mb={2}>

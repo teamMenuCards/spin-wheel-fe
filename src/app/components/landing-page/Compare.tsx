@@ -145,7 +145,7 @@ export const Compare = ({
       className={cn("overflow-hidden", className)}
       style={{
         position: "relative",
-        aspectRatio: 0.5,
+        aspectRatio: 0.45,
         cursor: slideMode === "drag" ? "grab" : "col-resize",
       }}
       onMouseMove={handleMouseMove}
@@ -208,7 +208,7 @@ export const Compare = ({
                 sizes="100vw"
                 style={{
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
                 }}
                 className={cn(
                   "absolute inset-0  z-20 rounded-2xl flex-shrink-0 select-none",
@@ -233,7 +233,7 @@ export const Compare = ({
             sizes="100vw"
             style={{
               width: "100%",
-              height: "auto",
+              height: "100%",
             }}
             alt="second image"
             src={secondImage}

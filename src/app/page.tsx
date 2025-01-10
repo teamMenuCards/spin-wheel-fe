@@ -9,15 +9,15 @@ import Footer from './components/landing-page/Footer';
 export default function Home() {
   return (
     <div>
-      <NavBar navItems={[{ name: "Home", link: "#" }]} />
+      <NavBar navItems={[ { name: "Home", link: "#home" }, { name: "Features", link: "#features" }, { name: "Sample Menu", link: "#sample-menu" }, { name: "Pricing", link: "#pricing" } ]} />
       <main>
-        <section>
+        <section id="home">
           <HeroSection className="text-center">
             <div className="mb-20">
               <span className="text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
-              <h1 className="mt-7 text-7xl font-black font-montserrat bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-texttext-7xl font-black bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-transparent bg-clip-text">
+              <h1 className="mt-7 text-7xl font-black font-montserrat">
                 MenuCard
               </h1>
               <p className="mt-8 mb-3">
@@ -39,7 +39,7 @@ export default function Home() {
             </button>
           </HeroSection>
         </section>
-        <section style={{ height: "90vh", background: "white"}}>
+        <section id="features" style={{ height: "110vh", background: "white"}}>
           <StickyScroll
             title="Why Choose Us?"
             content={[
@@ -66,7 +66,7 @@ export default function Home() {
             ]}
           />
         </section>
-        <section className="flex flex-col justify-center items-center" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh" }} > 
+        <section id="sample-menu" className="flex flex-col justify-center items-center" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh", paddingTop : "5vh" }} > 
           <div className="relative text-center mb-8" style={{ width: "100%", background: "white" }}> 
             <h2 className="text-4xl font-bold font-montserrat text-black w-auto whitespace-nowrap text-center"> 
               Why use MenuCards instead of Linktree? 
@@ -76,11 +76,11 @@ export default function Home() {
 						restaurant with menu cards within seconds.
             </h4>
           </div> 
-          <div className="relative" style={{ width: "20%", maxWidth: "800px", height: "auto", background: "white" }}> 
-            <Compare secondImage="/linktreeUI.png" firstImage="/MenuCardsUI.png" slideMode="drag" /> 
+          <div className="relative" style={{ width: "15%", maxWidth: "600px", height: "auto", background: "white" }}> 
+            <Compare secondImage="/MenuCardsUI.png" firstImage="/linktreeUI.png" slideMode="drag" /> 
           </div> 
         </section>
-        <section className="pt-20">
+        <section id="pricing" className="pt-10">
           <PricingSectionComponent />
         </section>
         <section className="pt-20">

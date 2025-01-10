@@ -13,8 +13,12 @@ const Footer: React.FC = () => {
       }}
     >
       <Typography variant="body2" color="textSecondary">
-        © 2024 MenuCards. All rights reserved.
+          © 2024 MenuCards. All rights reserved by Welnia Food Private
       </Typography>
+      <Typography variant="body2" style={{ color: "black" }}>
+						<span>getmenucards@gmail.com</span>
+						<span style={{ paddingLeft: "15px" }}>9757024944</span>
+				</Typography>
     </Box>
   );
 };

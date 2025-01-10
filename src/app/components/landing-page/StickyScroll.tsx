@@ -74,7 +74,8 @@ export const StickyScroll = ({
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
-      className="p-6 font-montserrat"
+      style={{ paddingTop: '200px' }}
+      className="py-12 pt-20 font-montserrat"
     >
       <h2 className="text-4xl text-center font-bold text-black mb-8">{title}</h2>
       <div

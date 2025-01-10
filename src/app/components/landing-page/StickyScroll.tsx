@@ -46,10 +46,10 @@ export const StickyScroll = ({
   const backgroundColors = ["var(--white)"];
   const linearGradients = useMemo(
     () => [
-      "linear-gradient(to bottom right, var(--cyan-500), var(--emerald-500))",
-      "linear-gradient(to bottom right, var(--pink-500), var(--indigo-500))",
-      "linear-gradient(to bottom right, var(--orange-500), var(--yellow-500))",
-      "linear-gradient(to bottom right, var(--purple-500), var(--red-500))",
+      "linear-gradient(to bottom right, grey, white)",
+      "linear-gradient(to bottom right, grey, white)",
+      "linear-gradient(to bottom right, grey, white)",
+      "linear-gradient(to bottom right, grey, white)",
     ],
     []
   );
@@ -114,7 +114,7 @@ export const StickyScroll = ({
           </div>
         </div>
         <div
-          style={{ background: backgroundGradient }}
+          style={{ background: backgroundGradient, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }}
           className={cn(
             "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
             contentClassName

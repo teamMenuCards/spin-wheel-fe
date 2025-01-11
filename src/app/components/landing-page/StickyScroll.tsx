@@ -68,7 +68,7 @@ export const StickyScroll = ({
     "/feature-icon3.png",
     "/feature-icon4.png",
   ];
-
+ 
   return (
     <motion.div
       animate={{

@@ -12,7 +12,7 @@ export default function Home() {
       <NavBar navItems={[ 
         { name: "Home", link: "#home" }, 
         { name: "Features", link: "#features" }, 
-        { name: "Sample Menu", link: "#sample-menu" }, 
+        { name: "Sample", link: "#sample-menu" }, 
         { name: "Pricing", link: "#pricing" } 
       ]} />
       <main className="max-w-full overflow-x-hidden">

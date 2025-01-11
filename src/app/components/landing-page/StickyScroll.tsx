@@ -77,7 +77,7 @@ export const StickyScroll = ({
       style={{ paddingTop: '200px' }}
       className="py-12 pt-20 font-montserrat"
     >
-      <h2 className="text-4xl text-center font-bold text-black mb-8">{title}</h2>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black mb-8">{title}</h2>
       <div
         ref={ref}
         className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"

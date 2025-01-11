@@ -8,16 +8,21 @@ import Footer from './components/landing-page/Footer';
 
 export default function Home() {
   return (
-    <div>
-      <NavBar navItems={[ { name: "Home", link: "#home" }, { name: "Features", link: "#features" }, { name: "Sample Menu", link: "#sample-menu" }, { name: "Pricing", link: "#pricing" } ]} />
-      <main>
+    <div className="overflow-x-hidden">
+      <NavBar navItems={[ 
+        { name: "Home", link: "#home" }, 
+        { name: "Features", link: "#features" }, 
+        { name: "Sample Menu", link: "#sample-menu" }, 
+        { name: "Pricing", link: "#pricing" } 
+      ]} />
+      <main className="max-w-full overflow-x-hidden">
         <section id="home">
           <HeroSection className="text-center">
             <div className="mb-20">
-              <span className="text-4xl font-serif mb-6 block text-black">
+              <span className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
-              <h1 className="mt-7 text-7xl font-black font-montserrat">
+              <h1 className="mt-7 text-5xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-7xl font-black font-montserrat">
                 MenuCard
               </h1>
               <p className="mt-8 mb-3">
@@ -39,7 +44,7 @@ export default function Home() {
             </button>
           </HeroSection>
         </section>
-        <section id="features" style={{ height: "110vh", background: "white"}}>
+        <section id="features" className="max-w-full overflow-x-hidden" style={{ height: "110vh", background: "white"}}>
           <StickyScroll
             title="Why Choose Us?"
             content={[
@@ -66,24 +71,25 @@ export default function Home() {
             ]}
           />
         </section>
-        <section id="sample-menu" className="flex flex-col justify-center items-center" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh", paddingTop : "5vh" }} > 
-          <div className="relative text-center mb-8" style={{ width: "100%", background: "white" }}> 
-            <h2 className="text-4xl font-bold font-montserrat text-black w-auto whitespace-nowrap text-center"> 
-              Why use MenuCards instead of Linktree? 
+        <section id="sample-menu" className="flex flex-col justify-center items-center max-w-full overflow-x-hidden" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh", paddingTop : "5vh" }}>
+          <div className="relative text-center mb-8 w-full px-3 sm:px-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-bold font-montserrat text-black w-auto text-center whitespace-normal break-words">
+              Why use MenuCards instead of Linktree?
             </h2>
-            <h4 className="text-1xl text-black font-montserrat w-auto whitespace-nowrap text-center mt-5"> 
-            Move beyond static links - Make a better impression of your
-						restaurant with menu cards within seconds.
+            <h4 className="text-1xl text-black font-montserrat w-auto text-center mt-5 whitespace-normal break-words">
+              Move beyond static links - Make a better impression of your restaurant with menu cards within seconds.
             </h4>
-          </div> 
-          <div className="relative" style={{ width: "15%", maxWidth: "600px", height: "auto", background: "white" }}> 
+          </div>
+          <div className="relative w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/6 xl:w-1/6 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl" style={{ height: "auto", background: "white" }}> 
             <Compare secondImage="/MenuCardsUI.png" firstImage="/linktreeUI.png" slideMode="drag" /> 
-          </div> 
+          </div>
         </section>
-        <section id="pricing" className="pt-10">
+
+        <section id="pricing" className="pt-10 max-w-full overflow-x-hidden">
           <PricingSectionComponent />
         </section>
-        <section className="pt-20">
+
+        <section className="pt-20 max-w-full overflow-x-hidden">
           <Footer />
         </section>
       </main>

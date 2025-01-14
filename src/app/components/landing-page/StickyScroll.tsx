@@ -1,7 +1,6 @@
 "use client";
 import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-
 import { cn } from '@/lib/utils';
 
 export const StickyScroll = ({
@@ -19,13 +18,27 @@ export const StickyScroll = ({
 }) => {
   const [activeCard, setActiveCard] = React.useState(0);
   const ref = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     container: ref,
     offset: ["start start", "end end"],
   });
+  
   const cardLength = content.length;
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (isMobile) return;
     // Adjusted breakpoint calculation
     const cardsBreakpoints = content.map((_, index) => index / (cardLength - 1));
     const closestBreakpointIndex = cardsBreakpoints.reduce(
@@ -41,8 +54,6 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
-  
-
   const backgroundColors = ["var(--white)"];
   const linearGradients = useMemo(
     () => [
@@ -54,9 +65,7 @@ export const StickyScroll = ({
     []
   );
 
-  const [backgroundGradient, setBackgroundGradient] = useState(
-    linearGradients[0]
-  );
+  const [backgroundGradient, setBackgroundGradient] = useState(linearGradients[0]);
 
   useEffect(() => {
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
@@ -68,7 +77,48 @@ export const StickyScroll = ({
     "/feature-icon3.png",
     "/feature-icon4.png",
   ];
- 
+
+  // Mobile view with fixed title
+  if (isMobile) {
+    return (
+      <motion.div
+        animate={{
+          backgroundColor: backgroundColors[activeCard % backgroundColors.length],
+        }}
+        className="h-screen flex flex-col"
+      >
+        <div className="py-8 bg-white sticky top-0 z-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black">
+            {title}
+          </h2>
+        </div>
+        <div className="space-y-8 px-4 h-[calc(100vh-180px)] overflow-y-auto">
+          {content.map((item, index) => (
+            <div 
+              key={item.title + index} 
+              className="bg-white rounded-lg p-6 shadow-md"
+              onClick={() => setActiveCard(index)}
+            >
+              <div 
+                className="mb-6 h-40 rounded-md relative"
+                style={{ background: linearGradients[index % linearGradients.length] }}
+              >
+                <motion.img
+                  src={featureIcons[index]}
+                  alt={`Feature Icon ${index + 1}`}
+                  className="absolute inset-0 m-auto h-24 w-24"
+                />
+              </div>
+              <h2 className="text-xl font-bold text-black mb-4">{item.title}</h2>
+              <p className="text-black">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Original desktop view exactly as provided
   return (
     <motion.div
       animate={{
@@ -104,7 +154,7 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
-                  className="text-kg  text-black max-w-sm mt-10"
+                  className="text-kg text-black max-w-sm mt-10"
                 >
                   {item.description}
                 </motion.p>
@@ -135,3 +185,5 @@ export const StickyScroll = ({
     </motion.div>
   );
 };
+
+export default StickyScroll;

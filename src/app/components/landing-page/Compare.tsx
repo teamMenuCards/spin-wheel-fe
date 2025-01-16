@@ -19,6 +19,7 @@ interface CompareProps {
   showHandlebar?: boolean;
   autoplay?: boolean;
   autoplayDuration?: number;
+  onSliderChange?: (sliderXPercent: number) => void;
 }
 export const Compare = ({
   firstImage = "",
@@ -31,6 +32,7 @@ export const Compare = ({
   showHandlebar = true,
   autoplay = false,
   autoplayDuration = 5000,
+  onSliderChange,
 }: CompareProps) => {
   const [sliderXPercent, setSliderXPercent] = useState(initialSliderPercentage);
   const [isDragging, setIsDragging] = useState(false);
@@ -69,6 +71,12 @@ export const Compare = ({
     startAutoplay();
     return () => stopAutoplay();
   }, [startAutoplay, stopAutoplay]);
+
+  useEffect(() => {
+    if (onSliderChange) {
+      onSliderChange(sliderXPercent);
+    }
+  }, [sliderXPercent, onSliderChange]);
 
   function mouseEnterHandler() {
     stopAutoplay();

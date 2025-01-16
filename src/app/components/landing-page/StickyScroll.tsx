@@ -124,7 +124,7 @@ export const StickyScroll = ({
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
-      style={{ paddingTop: '200px' }}
+      style={{ paddingTop: '100px' }}
       className="py-12 pt-20 font-montserrat"
     >
       <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black mb-8">{title}</h2>
@@ -143,7 +143,7 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
-                  className="text-2xl font-bold text-black"
+                  className="text-2xl font-bold text-black font-montserrat"
                 >
                   {item.title}
                 </motion.h2>
@@ -154,7 +154,7 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
-                  className="text-kg text-black max-w-sm mt-10"
+                  className="text-kg text-black max-w-sm mt-10 font-montserrat"
                 >
                   {item.description}
                 </motion.p>

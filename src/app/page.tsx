@@ -1,3 +1,4 @@
+"use client";
 import { Compare } from './components/landing-page/Compare';
 import { HeroSection } from './components/landing-page/HeroSection';
 import { NavBar } from './components/landing-page/NavBar';
@@ -5,8 +6,19 @@ import { StickyScroll } from './components/landing-page/StickyScroll';
 import { TextGeneratorEffect } from './components/landing-page/TextGeneratorEffect';
 import PricingSectionComponent from './components/landing-page/PricingSection';
 import Footer from './components/landing-page/Footer';
+import React, { useState } from 'react';
 
 export default function Home() {
+  const [sliderText, setSliderText] = useState("Linktree vs MenuCard"); 
+  const handleSliderChange = (sliderXPercent: number) => { 
+    if (sliderXPercent === 50) { 
+      setSliderText("Linktree vs MenuCard"); 
+    } else if (sliderXPercent > 50) { 
+      setSliderText("Linktree UI"); 
+    } else { 
+      setSliderText("MenuCard UI"); 
+    }
+  };
   return (
     <div className="overflow-x-hidden">
       <NavBar navItems={[ 
@@ -26,7 +38,7 @@ export default function Home() {
                 MenuCard
               </h1>
               <p className="mt-8 mb-3">
-                <span className="inline-block font-bold p-2 rounded-lg bg-gradient-to-r from-indigo-300 to-purple-300 dark:from-indigo-500 dark:to-purple-500 text-white mt-6">
+                <span className="inline-block font-bold p-2 rounded-lg bg-gradient-to-r from-[#fc5c7d] to-[#6a82fb] dark:from-[#fc5c7d] dark:to-[#6a82fb] text-white mt-6">
                   Save 30% in Commissions
                 </span>
               </p>
@@ -44,7 +56,7 @@ export default function Home() {
             </button>
           </HeroSection>
         </section>
-        <section id="features" className="max-w-full overflow-x-hidden" style={{ height: "110vh", background: "white"}}>
+        <section id="features" className="max-w-full overflow-x-hidden" style={{ height: "75vh", background: "white"}}>
           <StickyScroll
             title="Why Choose Us?"
             content={[
@@ -81,7 +93,8 @@ export default function Home() {
             </h4>
           </div>
           <div className="relative w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/6 xl:w-1/6 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl" style={{ height: "auto", background: "white" }}> 
-            <Compare secondImage="/MenuCardsUI.png" firstImage="/linktreeUI.png" slideMode="drag" /> 
+            <Compare secondImage="/MenuCardsUI.png" firstImage="/linktreeUI.png" slideMode="drag" onSliderChange={handleSliderChange}/> 
+            <p className="text-center mt-4 text-xl font-montserrat text-black">{sliderText}</p>
           </div>
         </section>
 

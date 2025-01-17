@@ -2,15 +2,12 @@
 import React from "react"
 // import { Box } from "@mui/material"
 // import { styled } from "@mui/material/styles"
-import DineInLandingPage from './components/DineInLandingPage'
-import { useParams } from 'next/navigation';
-import { useGetRestaurantDetailByNameQuery } from '@/services/restaurant/get-restaurant-detail';
-
-
+import DineInLandingPage from "./components/DineInLandingPage"
+import { useParams } from "next/navigation"
+import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 
 // const message = "Hi. I want to enquire about the subscription plan"
 // const encodedMessage = encodeURIComponent(message)
-
 
 const getPath = (rid: string) => {
 	console.log("getPath called with rid:", rid)
@@ -41,18 +38,12 @@ const getPath = (rid: string) => {
 	return options
 }
 
-
-
 export default function Page({ params }: { params: { rid: string } }) {
-	
-	    const { rname } = useParams<{ rname: string }>();
+	const { rname } = useParams<{ rname: string }>()
 
-  const { currentData, error, isLoading } =
-    useGetRestaurantDetailByNameQuery(rname);
+	const { currentData } = useGetRestaurantDetailByNameQuery(rname)
 
-	console.log("currentData--", currentData);
-	
-
+	console.log("currentData--", currentData)
 
 	const restaurantInfo = {
 		name: "Caramel & Coco",

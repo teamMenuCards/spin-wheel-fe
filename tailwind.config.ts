@@ -17,9 +17,7 @@ export default {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)"],
-        mono: ["var(--font-geist-mono)"],
-        montserrat: ["var(--font-montserrat)"],
+        metropolis: ['Metropolis', 'sans-serif'],
       },
     },
   },

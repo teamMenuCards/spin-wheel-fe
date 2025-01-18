@@ -31,6 +31,7 @@ export default function Home() {
         <section id="home">
           <HeroSection className="text-center">
             <div className="mb-20">
+
               <span className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-serif mb-6 block text-black">
                 Revolutionize Your Restaurant’s Online Presence with
               </span>
@@ -39,6 +40,7 @@ export default function Home() {
               </h1>
               <p className="mt-8 mb-3">
                 <span className="inline-block font-bold p-2 rounded-lg bg-gradient-to-r from-[#fc5c7d] to-[#6a82fb] dark:from-[#fc5c7d] dark:to-[#6a82fb] text-white mt-6">
+
                   Save 30% in Commissions
                 </span>
               </p>
@@ -51,7 +53,10 @@ export default function Home() {
               />
             </div>
 
-            <button className="px-4 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200">
+            <button
+              onClick={() => navigator.vibrate([2000, 100, 200])}
+              className="px-4 py-2 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+            >
               Join Waitlist
             </button>
           </HeroSection>
@@ -83,6 +88,7 @@ export default function Home() {
             ]}
           />
         </section>
+
         <section id="sample-menu" className="flex flex-col justify-center items-center max-w-full overflow-x-hidden" style={{ minHeight: "30vh", background: "white", paddingBottom: "5vh", paddingTop : "5vh" }}>
           <div className="relative text-center mb-8 w-full px-3 sm:px-4">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-bold font-montserrat text-black w-auto text-center whitespace-normal break-words">
@@ -91,6 +97,7 @@ export default function Home() {
             <h4 className="text-1xl text-black font-montserrat w-auto text-center mt-5 whitespace-normal break-words">
               Move beyond static links - Make a better impression of your restaurant with menu cards within seconds.
             </h4>
+
           </div>
           <div className="relative w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/6 xl:w-1/6 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl" style={{ height: "auto", background: "white" }}> 
             <Compare secondImage="/MenuCardsUI.png" firstImage="/linktreeUI.png" slideMode="drag" onSliderChange={handleSliderChange}/> 

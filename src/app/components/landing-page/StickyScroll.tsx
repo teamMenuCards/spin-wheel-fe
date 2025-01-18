@@ -54,6 +54,7 @@ export const StickyScroll = ({
     setActiveCard(closestBreakpointIndex);
   });
 
+
   const backgroundColors = ["var(--white)"];
   const linearGradients = useMemo(
     () => [
@@ -70,6 +71,7 @@ export const StickyScroll = ({
   useEffect(() => {
     setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
   }, [activeCard, linearGradients]);
+
 
   const featureIcons = [
     "/feature-icon1.png",
@@ -119,15 +121,18 @@ export const StickyScroll = ({
   }
 
   // Original desktop view exactly as provided
+
   return (
     <motion.div
       animate={{
         backgroundColor: backgroundColors[activeCard % backgroundColors.length],
       }}
+
       style={{ paddingTop: '100px' }}
       className="py-12 pt-20 font-montserrat"
     >
       <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black mb-8">{title}</h2>
+
       <div
         ref={ref}
         className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
@@ -143,7 +148,9 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
+
                   className="text-2xl font-bold text-black font-montserrat"
+
                 >
                   {item.title}
                 </motion.h2>
@@ -154,7 +161,9 @@ export const StickyScroll = ({
                   animate={{
                     opacity: activeCard === index ? 1 : 0.3,
                   }}
+
                   className="text-kg text-black max-w-sm mt-10 font-montserrat"
+
                 >
                   {item.description}
                 </motion.p>
@@ -170,15 +179,6 @@ export const StickyScroll = ({
             contentClassName
           )}
         >
-          <motion.img
-            key={featureIcons[activeCard]}
-            src={featureIcons[activeCard]}
-            alt={`Feature Icon ${activeCard + 1}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            className="absolute inset-0 m-auto h-24 w-24"
-          />
           {content[activeCard].content ?? null}
         </div>
       </div>

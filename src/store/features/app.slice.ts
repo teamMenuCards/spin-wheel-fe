@@ -2,15 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+export enum CLIENT_APP_MODE {
+  DINE_IN = "DINE_IN",
+  DELIVERY = "DELIVERY",
+}
+
 export type AppState = {
   isLoggedIn: boolean;
+  mode: CLIENT_APP_MODE;
 };
 
 const initialState: AppState = {
   isLoggedIn: false,
+  mode: CLIENT_APP_MODE.DINE_IN,
 };
 
-export const appStateSlice = createSlice({
+export const AppStateSlice = createSlice({
   name: "app-state",
   initialState,
   reducers: {
@@ -20,6 +27,6 @@ export const appStateSlice = createSlice({
   },
 });
 
-export const { setIsLoggedIn } = appStateSlice.actions;
+export const { setIsLoggedIn } = AppStateSlice.actions;
 
-export default appStateSlice.reducer;
+export default AppStateSlice.reducer;

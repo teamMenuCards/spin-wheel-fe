@@ -41,6 +41,7 @@ export const NavBar = ({
     }
   });
 
+
   const scrollToSection = (event: React.MouseEvent, sectionId: string) => {
     event.preventDefault(); 
     const section = document.getElementById(sectionId);
@@ -67,6 +68,7 @@ export const NavBar = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [navItems]);
+
 
   return (
     <AnimatePresence mode="wait">
@@ -95,7 +97,9 @@ export const NavBar = ({
               "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500",
               activeSection === navItem.link.substring(1) ? "border border-neutral-200 dark:border-white/[0.2] rounded-full px-4 py-2" : ""
             )}
+
             onClick={(event) => scrollToSection(event, navItem.link.substring(1))}
+
           >
             <span className="block">{navItem.icon}</span>
             <span className="block text-sm">{navItem.name}</span>

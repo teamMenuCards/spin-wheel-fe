@@ -6,12 +6,14 @@ const VerifiedReviews = forwardRef(
 		return (
 			<div ref={ref} className="w-full max-w-[400px] mt-8 mx-auto px-4">
 				{/* Reviews Title */}
-				{/* <div className="mb-4">
-          <h3 className="text-black text-base font-medium">Verified Reviews</h3>
-        </div> */}
+				<div className="mb-4">
+					<h3 className="text-black text-base font-medium font-metropolis">
+						Verified Reviews
+					</h3>
+				</div>
 
 				{/* Carousel Container */}
-				{/* <div className="relative w-full rounded-lg overflow-hidden bg-white shadow-sm">
+				<div className="relative w-full rounded-lg overflow-hidden bg-white shadow-sm">
 					<div
 						className="flex transition-transform duration-300 ease-in-out"
 						style={{ transform: `translateX(-${currentReview * 100}%)` }}
@@ -40,7 +42,7 @@ const VerifiedReviews = forwardRef(
 							/>
 						))}
 					</div>
-				</div> */}
+				</div>
 			</div>
 		)
 	}

@@ -62,9 +62,9 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 
 				{/* Restaurant Name */}
 				<div className="col-span-2">
-					<h2 className="text-lg font-bold truncate">{restaurantInfo.name}</h2>
+					<h2 className="text-lg font-bold truncate">{restaurantInfo?.name}</h2>
 					<p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
-						{restaurantInfo.cuisine.join(", ")}
+						{restaurantInfo?.cuisine?.join(", ")}
 					</p>
 				</div>
 
@@ -85,40 +85,42 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 									width={14}
 									height={14}
 								/>
-								<span className="text-xs">{restaurantInfo.timing}</span>
+								<span className="text-xs">{restaurantInfo?.timing}</span>
 							</div>
 
 							<div className="flex items-center gap-2">
 								<a
-									href={`tel:${restaurantInfo.phone_no}`}
+									href={`tel:${restaurantInfo?.phone_no}`}
 									className="text-black underline flex items-center gap-1"
 								>
 									<div className="w-4">
 										<Phone_Ic className="w-3 h-3" />
 									</div>
-									<span className="text-xs">{restaurantInfo.phone}</span>
+									<span className="text-xs">
+										{restaurantInfo?.detail?.phone_no}
+									</span>
 								</a>
 							</div>
 
 							<div className="flex items-center gap-2">
 								<Users_Ic className="w-3 h-3 text-black" />
 								<span className="text-xs">
-									₹{restaurantInfo.priceForTwo} for two
+									₹{restaurantInfo?.priceForTwo} for two
 								</span>
 							</div>
 
 							<div className="flex items-center gap-2 w-fit">
-								<MapIcon_Tc className="h-2 w-2" />
+								<MapIcon_Tc className="h-3 w-3" />
 
 								<a
 									href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-										restaurantInfo.location
+										restaurantInfo?.detail?.address
 									)}`}
 									target="_blank"
 									rel="noopener noreferrer"
 									className="inline-flex items-center text-black text-xs truncate"
 								>
-									{restaurantInfo.location}
+									{restaurantInfo?.location}
 								</a>
 							</div>
 						</div>
@@ -128,7 +130,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 					<div
 						className={` ${
 							isDelivery
-								? "justify-evenly text-right grid md:grid-cols-1 gap-2"
+								? "justify-end text-right grid md:grid-cols-1 gap-2"
 								: "max-w-[800px] flex"
 						}`}
 					>

@@ -10,8 +10,8 @@ const Rating = ({ logo, rating, onClick }) => (
 		<Image
 			src={logo}
 			alt="Rating Logo"
-			width={24}
-			height={24}
+			width={20}
+			height={20}
 			className="ml-auto rounded"
 		/>
 

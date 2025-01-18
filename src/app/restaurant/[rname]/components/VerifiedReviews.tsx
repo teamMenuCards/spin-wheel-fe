@@ -1,59 +1,51 @@
-import React, { forwardRef } from "react";
-import Image from "next/image";
+import React, { forwardRef } from "react"
+import Image from "next/image"
 
 const VerifiedReviews = forwardRef(
-  (
-    { reviews, currentReview, setCurrentReview },
-    ref
-  ) => {
-    return (
-      <div ref={ref} className="w-full max-w-[400px] mt-8 mx-auto px-4">
-        {/* Reviews Title */}
-        <div className="mb-4">
+	({ reviews, currentReview, setCurrentReview }, ref) => {
+		return (
+			<div ref={ref} className="w-full max-w-[400px] mt-8 mx-auto px-4">
+				{/* Reviews Title */}
+				{/* <div className="mb-4">
           <h3 className="text-black text-base font-medium">Verified Reviews</h3>
-        </div>
+        </div> */}
 
-        {/* Carousel Container */}
-        <div className="relative w-full rounded-lg overflow-hidden bg-white shadow-sm">
-          {/* Carousel Content */}
-          <div
-            className="flex transition-transform duration-300 ease-in-out"
-            style={{ transform: `translateX(-${currentReview * 100}%)` }}
-          >
-            {reviews.map((review, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-full relative"
-              >
-                <Image
-                  src={review}
-                  alt={`Review ${index + 1}`}
-                  width={400}
-                  height={200}
-                  className="w-full h-auto object-contain"
-                />
-              </div>
-            ))}
-          </div>
+				{/* Carousel Container */}
+				{/* <div className="relative w-full rounded-lg overflow-hidden bg-white shadow-sm">
+					<div
+						className="flex transition-transform duration-300 ease-in-out"
+						style={{ transform: `translateX(-${currentReview * 100}%)` }}
+					>
+						{reviews.map((review, index) => (
+							<div key={index} className="flex-shrink-0 w-full relative">
+								<Image
+									src={review}
+									alt={`Review ${index + 1}`}
+									width={400}
+									height={200}
+									className="w-full h-auto object-contain"
+								/>
+							</div>
+						))}
+					</div>
 
-          {/* Carousel Controls */}
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-            {reviews.map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${
-                  currentReview === index ? "bg-gray-800" : "bg-gray-400"
-                }`}
-                onClick={() => setCurrentReview(index)}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-);
+					<div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+						{reviews.map((_, index) => (
+							<button
+								key={index}
+								className={`w-2 h-2 rounded-full ${
+									currentReview === index ? "bg-gray-800" : "bg-gray-400"
+								}`}
+								onClick={() => setCurrentReview(index)}
+							/>
+						))}
+					</div>
+				</div> */}
+			</div>
+		)
+	}
+)
 
-VerifiedReviews.displayName = "VerifiedReviews";
+VerifiedReviews.displayName = "VerifiedReviews"
 
-export default VerifiedReviews;
+export default VerifiedReviews

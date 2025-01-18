@@ -1,7 +1,5 @@
 "use client"
 import React from "react"
-// import { Box } from "@mui/material"
-// import { styled } from "@mui/material/styles"
 import DineInLandingPage from "./components/DineInLandingPage"
 import { useParams } from "next/navigation"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"

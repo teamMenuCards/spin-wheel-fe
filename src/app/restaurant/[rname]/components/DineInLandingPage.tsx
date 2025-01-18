@@ -1,9 +1,7 @@
 "use client"
 
 import React, { useState, useRef } from "react"
-//import RestaurantInfoCard from "../restaurant/[rid]/RestaurantInfoCard"
 import DineInfoCard from "./DineInfoCard"
-//import RestaurantButtons from "../restaurant/[rid]/RestaurantButtons"
 import DineInButtons from "./DineInButtons"
 import VerifiedReviews from "./VerifiedReviews"
 

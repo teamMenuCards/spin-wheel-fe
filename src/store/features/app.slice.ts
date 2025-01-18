@@ -1,32 +1,34 @@
-import { createSlice } from '@reduxjs/toolkit';
-
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export enum CLIENT_APP_MODE {
-  DINE_IN = "DINE_IN",
-  DELIVERY = "DELIVERY",
+	DINE_IN = "DINE_IN",
+	DELIVERY = "DELIVERY"
 }
 
 export type AppState = {
-  isLoggedIn: boolean;
-  mode: CLIENT_APP_MODE;
-};
+	isLoggedIn: boolean
+	mode: CLIENT_APP_MODE
+}
 
-const initialState: AppState = {
-  isLoggedIn: false,
-  mode: CLIENT_APP_MODE.DINE_IN,
-};
+const initialState: Readonly<AppState> = {
+	isLoggedIn: false,
+	mode: CLIENT_APP_MODE.DINE_IN
+}
 
-export const AppStateSlice = createSlice({
-  name: "app-state",
-  initialState,
-  reducers: {
-    setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
-      state.isLoggedIn = action.payload;
-    },
-  },
-});
+export const appStateSlice = createSlice({
+	name: "appState",
+	initialState,
+	reducers: {
+		setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
+			state.isLoggedIn = action.payload
+		},
 
-export const { setIsLoggedIn } = AppStateSlice.actions;
+		setMode: (state, action: PayloadAction<CLIENT_APP_MODE>) => {
+			state.mode = action.payload
+		}
+	}
+})
 
-export default AppStateSlice.reducer;
+export const { setIsLoggedIn, setMode } = appStateSlice.actions
+export type AppStateReducer = ReturnType<typeof appStateSlice.reducer>
+export default appStateSlice.reducer

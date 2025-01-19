@@ -27,6 +27,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 	}, [validMode, dispatch, mode])
 
 	const isDelivery = mode == CLIENT_APP_MODE.DELIVERY
+	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
 	const ratings = [
 		{
@@ -52,7 +53,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">
 					<Image
-						src="/coco.jpg"
+						src={restaurantInfo?.detail?.logo || DEFAULT_logo}
 						alt="Restaurant Logo"
 						width={125}
 						height={125}

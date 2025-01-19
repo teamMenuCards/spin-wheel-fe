@@ -2,11 +2,8 @@ import Image from "next/image"
 import NutrientComponent from "./nutrients"
 import LineClampTypography from "@/shared/LineClampTypography"
 import ChipElement from "@/shared/ChipElement"
-import { useCart } from "@/context"
 
 function MenuItem({ product }) {
-	const { openCart, setSelectedProduct } = useCart()
-
 	const getVegIcon = () => (
 		<Image
 			src="/ic_veg.png"
@@ -34,19 +31,11 @@ function MenuItem({ product }) {
 		product?.variants[0]?.image_url ||
 		"https://res.cloudinary.com/dftbnws8k/image/upload/v1710440807/Cheese_Extravaganza_ru4k8h.jpg"
 
-	const handleAdd = () => {
-		openCart()
-		setSelectedProduct(product)
-	}
-
 	return (
 		<div className="mb-4">
 			<div className="flex flex-row-reverse">
 				{prdImage ? (
-					<div
-						className="relative w-[105px] h-[105px] bg-lightSteelBlue rounded-lg"
-						onClick={handleAdd}
-					>
+					<div className="relative w-[105px] h-[105px] bg-lightSteelBlue rounded-lg">
 						<Image
 							fill
 							priority

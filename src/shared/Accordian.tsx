@@ -1,6 +1,10 @@
 import { useState } from "react"
-import MenuItem from "@/app/restaurant/[rname]/menu/menu-item"
+import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
 import { ProductType, ProductVariantType } from "@/types"
+import {
+	ChevronDown_Ic,
+	ChevronUp_Ic
+} from "@/app/restaurant/[rname]/menu/icons"
 
 interface ProductCategoryType {
 	display_name: string
@@ -29,7 +33,13 @@ const Accordion: React.FC<AccordionProps> = ({ sections = [] }) => {
 							onClick={() => toggleAccordion(index)}
 						>
 							{section.display_name}
-							<span>{openIndex === index ? "▲" : "▼"}</span>
+							<span>
+								{openIndex === index ? (
+									<ChevronUp_Ic className="w-4 h-4" />
+								) : (
+									<ChevronDown_Ic className="w-4 h-4" />
+								)}
+							</span>
 						</button>
 
 						{/* Accordion Items */}

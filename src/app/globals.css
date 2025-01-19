@@ -14,11 +14,11 @@
   }
 }
 
-body {
+html {
   @apply font-metropolis;
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Metropolis';
+  font-family: 'Metropolis', sans-serif !important;
 }
 
 

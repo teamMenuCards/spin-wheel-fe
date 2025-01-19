@@ -13,7 +13,6 @@ import {
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { ProductType, ProductVariantType } from "@/types"
 import { formatPrice } from "@/utils/format-helper"
-import Accordion from "@/shared/Accordian"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
@@ -26,7 +25,6 @@ export default function MenuPage() {
 	const { mode } = useAppSelector((state) => state["appState"])
 	const dispatch = useAppDispatch()
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const ProductCard = ({
 		name,
 		variants,
@@ -100,18 +98,11 @@ export default function MenuPage() {
 	return (
 		<div>
 			<h6>vikas</h6>
-			{/* {currentData?.categories.map((category) =>
+			{currentData?.categories.map((category) =>
 				category.products.map((product) => (
-					<>
-						<ProductCard key={product.id} {...product} />
-					</>
+					<ProductCard key={product.id} {...product} />
 				))
-			)} */}
-
-			<div id="mainMenu" key="mainMenu">
-				<Accordion sections={currentData?.categories || []} />
-			</div>
-
+			)}
 			<div>
 				Total Cart Items <span>{totalItems}</span>
 			</div>

@@ -11,7 +11,13 @@ const DineInButtons = ({ options }) => {
 
 			{/* Menu Options */}
 			{options?.map((item, index) => (
-				<NextLink key={index} href={item?.path ?? "/"} passHref>
+				<NextLink
+					key={index}
+					href={item?.path ?? "/"}
+					passHref
+					target="_blank"
+					rel="noopener noreferrer"
+				>
 					<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
 						{/* Icon */}
 						{item.value === "Menu" && (

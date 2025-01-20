@@ -17,6 +17,11 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 
 		console.log("getPath:", rid, details)
 
+		const linksList = {}
+		details?.platform_details?.forEach((item) => {
+			linksList[item["platform_name"]] = item["platform_uri"]
+		})
+
 		const options = [
 			{
 				id: 1,
@@ -26,17 +31,17 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 			{
 				id: 2,
 				value: "Review us on Zomato",
-				path: details.zomato_dine_in_link
+				path: linksList["zomato-dine-in"]
 			},
 			{
 				id: 3,
 				value: "Review us on Google",
-				path: details.google_review_link
+				path: linksList["google-review"]
 			},
 			{
 				id: 4,
 				value: "Instagram",
-				path: details.insta_link
+				path: linksList["insta"]
 			}
 		]
 

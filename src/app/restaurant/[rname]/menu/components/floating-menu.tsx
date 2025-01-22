@@ -28,7 +28,7 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 	return (
 		<>
 			<button
-				className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition"
+				className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50"
 				onClick={() => setOpen(!open)}
 			>
 				{open ? (
@@ -41,7 +41,7 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 			<Dialog
 				open={open}
 				onClose={() => setOpen(false)}
-				className="fixed inset-0 flex items-end justify-end p-4"
+				className="fixed inset-0 flex items-end justify-end p-4 z-50"
 			>
 				<div className="bg-black text-white w-72 max-h-96 overflow-y-auto rounded-lg shadow-lg p-2">
 					<ul>

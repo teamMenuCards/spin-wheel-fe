@@ -42,3 +42,8 @@ html {
   font-weight: 600;
   font-style: normal;
 }
+
+.py-4 {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}

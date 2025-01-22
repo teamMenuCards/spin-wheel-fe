@@ -35,7 +35,7 @@ function MenuItem({ product }) {
 		<div className="mb-4">
 			<div className="flex flex-row-reverse">
 				{prdImage ? (
-					<div className="relative w-[105px] h-[105px] bg-lightSteelBlue rounded-lg">
+					<div className="relative w-[145px] h-[145px] bg-lightSteelBlue rounded-lg">
 						<Image
 							fill
 							priority
@@ -62,17 +62,17 @@ function MenuItem({ product }) {
 						</div>
 
 						{/* Product Name */}
-						<p className="text-secondary text-sm mt-1">{product.name}</p>
+						<p className="text-secondary text-sm font-bold mt-1">{product.name}</p>
 
 						{/* Product Description */}
 						{product.description && (
-							<LineClampTypography lines={2} className="text-secondary mt-1">
+							<LineClampTypography lines={2} className="text-secondary text-xs mt-1">
 								{product.description}
 							</LineClampTypography>
 						)}
 
 						{/* Price */}
-						<p className="text-secondary text-sm pt-1">
+						<p className="text-secondary text-sm font-bold pt-1">
 							Rs.{product.variants[0]?.price}
 						</p>
 

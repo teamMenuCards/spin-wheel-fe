@@ -29,7 +29,7 @@ const Accordion: React.FC<AccordionProps> = ({ sections = [] }) => {
 					<div key={index} className="border rounded-lg overflow-hidden">
 						{/* Accordion Title */}
 						<button
-							className="w-full text-left py-3 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
+							className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
 							onClick={() => toggleAccordion(index)}
 						>
 							{section.display_name}

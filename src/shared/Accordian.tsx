@@ -15,11 +15,15 @@ interface AccordionProps {
 	sections?: ProductCategoryType[] // Accepts an array of categories
 }
 
-const Accordion: React.FC<AccordionProps> = ({ sections = [] }) => {
+const Accordion: React.FC<AccordionProps> = ({
+	sections = [],
+	onSectionSelection
+}) => {
 	const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-	const toggleAccordion = (index: number) => {
+	const onClickSection = (index: number, section) => {
 		setOpenIndex(openIndex === index ? null : index)
+		onSectionSelection(section)
 	}
 
 	return (
@@ -30,7 +34,7 @@ const Accordion: React.FC<AccordionProps> = ({ sections = [] }) => {
 						{/* Accordion Title */}
 						<button
 							className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
-							onClick={() => toggleAccordion(index)}
+							onClick={() => onClickSection(index, section)}
 						>
 							{section.display_name}
 							<span>

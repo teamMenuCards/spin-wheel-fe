@@ -15,20 +15,24 @@ export default function MenuPage() {
 
 	const { currentData } = useGetMenuListByNameQuery(rname)
 	const { data: restaurantInfo } = useGetRestaurantDetailByNameQuery(rname)
-	const categories = currentData?.categories || [] 
+	const categories = currentData?.categories || []
 
 	//temporary
 	const currentCategory = categories.length > 0 ? categories[0].id : ""
 
+	const handleCategorySelection = (category) => {
+		console.log(category)
+	}
+
 	return (
 		<>
-			<NavBar 
-        		rname={rname}
-        		restaurantInfo={restaurantInfo}
-      		/>
+			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
 			<FloatingMenu categories={categories} currentCategory={currentCategory} />
 
-			<Accordion sections={currentData?.categories || []} />
+			<Accordion
+				sections={currentData?.categories || []}
+				onSectionSelection={handleCategorySelection}
+			/>
 		</>
 	)
 }

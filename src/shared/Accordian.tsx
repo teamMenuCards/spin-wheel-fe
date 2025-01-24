@@ -19,7 +19,7 @@ const Accordion: React.FC<AccordionProps> = ({
 	sections = [],
 	onSectionSelection
 }) => {
-	const [openIndex, setOpenIndex] = useState<number | null>(null)
+	const [openIndex, setOpenIndex] = useState<number | null>(0)
 
 	const onClickSection = (index: number, section) => {
 		setOpenIndex(openIndex === index ? null : index)

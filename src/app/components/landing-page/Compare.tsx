@@ -19,6 +19,7 @@ interface CompareProps {
   showHandlebar?: boolean;
   autoplay?: boolean;
   autoplayDuration?: number;
+  onSliderChange?: (sliderXPercent: number) => void;
 }
 export const Compare = ({
   firstImage = "",
@@ -31,6 +32,7 @@ export const Compare = ({
   showHandlebar = true,
   autoplay = false,
   autoplayDuration = 5000,
+  onSliderChange,
 }: CompareProps) => {
   const [sliderXPercent, setSliderXPercent] = useState(initialSliderPercentage);
   const [isDragging, setIsDragging] = useState(false);
@@ -69,6 +71,12 @@ export const Compare = ({
     startAutoplay();
     return () => stopAutoplay();
   }, [startAutoplay, stopAutoplay]);
+
+  useEffect(() => {
+    if (onSliderChange) {
+      onSliderChange(sliderXPercent);
+    }
+  }, [sliderXPercent, onSliderChange]);
 
   function mouseEnterHandler() {
     stopAutoplay();
@@ -145,7 +153,7 @@ export const Compare = ({
       className={cn("overflow-hidden", className)}
       style={{
         position: "relative",
-        aspectRatio: 0.5,
+        aspectRatio: 0.45,
         cursor: slideMode === "drag" ? "grab" : "col-resize",
       }}
       onMouseMove={handleMouseMove}
@@ -157,6 +165,7 @@ export const Compare = ({
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
+      
       <AnimatePresence initial={false}>
         <motion.div
           className="h-full w-px absolute top-0 m-auto z-30 bg-gradient-to-b from-transparent from-[5%] to-[95%] via-indigo-500 to-transparent"
@@ -207,7 +216,7 @@ export const Compare = ({
                 sizes="100vw"
                 style={{
                   width: "100%",
-                  height: "auto",
+                  height: "100%",
                 }}
                 className={cn(
                   "absolute inset-0  z-20 rounded-2xl flex-shrink-0 select-none",
@@ -232,7 +241,7 @@ export const Compare = ({
             sizes="100vw"
             style={{
               width: "100%",
-              height: "auto",
+              height: "100%",
             }}
             alt="second image"
             src={secondImage}

@@ -13,8 +13,6 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 	const dispatch = useDispatch()
 	const mode = useAppSelector((state) => state.appState.mode)
 
-	console.log("eyyye--", mode)
-
 	// Type guard to validate `modeFromUrl`
 	const validMode = Object.values(CLIENT_APP_MODE).find(
 		(m): m is CLIENT_APP_MODE => m === modeFromUrl
@@ -46,6 +44,15 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 			rating: "4"
 		}
 	]
+
+	const openTime =
+		restaurantInfo?.detail.details.meta_details.opening_time || ""
+	const closeTime =
+		restaurantInfo?.detail.details.meta_details.closing_time || ""
+	const avgPrice = restaurantInfo?.detail.details.meta_details.avg_price || ""
+	const location =
+		restaurantInfo?.detail.details.meta_details.location_info || ""
+
 	return (
 		<>
 			{/* <div className="flex flex-wrap justify-between items-start font-metropolis "> */}
@@ -86,7 +93,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 									width={14}
 									height={14}
 								/>
-								<span className="text-xs">{restaurantInfo?.timing}</span>
+								<span className="text-xs">{`${openTime} - ${closeTime}`}</span>
 							</div>
 
 							<div className="flex items-center gap-2">
@@ -103,12 +110,12 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 								</a>
 							</div>
 
-							<div className="flex items-center gap-2">
-								<Users_Ic className="w-3 h-3 text-black" />
-								<span className="text-xs">
-									₹{restaurantInfo?.priceForTwo} for two
-								</span>
-							</div>
+							{!!avgPrice && (
+								<div className="flex items-center gap-2">
+									<Users_Ic className="w-3 h-3 text-black" />
+									<span className="text-xs">₹{avgPrice} for two</span>
+								</div>
+							)}
 
 							<div className="flex items-center gap-2 w-fit">
 								<MapIcon_Tc className="h-3 w-3" />
@@ -119,9 +126,9 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 									)}`}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="inline-flex items-center text-black text-xs truncate"
+									className="inline-flex text-blue-500 underline text-xs items-centertext-xs truncate max-w-[150px] overflow-hidden whitespace-nowrap"
 								>
-									{restaurantInfo?.location}
+									{location}
 								</a>
 							</div>
 						</div>
@@ -131,7 +138,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 					<div
 						className={` ${
 							isDelivery
-								? "justify-end text-right grid md:grid-cols-1 gap-2"
+								? "justify-center text-right grid md:grid-cols-1 gap-2"
 								: "max-w-[800px] flex"
 						}`}
 					>

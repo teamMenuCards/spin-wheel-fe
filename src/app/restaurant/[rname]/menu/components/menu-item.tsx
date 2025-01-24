@@ -62,18 +62,23 @@ function MenuItem({ product }) {
 						</div>
 
 						{/* Product Name */}
-						<p className="text-secondary text-sm font-bold mt-1">{product.name}</p>
+						<p className="text-secondary text-sm font-bold mt-1">
+							{product.name}
+						</p>
 
 						{/* Product Description */}
 						{product.description && (
-							<LineClampTypography lines={2} className="text-secondary text-xs mt-1">
+							<LineClampTypography
+								lines={2}
+								className="text-secondary text-xs mt-1"
+							>
 								{product.description}
 							</LineClampTypography>
 						)}
 
 						{/* Price */}
 						<p className="text-secondary text-sm font-bold pt-1">
-							Rs.{product.variants[0]?.price}
+							₹{product.variants[0]?.price}
 						</p>
 
 						{/* Nutrients */}

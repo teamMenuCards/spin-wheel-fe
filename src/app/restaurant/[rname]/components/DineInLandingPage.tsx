@@ -10,7 +10,7 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 	const [currentReview, setCurrentReview] = useState(0)
 	const reviewsRef = useRef<HTMLDivElement | null>(null)
 	const reviews = ["/review1.jpeg", "/review2.jpeg"] // Example review images
-	const DEFAULT_IMG = 'url("https://dummyimage.com/600x400/000/fff")'
+	const DEFAULT_COVER = 'url("https://dummyimage.com/600x400/000/fff")'
 
 	const getPath = (rid: string, data) => {
 		const details = data?.detail?.details || []
@@ -55,7 +55,7 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 			<div
 				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
 				style={{
-					backgroundImage: restaurantInfo?.detail.cover_image || DEFAULT_IMG
+					backgroundImage: restaurantInfo?.detail.cover_image || DEFAULT_COVER
 				}}
 			/>
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">

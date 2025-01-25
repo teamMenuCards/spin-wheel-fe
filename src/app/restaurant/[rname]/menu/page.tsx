@@ -8,7 +8,6 @@ import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-res
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
-
 	const { currentData } = useGetMenuListByNameQuery(rname)
 	const { data: restaurantInfo } = useGetRestaurantDetailByNameQuery(rname)
 	const categories = currentData?.categories || []

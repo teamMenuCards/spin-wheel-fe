@@ -4,8 +4,9 @@ import FullPageDrawerComponent from "./contact-us-drawer"
 interface NavBarProps {
 	rname: string
 	restaurantInfo?: {
+		name : string
 		detail: {
-			cover_image: string
+			logo: string
 		}
 	}
 }
@@ -13,8 +14,9 @@ interface NavBarProps {
 const DEFAULT_IMG = 'url("https://dummyimage.com/600x400/000/fff")'
 
 const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
+	rname = restaurantInfo?.name || ""
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-	const coverImage = restaurantInfo?.detail.cover_image || DEFAULT_IMG
+	const coverImage = `url(${restaurantInfo?.detail.logo || DEFAULT_IMG})`;
 
 	const handleCloseDrawer = () => {
 		setIsDrawerOpen(false)
@@ -26,7 +28,7 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 				<div className="max-w-7xl mx-auto flex items-center justify-between">
 					<h4 className="text-lg font-bold truncate">{rname}</h4>
 					<div
-						onClick={() => setIsDrawerOpen(true)}
+						// onClick={() => setIsDrawerOpen(true)}
 						className="w-12 h-12 rounded-full cursor-pointer"
 						style={{
 							backgroundImage: coverImage,

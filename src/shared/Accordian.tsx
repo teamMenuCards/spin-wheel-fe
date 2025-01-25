@@ -19,10 +19,18 @@ const Accordion: React.FC<AccordionProps> = ({
 	sections = [],
 	onSectionSelection
 }) => {
-	const [openIndex, setOpenIndex] = useState<number | null>(null)
+	// Initialize all sections as open
+	const [openIndexes, setOpenIndexes] = useState<number[]>(
+		sections.map((_, index) => index)
+	)
 
 	const onClickSection = (index: number, section) => {
-		setOpenIndex(openIndex === index ? null : index)
+		setOpenIndexes(
+			(prevIndexes) =>
+				prevIndexes.includes(index)
+					? prevIndexes.filter((i) => i !== index) // Close if already open
+					: [...prevIndexes, index] // Open if closed
+		)
 		onSectionSelection(section)
 	}
 
@@ -30,7 +38,11 @@ const Accordion: React.FC<AccordionProps> = ({
 		<div className="w-full max-w-md mx-auto">
 			<div className="space-y-2">
 				{sections.map((section, index) => (
-					<div key={index} className="border rounded-lg overflow-hidden">
+					<div
+						key={index}
+						id={section.id}
+						className="border rounded-lg overflow-hidden"
+					>
 						{/* Accordion Title */}
 						<button
 							className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
@@ -38,7 +50,7 @@ const Accordion: React.FC<AccordionProps> = ({
 						>
 							{section.display_name}
 							<span>
-								{openIndex === index ? (
+								{openIndexes.includes(index) ? (
 									<ChevronUp_Ic className="w-4 h-4" />
 								) : (
 									<ChevronDown_Ic className="w-4 h-4" />
@@ -47,7 +59,7 @@ const Accordion: React.FC<AccordionProps> = ({
 						</button>
 
 						{/* Accordion Items */}
-						{openIndex === index && (
+						{openIndexes.includes(index) && (
 							<div className="py-2 px-4 bg-gray-50 text-gray-700">
 								<ul className="list-disc pl-5 space-y-1">
 									{section.products.map((item) => (

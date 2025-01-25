@@ -25,7 +25,7 @@ function MenuItem({ product }) {
 	)
 
 	const getProductType = () =>
-		product?.variants[0].is_veg ? getVegIcon() : getNonVegIcon()
+		product?.variants[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
 	const prdImage =
 		product?.variants[0]?.image_url ||

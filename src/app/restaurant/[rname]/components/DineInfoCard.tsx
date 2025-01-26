@@ -61,7 +61,7 @@ const RestaurantInfoCard = ({
 	return (
 		<>
 			{/* <div className="flex flex-wrap justify-between items-start font-metropolis "> */}
-			<div className="flex flex-wrap items-start md:items-center justify-between w-full max-w-[500px]  mx-auto px-4 font-metropolis ">
+			<div className="flex items-start md:items-center justify-between w-full max-w-[500px]  mx-auto px-4 font-metropolis">
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">
 					<Image
@@ -73,97 +73,101 @@ const RestaurantInfoCard = ({
 					/>
 				</div>
 
-				{/* Restaurant Name */}
-				<div className="col-span-2">
-					<h2 className="text-lg font-bold truncate">{restaurantInfo?.name}</h2>
-					{/* <p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
+				<div className="m-auto mt-3">
+					{/* Restaurant Name */}
+					<div className="text-center">
+						<h2 className="text-lg font-bold truncate">
+							{restaurantInfo?.name}
+						</h2>
+						{/* <p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
 						{restaurantInfo?.cuisine?.join(", ")}
 					</p> */}
-				</div>
+					</div>
 
-				<div
-					className={` flex w-full justify-between items-start ${
-						isDelivery
-							? "grid grid-cols-[1fr_150px] gap-4 items-start w-full"
-							: "flex justify-evenly"
-					}`}
-				>
-					{/* Details Section */}
-					{isDelivery && (
-						<div className="flex flex-col gap-2 text-left">
-							<div className="flex items-center gap-2">
-								<Image
-									src="/clock-icon.png"
-									alt="Time"
-									width={14}
-									height={14}
-								/>
-								<span className="text-xs">{`${openTime} - ${closeTime}`}</span>
-							</div>
-
-							<div className="flex items-center gap-2">
-								<a
-									href={`tel:${restaurantInfo?.detail.phone_no}`}
-									className="text-black underline flex items-center gap-1"
-								>
-									<div className="w-4">
-										<Phone_Ic className="w-3 h-3" />
-									</div>
-									<span className="text-xs">
-										{restaurantInfo?.detail?.phone_no}
-									</span>
-								</a>
-							</div>
-
-							{!!avgPrice && (
-								<div className="flex items-center gap-2">
-									<Users_Ic className="w-3 h-3 text-black" />
-									<span className="text-xs">₹{avgPrice} for two</span>
-								</div>
-							)}
-
-							<div className="flex items-center gap-2 w-fit">
-								<MapIcon_Tc className="h-3 w-3" />
-
-								<a
-									href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-										restaurantInfo?.detail?.address
-									)}`}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex text-blue-500 underline text-xs items-centertext-xs truncate max-w-[150px] overflow-hidden whitespace-nowrap"
-								>
-									{location}
-								</a>
-							</div>
-						</div>
-					)}
-
-					{/* Ratings Section */}
 					<div
-						className={` ${
+						className={` flex w-full justify-between items-start mt-2 ${
 							isDelivery
-								? "justify-center text-right grid md:grid-cols-1 gap-2"
-								: "max-w-[800px] flex"
+								? "grid grid-cols-[1fr_150px] gap-4 items-start w-full"
+								: "flex justify-evenly"
 						}`}
 					>
-						{ratings.map((item) => {
-							return (
-								<div key={item.id} className="mr-4">
-									<Rating
-										logo={item.logo}
-										rating={item.rating}
-										onClick={() => {
-											if (reviewsRef && reviewsRef?.current) {
-												reviewsRef?.current?.scrollIntoView({
-													behavior: "smooth"
-												})
-											}
-										}}
+						{/* Details Section */}
+						{isDelivery && (
+							<div className="flex flex-col gap-2 text-left">
+								<div className="flex items-center gap-2">
+									<Image
+										src="/clock-icon.png"
+										alt="Time"
+										width={14}
+										height={14}
 									/>
+									<span className="text-xs">{`${openTime} - ${closeTime}`}</span>
 								</div>
-							)
-						})}
+
+								<div className="flex items-center gap-2">
+									<a
+										href={`tel:${restaurantInfo?.detail.phone_no}`}
+										className="text-black underline flex items-center gap-1"
+									>
+										<div className="w-4">
+											<Phone_Ic className="w-3 h-3" />
+										</div>
+										<span className="text-xs">
+											{restaurantInfo?.detail?.phone_no}
+										</span>
+									</a>
+								</div>
+
+								{!!avgPrice && (
+									<div className="flex items-center gap-2">
+										<Users_Ic className="w-3 h-3 text-black" />
+										<span className="text-xs">₹{avgPrice} for two</span>
+									</div>
+								)}
+
+								<div className="flex items-center gap-2 w-fit">
+									<MapIcon_Tc className="h-3 w-3" />
+
+									<a
+										href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+											restaurantInfo?.detail?.address
+										)}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex text-blue-500 underline text-xs items-centertext-xs truncate max-w-[150px] overflow-hidden whitespace-nowrap"
+									>
+										{location}
+									</a>
+								</div>
+							</div>
+						)}
+
+						{/* Ratings Section */}
+						<div
+							className={` ${
+								isDelivery
+									? "justify-center text-right grid md:grid-cols-1 gap-2"
+									: "max-w-[800px] flex"
+							}`}
+						>
+							{ratings.map((item) => {
+								return (
+									<div key={item.id} className="mr-4">
+										<Rating
+											logo={item.logo}
+											rating={item.rating}
+											onClick={() => {
+												if (reviewsRef && reviewsRef?.current) {
+													reviewsRef?.current?.scrollIntoView({
+														behavior: "smooth"
+													})
+												}
+											}}
+										/>
+									</div>
+								)
+							})}
+						</div>
 					</div>
 				</div>
 			</div>

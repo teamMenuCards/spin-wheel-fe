@@ -15,8 +15,8 @@ function DineInLandingPage({
 }) {
 	const [currentReview, setCurrentReview] = useState(0)
 	const reviewsRef = useRef<HTMLDivElement>(null!) // Force non-null assertion
-	const reviews: string[] = ["/review1.jpeg", "/review2.jpeg"] // Example review images
-	const DEFAULT_COVER = 'url("https://dummyimage.com/600x400/000/fff")'
+	const reviews: string[] = [] // Example review images
+	const DEFAULT_COVER = 'url("/goodFood.png")'
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []
@@ -78,11 +78,13 @@ function DineInLandingPage({
 					/>
 				)}
 				{options && <DineInButtons options={options} />}
-				<VerifiedReviews
-					reviews={reviews}
-					currentReview={currentReview}
-					setCurrentReview={setCurrentReview}
-				/>
+				{!!reviews.length && (
+					<VerifiedReviews
+						reviews={reviews}
+						currentReview={currentReview}
+						setCurrentReview={setCurrentReview}
+					/>
+				)}
 			</div>
 		</div>
 	)

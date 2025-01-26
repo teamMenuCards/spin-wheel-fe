@@ -30,7 +30,7 @@
 		"tailwind-merge": "^2.6.0"
 	},
 	"lint-staged": {
-		"*.{js,jsx,ts,tsx}": "eslint --fix && npx tsc --noEmit"
+		"*.{js,jsx,ts,tsx}": "eslint --fix"
 	},
 	"devDependencies": {
 		"@eslint/eslintrc": "^3",

@@ -1,7 +1,13 @@
 import React, { forwardRef } from "react"
 import Image from "next/image"
 
-const VerifiedReviews = forwardRef(
+interface VerifiedReviewsProps {
+	reviews: string[]
+	currentReview: number
+	setCurrentReview: (index: number) => void
+}
+
+const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 	({ reviews, currentReview, setCurrentReview }, ref) => {
 		return (
 			<div ref={ref} className="w-full max-w-[400px] mt-8 mx-auto px-4">

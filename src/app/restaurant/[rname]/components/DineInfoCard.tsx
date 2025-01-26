@@ -6,12 +6,20 @@ import { useAppSelector } from "@/store/hooks"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import { useEffect } from "react"
 import Rating from "./Rating"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
-const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
+const RestaurantInfoCard = ({
+	restaurantInfo,
+	reviewsRef
+}: {
+	restaurantInfo: RestaurantDetailResponse
+	reviewsRef: React.RefObject<HTMLDivElement> // ✅ Use RefObject
+}) => {
 	const searchParams = useSearchParams()
 	const modeFromUrl = searchParams.get("m")
 	const dispatch = useDispatch()
 	const mode = useAppSelector((state) => state.appState.mode)
+	const metaData = restaurantInfo?.detail.details.meta_details
 
 	// Type guard to validate `modeFromUrl`
 	const validMode = Object.values(CLIENT_APP_MODE).find(
@@ -45,13 +53,10 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 		}
 	]
 
-	const openTime =
-		restaurantInfo?.detail.details.meta_details.opening_time || ""
-	const closeTime =
-		restaurantInfo?.detail.details.meta_details.closing_time || ""
-	const avgPrice = restaurantInfo?.detail.details.meta_details.avg_price || ""
-	const location =
-		restaurantInfo?.detail.details.meta_details.location_info || ""
+	const openTime = (metaData && metaData.opening_time) || ""
+	const closeTime = (metaData && metaData.closing_time) || ""
+	const avgPrice = (metaData && metaData.avg_price) || ""
+	const location = (metaData && metaData.location_info) || ""
 
 	return (
 		<>
@@ -71,9 +76,9 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 				{/* Restaurant Name */}
 				<div className="col-span-2">
 					<h2 className="text-lg font-bold truncate">{restaurantInfo?.name}</h2>
-					<p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
+					{/* <p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
 						{restaurantInfo?.cuisine?.join(", ")}
-					</p>
+					</p> */}
 				</div>
 
 				<div
@@ -98,7 +103,7 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 
 							<div className="flex items-center gap-2">
 								<a
-									href={`tel:${restaurantInfo?.phone_no}`}
+									href={`tel:${restaurantInfo?.detail.phone_no}`}
 									className="text-black underline flex items-center gap-1"
 								>
 									<div className="w-4">
@@ -148,9 +153,13 @@ const RestaurantInfoCard = ({ restaurantInfo, reviewsRef }) => {
 									<Rating
 										logo={item.logo}
 										rating={item.rating}
-										onClick={() =>
-											reviewsRef.current?.scrollIntoView({ behavior: "smooth" })
-										}
+										onClick={() => {
+											if (reviewsRef && reviewsRef?.current) {
+												reviewsRef?.current?.scrollIntoView({
+													behavior: "smooth"
+												})
+											}
+										}}
 									/>
 								</div>
 							)

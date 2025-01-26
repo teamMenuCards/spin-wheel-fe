@@ -2,13 +2,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Dialog } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/solid"
-
-interface Category {
-	id: string
-	name: string
-	display_name: string
-	products?: []
-}
+import { Category } from "@/services/product/get-menu-list"
 
 interface FloatingMenuProps {
 	categories: Category[]

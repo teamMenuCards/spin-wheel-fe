@@ -1,9 +1,16 @@
 import Image from "next/image"
-import NutrientComponent from "./nutrients"
 import LineClampTypography from "@/shared/LineClampTypography"
-import ChipElement from "@/shared/ChipElement"
+import { ProductType, ProductVariantType } from "@/types"
 
-function MenuItem({ product }) {
+function MenuItem({
+	product
+}: {
+	product: ProductType & { variants: ProductVariantType[] }
+}) {
+	if (!product) {
+		return null
+	}
+
 	const getVegIcon = () => (
 		<Image
 			src="/ic_veg.png"
@@ -25,16 +32,16 @@ function MenuItem({ product }) {
 	)
 
 	const getProductType = () =>
-		product?.variants[0]?.is_veg ? getVegIcon() : getNonVegIcon()
+		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
 	const prdImage =
-		product?.variants[0]?.image_url ||
+		product.variants?.[0]?.image_url ||
 		"https://res.cloudinary.com/dftbnws8k/image/upload/v1710440807/Cheese_Extravaganza_ru4k8h.jpg"
 
 	return (
 		<div className="mb-4">
 			<div className="flex flex-row-reverse">
-				{prdImage ? (
+				{prdImage && (
 					<div className="relative w-[145px] h-[145px] bg-lightSteelBlue rounded-lg">
 						<Image
 							fill
@@ -44,27 +51,18 @@ function MenuItem({ product }) {
 							className="object-cover rounded-lg"
 						/>
 					</div>
-				) : (
-					<></>
 				)}
 
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>
-						<div className="flex items-center">
-							{getProductType()}
-
-							{/* Bestseller Tag */}
-							{product.tag && (
-								<div className="ml-2">
-									<ChipElement color="red" text={product.tag} />
-								</div>
-							)}
-						</div>
+						<div className="flex items-center">{getProductType()}</div>
 
 						{/* Product Name */}
-						<p className="text-secondary text-sm font-bold mt-1">
-							{product.name}
-						</p>
+						{product.name && (
+							<p className="text-secondary text-sm font-bold mt-1">
+								{product.name}
+							</p>
+						)}
 
 						{/* Product Description */}
 						{product.description && (
@@ -77,12 +75,11 @@ function MenuItem({ product }) {
 						)}
 
 						{/* Price */}
-						<p className="text-secondary text-sm font-bold pt-1">
-							₹{product.variants[0]?.price}
-						</p>
-
-						{/* Nutrients */}
-						{product.info && <NutrientComponent info={product.info} />}
+						{product.variants?.[0]?.price && (
+							<p className="text-secondary text-sm font-bold pt-1">
+								₹{product.variants[0].price}
+							</p>
+						)}
 					</div>
 				</div>
 			</div>

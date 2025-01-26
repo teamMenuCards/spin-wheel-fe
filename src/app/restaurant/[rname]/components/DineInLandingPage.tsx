@@ -1,28 +1,34 @@
-"use client"
-
-import React, { useState, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import DineInfoCard from "./DineInfoCard"
 import DineInButtons from "./DineInButtons"
 import VerifiedReviews from "./VerifiedReviews"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { IOption } from "../types"
 
 // Main Component
-function DineInLandingPage({ rname, restaurantInfo }) {
+function DineInLandingPage({
+	rname,
+	restaurantInfo
+}: {
+	rname: string
+	restaurantInfo: RestaurantDetailResponse | undefined
+}) {
 	const [currentReview, setCurrentReview] = useState(0)
-	const reviewsRef = useRef<HTMLDivElement | null>(null)
-	const reviews = ["/review1.jpeg", "/review2.jpeg"] // Example review images
+	const reviewsRef = useRef<HTMLDivElement>(null!) // Force non-null assertion
+	const reviews: string[] = ["/review1.jpeg", "/review2.jpeg"] // Example review images
 	const DEFAULT_COVER = 'url("https://dummyimage.com/600x400/000/fff")'
 
-	const getPath = (rid: string, data) => {
+	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []
 
 		console.log("getPath:", rid, details)
 
-		const linksList = {}
+		const linksList: Record<string, string> = {}
 		details?.platform_details?.forEach((item) => {
-			linksList[item["platform_name"]] = item["platform_uri"]
+			linksList[item.platform_name] = item.platform_uri
 		})
 
-		const options = [
+		const options: IOption[] = [
 			{
 				id: 1,
 				value: "Menu",
@@ -48,7 +54,13 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 		return options
 	}
 
-	const options = getPath(rname, restaurantInfo)
+	const options = restaurantInfo && getPath(rname, restaurantInfo)
+
+	useEffect(() => {
+		if (reviewsRef.current) {
+			reviewsRef.current.scrollIntoView({ behavior: "smooth" }) // ✅ Works without error
+		}
+	}, [currentReview])
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden bg-white">
@@ -59,13 +71,17 @@ function DineInLandingPage({ rname, restaurantInfo }) {
 				}}
 			/>
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">
-				<DineInfoCard restaurantInfo={restaurantInfo} reviewsRef={reviewsRef} />
-				<DineInButtons options={options} />
+				{restaurantInfo && (
+					<DineInfoCard
+						restaurantInfo={restaurantInfo}
+						reviewsRef={reviewsRef}
+					/>
+				)}
+				{options && <DineInButtons options={options} />}
 				<VerifiedReviews
 					reviews={reviews}
 					currentReview={currentReview}
 					setCurrentReview={setCurrentReview}
-					ref={reviewsRef}
 				/>
 			</div>
 		</div>

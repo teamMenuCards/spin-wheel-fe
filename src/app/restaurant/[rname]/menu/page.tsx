@@ -1,6 +1,9 @@
 "use client"
 import { useParams } from "next/navigation"
-import { useGetMenuListByNameQuery } from "@/services/product/get-menu-list"
+import {
+	Category,
+	useGetMenuListByNameQuery
+} from "@/services/product/get-menu-list"
 import Accordion from "@/shared/Accordian"
 import FloatingMenu from "./components/floating-menu"
 import NavBar from "./components/NavBar"
@@ -15,7 +18,7 @@ export default function MenuPage() {
 	//temporary
 	const currentCategory = categories.length > 0 ? categories[0].id : ""
 
-	const handleCategorySelection = (category) => {
+	const handleCategorySelection = (category: Category) => {
 		console.log(category)
 	}
 

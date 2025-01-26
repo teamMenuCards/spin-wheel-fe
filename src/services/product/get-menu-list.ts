@@ -10,18 +10,16 @@ import { apiRoutes } from "../api-routes"
 import { axiosBaseQuery } from "../http-client"
 import { parseDynamicURL } from "../utils"
 
+export type Category = ProductCategoryType & {
+	products: Array<
+		ProductType & {
+			variants: ProductVariantType[]
+		}
+	>
+}
+
 export type MenuListResponseType = {
-	categories:
-		| Array<
-				ProductCategoryType & {
-					products: Array<
-						ProductType & {
-							variants: ProductVariantType[]
-						}
-					>
-				}
-		  >
-		| []
+	categories: Array<Category> | []
 } & RestaurantType
 
 // Define a service using a base URL and expected endpoints

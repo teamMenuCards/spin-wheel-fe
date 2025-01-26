@@ -1,7 +1,8 @@
 import NextLink from "next/link"
 import Image from "next/image"
+import { IOption } from "../types"
 
-const DineInButtons = ({ options }) => {
+const DineInButtons = ({ options }: { options: IOption[] }) => {
 	console.log("optionskkk==", options)
 
 	return (
@@ -10,7 +11,7 @@ const DineInButtons = ({ options }) => {
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 			{/* Menu Options */}
-			{options?.map((item, index) => (
+			{options?.map((item: IOption, index) => (
 				<NextLink
 					key={index}
 					href={item?.path ?? "/"}

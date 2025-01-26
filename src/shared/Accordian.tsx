@@ -1,18 +1,14 @@
 import { useState } from "react"
 import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
-import { ProductType, ProductVariantType } from "@/types"
 import {
 	ChevronDown_Ic,
 	ChevronUp_Ic
 } from "@/app/restaurant/[rname]/menu/icons"
-
-interface ProductCategoryType {
-	display_name: string
-	products: (ProductType & { variants: ProductVariantType[] })[]
-}
+import { Category } from "@/services/product/get-menu-list"
 
 interface AccordionProps {
-	sections?: ProductCategoryType[] // Accepts an array of categories
+	sections?: Category[] // Accepts an array of categories
+	onSectionSelection: (category: Category) => void
 }
 
 const Accordion: React.FC<AccordionProps> = ({
@@ -24,7 +20,7 @@ const Accordion: React.FC<AccordionProps> = ({
 		sections.map((_, index) => index)
 	)
 
-	const onClickSection = (index: number, section) => {
+	const onClickSection = (index: number, section: Category) => {
 		setOpenIndexes(
 			(prevIndexes) =>
 				prevIndexes.includes(index)

@@ -1,6 +1,12 @@
 import Image from "next/image"
 
-const Rating = ({ logo, rating, onClick }) => (
+interface IRating {
+	logo: string
+	rating: string
+	onClick: () => void
+}
+
+const Rating = ({ logo, rating, onClick }: IRating) => (
 	<div
 		onClick={onClick}
 		className="flex items-center justify-center gap-2 cursor-pointer"

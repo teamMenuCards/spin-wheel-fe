@@ -63,7 +63,7 @@ function DineInLandingPage({
 	}, [currentReview])
 
 	return (
-		<div className="w-screen min-h-screen relative overflow-hidden bg-white">
+		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
 			<div
 				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
 				style={{

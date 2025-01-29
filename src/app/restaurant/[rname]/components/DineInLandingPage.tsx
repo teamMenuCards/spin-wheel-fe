@@ -82,7 +82,7 @@ function DineInLandingPage({
 					/>
 				)}
 				{options && <DineInButtons options={options} />}
-				{!!reviews.length && (
+				{!!reviews.length && restaurantInfo && (
 					<VerifiedReviews
 						reviews={reviews}
 						currentReview={currentReview}

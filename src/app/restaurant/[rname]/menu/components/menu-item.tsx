@@ -34,9 +34,7 @@ function MenuItem({
 	const getProductType = () =>
 		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
-	const prdImage =
-		product.variants?.[0]?.image_url ||
-		"https://res.cloudinary.com/dftbnws8k/image/upload/v1710440807/Cheese_Extravaganza_ru4k8h.jpg"
+	const prdImage = product.variants?.[0]?.image_url || ""
 
 	return (
 		<div className="mb-4">

@@ -10,16 +10,17 @@ interface VerifiedReviewsProps {
 const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 	({ reviews, currentReview, setCurrentReview }, ref) => {
 		return (
-			<div ref={ref} className="w-full max-w-[400px] mt-8 mx-auto px-4">
+			<div
+				ref={ref}
+				className="relative w-full max-w-[400px] py-8 mx-auto px-4"
+			>
 				{/* Reviews Title */}
 				<div className="mb-4">
-					<h3 className="text-black text-base font-medium font-metropolis">
-						Verified Reviews
-					</h3>
+					<h4 className="text-md font-bold truncate">Verfied Reviews</h4>
 				</div>
 
 				{/* Carousel Container */}
-				<div className="relative w-full rounded-lg overflow-hidden bg-white shadow-sm">
+				<div className=" w-full rounded-lg overflow-hidden bg-white shadow-sm">
 					<div
 						className="flex transition-transform duration-300 ease-in-out"
 						style={{ transform: `translateX(-${currentReview * 100}%)` }}
@@ -37,7 +38,7 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 						))}
 					</div>
 
-					<div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+					<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
 						{reviews.map((_, index) => (
 							<button
 								key={index}

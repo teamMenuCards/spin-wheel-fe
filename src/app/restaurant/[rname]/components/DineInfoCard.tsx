@@ -39,17 +39,20 @@ const RestaurantInfoCard = ({
 		{
 			id: 1,
 			logo: "/zomato-logo.png",
-			rating: "4.2"
+			rating: "4.5",
+			review_count: "442"
 		},
 		{
 			id: 2,
 			logo: "/swiggy-logo.png",
-			rating: "4.7"
+			rating: "4.6",
+			review_count: "935"
 		},
 		{
 			id: 3,
 			logo: "/google-logo.png",
-			rating: "4"
+			rating: "4.5",
+			review_count: "121"
 		}
 	]
 
@@ -61,7 +64,7 @@ const RestaurantInfoCard = ({
 	return (
 		<>
 			{/* <div className="flex flex-wrap justify-between items-start font-metropolis "> */}
-			<div className="flex items-start md:items-center justify-between w-full max-w-[500px]  mx-auto px-4 font-metropolis">
+			<div className="flex items-start md:items-center justify-between w-full max-w-[500px]  mx-auto px-4 font-metropolis font-semibold">
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">
 					<Image
@@ -79,15 +82,15 @@ const RestaurantInfoCard = ({
 						<h2 className="text-lg font-bold truncate">
 							{restaurantInfo?.name}
 						</h2>
-						{/* <p className="text-sm text-gray-600 flex flex-wrap gap-1 mb-2">
-						{restaurantInfo?.cuisine?.join(", ")}
-					</p> */}
+						<p className="text-sm text-gray-600 mb-2">
+							{restaurantInfo?.detail.details.meta_details?.category}
+						</p>
 					</div>
 
 					<div
-						className={` flex w-full justify-between items-start mt-2 ${
+						className={` flex w-full justify-between items-start mt-4 ${
 							isDelivery
-								? "grid grid-cols-[1fr_150px] gap-4 items-start w-full"
+								? "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
 								: "flex justify-evenly"
 						}`}
 					>
@@ -134,7 +137,7 @@ const RestaurantInfoCard = ({
 										)}`}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="inline-flex text-blue-500 underline text-xs items-centertext-xs truncate max-w-[150px] overflow-hidden whitespace-nowrap"
+										className="inline-flex text-blue-500 underline  items-center text-xs max-w-[150px] overflow-hidden"
 									>
 										{location}
 									</a>
@@ -146,7 +149,7 @@ const RestaurantInfoCard = ({
 						<div
 							className={` ${
 								isDelivery
-									? "justify-center text-right grid md:grid-cols-1 gap-2"
+									? "justify-center text-right grid md:grid-cols-1 gap-1"
 									: "max-w-[800px] flex"
 							}`}
 						>
@@ -156,6 +159,7 @@ const RestaurantInfoCard = ({
 										<Rating
 											logo={item.logo}
 											rating={item.rating}
+											reviews={item.review_count}
 											onClick={() => {
 												if (reviewsRef && reviewsRef?.current) {
 													reviewsRef?.current?.scrollIntoView({

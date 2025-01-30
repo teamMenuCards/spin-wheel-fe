@@ -4,7 +4,7 @@ import Image from "next/image"
 interface VerifiedReviewsProps {
 	reviews: string[]
 	currentReview: number
-	setCurrentReview: (index: number) => void
+	setCurrentReview: React.Dispatch<React.SetStateAction<number>>
 }
 
 const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(

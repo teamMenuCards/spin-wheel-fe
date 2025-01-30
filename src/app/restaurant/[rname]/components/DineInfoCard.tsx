@@ -155,7 +155,7 @@ const RestaurantInfoCard = ({
 						>
 							{ratings.map((item) => {
 								return (
-									<div key={item.id} className="mr-4">
+									<div key={item.id}>
 										<Rating
 											logo={item.logo}
 											rating={item.rating}

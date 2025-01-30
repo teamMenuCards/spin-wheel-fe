@@ -24,7 +24,7 @@ const Rating = ({ logo, rating, onClick, reviews }: IRating) => (
 
 		{/* Rating Box */}
 		<div>
-			<div className="flex w-fit gap-1 bg-green-700 text-white px-1 py-0 rounded text-sm font-bold items-center">
+			<div className="flex gap-1 bg-green-700 text-white px-1 py-0 rounded text-sm font-bold items-center justify-center">
 				{rating}
 				{/* star icon */}
 				<svg

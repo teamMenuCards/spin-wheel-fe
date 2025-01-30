@@ -104,7 +104,7 @@ const RestaurantInfoCard = ({
 										width={14}
 										height={14}
 									/>
-									<span className="text-xs">{`${openTime} - ${closeTime}`}</span>
+									<span className="text-sm">{`${openTime} - ${closeTime}`}</span>
 								</div>
 
 								<div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ const RestaurantInfoCard = ({
 										<div className="w-4">
 											<Phone_Ic className="w-3 h-3" />
 										</div>
-										<span className="text-xs">
+										<span className="text-sm">
 											{restaurantInfo?.detail?.phone_no}
 										</span>
 									</a>
@@ -124,7 +124,7 @@ const RestaurantInfoCard = ({
 								{!!avgPrice && (
 									<div className="flex items-center gap-2">
 										<Users_Ic className="w-3 h-3 text-black" />
-										<span className="text-xs">₹{avgPrice} for two</span>
+										<span className="text-sm">₹{avgPrice} for two</span>
 									</div>
 								)}
 
@@ -137,7 +137,7 @@ const RestaurantInfoCard = ({
 										)}`}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="inline-flex text-blue-500 underline  items-center text-xs max-w-[150px] overflow-hidden"
+										className="inline-flex text-blue-500 underline  items-center text-sm max-w-[150px] overflow-hidden"
 									>
 										{location}
 									</a>

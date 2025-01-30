@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react"
+import React, { forwardRef, useRef } from "react"
 import Image from "next/image"
 
 interface VerifiedReviewsProps {
@@ -9,6 +9,29 @@ interface VerifiedReviewsProps {
 
 const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 	({ reviews, currentReview, setCurrentReview }, ref) => {
+		const touchStartX = useRef(0)
+		const touchEndX = useRef(0)
+
+		const handleTouchStart = (e: React.TouchEvent) => {
+			touchStartX.current = e.touches[0].clientX
+		}
+
+		const handleTouchMove = (e: React.TouchEvent) => {
+			touchEndX.current = e.touches[0].clientX
+		}
+
+		const handleTouchEnd = () => {
+			const deltaX = touchStartX.current - touchEndX.current
+
+			if (deltaX > 50) {
+				// Swipe left (next)
+				setCurrentReview((prev) => Math.min(prev + 1, reviews.length - 1))
+			} else if (deltaX < -50) {
+				// Swipe right (previous)
+				setCurrentReview((prev) => Math.max(prev - 1, 0))
+			}
+		}
+
 		return (
 			<div
 				ref={ref}
@@ -20,10 +43,13 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 				</div>
 
 				{/* Carousel Container */}
-				<div className=" w-full rounded-lg overflow-hidden bg-white shadow-sm">
+				<div className="w-full rounded-lg overflow-hidden bg-white shadow-sm relative">
 					<div
 						className="flex transition-transform duration-300 ease-in-out"
 						style={{ transform: `translateX(-${currentReview * 100}%)` }}
+						onTouchStart={handleTouchStart}
+						onTouchMove={handleTouchMove}
+						onTouchEnd={handleTouchEnd}
 					>
 						{reviews.map((review, index) => (
 							<div key={index} className="flex-shrink-0 w-full relative">
@@ -38,6 +64,7 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 						))}
 					</div>
 
+					{/* Pagination Dots */}
 					<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
 						{reviews.map((_, index) => (
 							<button

@@ -79,9 +79,7 @@ const RestaurantInfoCard = ({
 				<div className="m-auto mt-3">
 					{/* Restaurant Name */}
 					<div className="text-center">
-						<h2 className="text-lg font-bold truncate">
-							{restaurantInfo?.name}
-						</h2>
+						<h2 className="text-lg font-bold">{restaurantInfo?.name}</h2>
 						<p className="text-sm text-gray-600 mb-2">
 							{restaurantInfo?.detail.details.meta_details?.category}
 						</p>

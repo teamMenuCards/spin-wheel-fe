@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
 			{
 				protocol: "https",
 				hostname: "b.zmtcdn.com"
+			},
+			{
+				protocol: "https",
+				hostname: "media-assets.swiggy.com"
 			}
 		]
 	}

@@ -1,0 +1,111 @@
+"use client";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import React, { JSX, useState, useEffect } from 'react';
+
+import { cn } from '@/lib/utils';
+
+export type NavItem = {
+  name: string;
+  link: string;
+  icon?: JSX.Element;
+};
+
+export const NavBar = ({
+  navItems,
+  className,
+}: {
+  navItems: NavItem[];
+  className?: string;
+}) => {
+  const { scrollYProgress } = useScroll();
+
+  const [visible, setVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+
+  useMotionValueEvent(scrollYProgress, "change", (current) => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      setVisible(true); // Always visible on mobile
+    } else {
+      if (typeof current === "number") {
+        const direction = current! - scrollYProgress.getPrevious()!;
+        if (scrollYProgress.get() < 0.05) {
+          setVisible(false);
+        } else {
+          if (direction < 0) {
+            setVisible(true);
+          } else {
+            setVisible(false);
+          }
+        }
+      }
+    }
+  });
+
+
+  const scrollToSection = (event: React.MouseEvent, sectionId: string) => {
+    event.preventDefault(); 
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(sectionId);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(navItem => document.getElementById(navItem.link.substring(1)));
+      const currentSection = sections.find(section => {
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          return rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2;
+        }
+      });
+      if (currentSection) {
+        setActiveSection(currentSection.id);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [navItems]);
+
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        initial={{
+          opacity: 1,
+          y: -100,
+        }}
+        animate={{
+          y: visible ? 0 : -100,
+          opacity: visible ? 1 : 0,
+        }}
+        transition={{
+          duration: 0.2,
+        }}
+        className={cn(
+          "flex w-11/12 sm:max-w-fit fixed top-2 sm:top-6 inset-x-0 mx-auto border border-transparent dark:border-white/[0.2] rounded-full dark:bg-black bg-white shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] z-[5000] px-6 py-2 items-center justify-center space-x-4",
+          className
+        )}
+      >
+        {navItems.map((navItem: NavItem, idx: number) => (
+          <a
+            key={`link-${idx}`}
+            href={navItem.link}
+            className={cn(
+              "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500",
+              activeSection === navItem.link.substring(1) ? "border border-neutral-200 dark:border-white/[0.2] rounded-full px-4 py-2" : ""
+            )}
+
+            onClick={(event) => scrollToSection(event, navItem.link.substring(1))}
+
+          >
+            <span className="block">{navItem.icon}</span>
+            <span className="block text-sm">{navItem.name}</span>
+          </a>
+        ))}
+      </motion.div>
+    </AnimatePresence>
+  );
+};

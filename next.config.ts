@@ -1,0 +1,24 @@
+import type { NextConfig } from "next"
+
+const nextConfig: NextConfig = {
+	/* config options here */
+	images: {
+		domains: ["res.cloudinary.com", "dummyimage.com", "ik.imagekit.io"],
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "www.shutterstock.com"
+			},
+			{
+				protocol: "https",
+				hostname: "b.zmtcdn.com"
+			},
+			{
+				protocol: "https",
+				hostname: "media-assets.swiggy.com"
+			}
+		]
+	}
+}
+
+export default nextConfig

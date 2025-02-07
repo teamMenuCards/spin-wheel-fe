@@ -26,10 +26,9 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 		<>
 			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
 				<div className="max-w-7xl mx-auto flex items-center justify-between">
-					<h4 className="text-xl font-bold truncate">{rname}</h4>
+					<div className="text-xl font-bold truncate">{rname}</div>
 					<div
-						// onClick={() => setIsDrawerOpen(true)}
-						className="w-12 h-12 rounded-full cursor-pointer"
+						className="w-12 h-12 rounded-full cursor-pointer ml-4 aspect-[1]"
 						style={{
 							backgroundImage: coverImage,
 							backgroundSize: "cover",

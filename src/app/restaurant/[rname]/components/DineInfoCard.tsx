@@ -71,9 +71,9 @@ const RestaurantInfoCard = ({
 					<Image
 						src={restaurantInfo?.detail?.logo || DEFAULT_logo}
 						alt="Restaurant Logo"
-						width={125}
-						height={125}
 						priority
+						fill
+						style={{ objectFit: "cover", width: "100%" }}
 					/>
 				</div>
 

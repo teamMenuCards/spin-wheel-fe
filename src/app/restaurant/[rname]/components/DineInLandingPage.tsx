@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useRef } from "react"
 import DineInfoCard from "./DineInfoCard"
 import DineInButtons from "./DineInButtons"
 // import VerifiedReviews from "./VerifiedReviews"
@@ -70,7 +70,8 @@ function DineInLandingPage({
 			<div
 				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
 				style={{
-					backgroundImage: restaurantInfo?.detail.cover_image || DEFAULT_COVER
+					backgroundImage:
+						DEFAULT_COVER || `url(${restaurantInfo?.detail.cover_image})`
 				}}
 			/>
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">

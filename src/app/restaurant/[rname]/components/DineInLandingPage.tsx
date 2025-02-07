@@ -26,8 +26,6 @@ function DineInLandingPage({
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []
 
-		console.log("getPath:", rid, details)
-
 		const linksList: Record<string, string> = {}
 		details?.platform_details?.forEach((item) => {
 			linksList[item.platform_name] = item.platform_uri

@@ -7,7 +7,7 @@ import {
 import { Category } from "@/services/product/get-menu-list"
 
 interface AccordionProps {
-	sections?: Category[] // Accepts an array of categories
+	sections?: Category[]
 	onSectionSelection: (category: Category) => void
 }
 

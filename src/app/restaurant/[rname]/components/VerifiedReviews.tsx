@@ -40,7 +40,7 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 			>
 				{/* Reviews Title */}
 				<div className="mb-4">
-					<h4 className="text-md font-bold truncate">Verfied Reviews</h4>
+					<h4 className="text-md font-bold truncate">Verified Reviews</h4>
 				</div>
 
 				{/* Carousel Container */}

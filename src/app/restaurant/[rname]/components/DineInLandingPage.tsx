@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import DineInfoCard from "./DineInfoCard"
 import DineInButtons from "./DineInButtons"
-import VerifiedReviews from "./VerifiedReviews"
+// import VerifiedReviews from "./VerifiedReviews"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IOption } from "../types"
 
@@ -13,13 +13,13 @@ function DineInLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
-	const [currentReview, setCurrentReview] = useState(0)
+	// const [currentReview, setCurrentReview] = useState(0)
 	const reviewsRef = useRef<HTMLDivElement>(null!)
-	const reviews: string[] = [
-		"/reviews/p1.jpeg",
-		"/reviews/p2.jpeg",
-		"/reviews/p3.jpeg"
-	]
+	// const reviews: string[] = [
+	// 	"/reviews/p1.jpeg",
+	// 	"/reviews/p2.jpeg",
+	// 	"/reviews/p3.jpeg"
+	// ]
 
 	const DEFAULT_COVER = 'url("/goodFood.png")'
 
@@ -59,11 +59,11 @@ function DineInLandingPage({
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	useEffect(() => {
-		if (reviewsRef.current) {
-			reviewsRef.current.scrollIntoView({ behavior: "smooth" })
-		}
-	}, [currentReview])
+	// useEffect(() => {
+	// 	if (reviewsRef.current) {
+	// 		reviewsRef.current.scrollIntoView({ behavior: "smooth" })
+	// 	}
+	// }, [currentReview])
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
@@ -82,13 +82,13 @@ function DineInLandingPage({
 				)}
 				{options && <DineInButtons options={options} />}
 
-				{!!reviews.length && restaurantInfo && (
+				{/* {!!reviews.length && restaurantInfo && (
 					<VerifiedReviews
 						reviews={reviews}
 						currentReview={currentReview}
 						setCurrentReview={setCurrentReview}
 					/>
-				)}
+				)} */}
 			</div>
 		</div>
 	)

@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useRef, useState } from "react"
 import DineInfoCard from "./DineInfoCard"
 import DineInButtons from "./DineInButtons"
@@ -5,7 +6,6 @@ import VerifiedReviews from "./VerifiedReviews"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IOption } from "../types"
 
-// Main Component
 function DineInLandingPage({
 	rname,
 	restaurantInfo
@@ -14,12 +14,13 @@ function DineInLandingPage({
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
 	const [currentReview, setCurrentReview] = useState(0)
-	const reviewsRef = useRef<HTMLDivElement>(null!) // Force non-null assertion
+	const reviewsRef = useRef<HTMLDivElement>(null!)
 	const reviews: string[] = [
 		"/reviews/p1.jpeg",
 		"/reviews/p2.jpeg",
 		"/reviews/p3.jpeg"
-	] // Example review images
+	]
+
 	const DEFAULT_COVER = 'url("/goodFood.png")'
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
@@ -62,7 +63,7 @@ function DineInLandingPage({
 
 	useEffect(() => {
 		if (reviewsRef.current) {
-			reviewsRef.current.scrollIntoView({ behavior: "smooth" }) // ✅ Works without error
+			reviewsRef.current.scrollIntoView({ behavior: "smooth" })
 		}
 	}, [currentReview])
 
@@ -82,6 +83,7 @@ function DineInLandingPage({
 					/>
 				)}
 				{options && <DineInButtons options={options} />}
+
 				{!!reviews.length && restaurantInfo && (
 					<VerifiedReviews
 						reviews={reviews}

@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import { Users_Ic, Phone_Ic, MapIcon_Tc } from "./icons"
 import { useSearchParams } from "next/navigation"

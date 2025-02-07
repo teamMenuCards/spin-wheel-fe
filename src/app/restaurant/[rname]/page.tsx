@@ -12,8 +12,6 @@ export default function Page() {
 
 	const { currentData } = useGetRestaurantDetailByNameQuery(rname)
 
-	console.log("currentData--", rname)
-
 	return (
 		<div>
 			<DineInLandingPage rname={rname} restaurantInfo={currentData} />

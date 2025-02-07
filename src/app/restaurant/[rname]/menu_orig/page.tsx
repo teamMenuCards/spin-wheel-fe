@@ -16,7 +16,6 @@ import { formatPrice } from "@/utils/format-helper"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
-
 	const { currentData } = useGetMenuListByNameQuery(rname)
 	const { dineInCart, totalItems } = useAppSelector(
 		(state) => state["dine-in-state"]

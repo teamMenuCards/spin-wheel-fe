@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
 import {
 	ChevronDown_Ic,
@@ -15,10 +15,14 @@ const Accordion: React.FC<AccordionProps> = ({
 	sections = [],
 	onSectionSelection
 }) => {
-	// Initialize all sections as open
-	const [openIndexes, setOpenIndexes] = useState<number[]>(
-		sections.map((_, index) => index)
-	)
+	const [openIndexes, setOpenIndexes] = useState<number[]>([])
+
+	// Ensure all sections are open when sections data is available
+	useEffect(() => {
+		if (sections.length) {
+			setOpenIndexes(sections.map((_, index) => index))
+		}
+	}, [sections])
 
 	const onClickSection = (index: number, section: Category) => {
 		setOpenIndexes(
@@ -35,7 +39,7 @@ const Accordion: React.FC<AccordionProps> = ({
 			<div className="space-y-2">
 				{sections.map((section, index) => (
 					<div
-						key={index}
+						key={section.id}
 						id={section.id}
 						className="border rounded-lg overflow-hidden"
 					>

@@ -11,11 +11,9 @@ import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-res
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
-	const { currentData } = useGetMenuListByNameQuery(rname)
+	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
 	const { data: restaurantInfo } = useGetRestaurantDetailByNameQuery(rname)
-	const categories = currentData?.categories || []
-
-	//temporary
+	const categories = menudata?.categories || []
 	const currentCategory = categories.length > 0 ? categories[0].id : ""
 
 	const handleCategorySelection = (category: Category) => {
@@ -28,7 +26,7 @@ export default function MenuPage() {
 			<FloatingMenu categories={categories} currentCategory={currentCategory} />
 
 			<Accordion
-				sections={currentData?.categories || []}
+				sections={menudata?.categories || []}
 				onSectionSelection={handleCategorySelection}
 			/>
 		</>

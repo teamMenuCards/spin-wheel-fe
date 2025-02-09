@@ -12,7 +12,7 @@ export type AppState = {
 
 const initialState: Readonly<AppState> = {
 	isLoggedIn: false,
-	mode: CLIENT_APP_MODE.DINE_IN
+	mode: CLIENT_APP_MODE.DELIVERY // mode is DELIVERY by default
 }
 
 export const appStateSlice = createSlice({

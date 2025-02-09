@@ -31,30 +31,72 @@ function DineInLandingPage({
 			linksList[item.platform_name] = item.platform_uri
 		})
 
-		const options: IOption[] = [
+		const getMssg = (mssg: string) => {
+			return encodeURIComponent(mssg)
+		}
+
+		const encodedMessage =
+			restaurantInfo &&
+			getMssg(
+				`Hi team ${restaurantInfo.name}. Please keep me updated on the weekly offers`
+			)
+
+		const deliveryOptions = [
 			{
 				id: 1,
 				value: "Menu",
-				path: `/restaurant/${rid}/menu`
+				path: `/restaurant/${rid}/menu`,
+				icon: "/menu-icon.png"
 			},
 			{
 				id: 2,
-				value: "Review us on Zomato",
-				path: linksList["zomato-dine-in"]
+				value: "Find us at",
+				path: linksList["locate-us-link"],
+				icon: "/google_map.svg"
 			},
 			{
 				id: 3,
+				value: "Review us on Zomato",
+				path: linksList["zomato-delivery"],
+				icon: "/zomato-logo.png"
+			},
+			{
+				id: 4,
+				value: "Review us on Swiggy",
+				path: linksList["swiggy-link"],
+				icon: "/swiggy-logo.png"
+			}
+		]
+
+		const dineInOptions: IOption[] = [
+			{
+				id: 1,
+				value: "Menu",
+				path: `/restaurant/${rid}/menu`,
+				icon: "/menu-icon.png"
+			},
+
+			{
+				id: 2,
 				value: "Review us on Google",
-				path: linksList["google-review"]
+				path: linksList["google-review"],
+				icon: "/google-logo.png"
+			},
+			{
+				id: 3,
+				value: "Say Hello to receive offers",
+				path: `${linksList["whatsapp-link"]}${encodedMessage} `,
+				icon: "/whatsapp.svg"
 			},
 			{
 				id: 4,
 				value: "Instagram",
-				path: linksList["insta"]
+				path: linksList["insta"],
+				icon: "/instagram-icon.png"
 			}
 		]
 
-		return options
+		return { deliveryOptions, dineInOptions }
 	}
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
@@ -82,14 +124,6 @@ function DineInLandingPage({
 					/>
 				)}
 				{options && <DineInButtons options={options} />}
-
-				{/* {!!reviews.length && restaurantInfo && (
-					<VerifiedReviews
-						reviews={reviews}
-						currentReview={currentReview}
-						setCurrentReview={setCurrentReview}
-					/>
-				)} */}
 			</div>
 		</div>
 	)

@@ -93,7 +93,7 @@ const RestaurantInfoCard = ({
 								: "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
 						}`}
 					>
-						{/* Details Section */}
+						{/* Restaurant Details Section */}
 						{!isDineIn && (
 							<div className="flex flex-col gap-2 text-left">
 								<div className="flex items-center gap-2">

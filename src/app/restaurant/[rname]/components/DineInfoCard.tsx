@@ -14,7 +14,7 @@ const RestaurantInfoCard = ({
 	reviewsRef
 }: {
 	restaurantInfo: RestaurantDetailResponse
-	reviewsRef: React.RefObject<HTMLDivElement> // ✅ Use RefObject
+	reviewsRef: React.RefObject<HTMLDivElement>
 }) => {
 	const searchParams = useSearchParams()
 	const modeFromUrl = searchParams.get("m")
@@ -33,7 +33,7 @@ const RestaurantInfoCard = ({
 		}
 	}, [validMode, dispatch, mode])
 
-	const isDelivery = mode == CLIENT_APP_MODE.DELIVERY
+	const isDineIn = mode == CLIENT_APP_MODE.DINE_IN
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
 	const ratings = [
@@ -88,13 +88,13 @@ const RestaurantInfoCard = ({
 
 					<div
 						className={` flex w-full justify-between items-start mt-4 ${
-							isDelivery
-								? "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
-								: "flex justify-evenly"
+							isDineIn
+								? "flex justify-evenly"
+								: "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
 						}`}
 					>
 						{/* Details Section */}
-						{isDelivery && (
+						{!isDineIn && (
 							<div className="flex flex-col gap-2 text-left">
 								<div className="flex items-center gap-2">
 									<Image
@@ -147,9 +147,9 @@ const RestaurantInfoCard = ({
 						{/* Ratings Section */}
 						<div
 							className={` ${
-								isDelivery
-									? "justify-center text-right grid md:grid-cols-1 gap-1"
-									: "max-w-[800px] flex"
+								isDineIn
+									? "max-w-[800px] flex"
+									: "justify-center text-right grid md:grid-cols-1 gap-1"
 							}`}
 						>
 							{ratings.map((item) => {

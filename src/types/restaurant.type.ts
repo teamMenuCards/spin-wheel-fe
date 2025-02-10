@@ -27,7 +27,7 @@ export type RestaurantDetailType = {
 			average_rating: number
 		}[]
 		platform_details?: {
-			platform_name: string // Corrected from 'paltform_name'
+			platform_name: string
 			platform_uri: string
 		}[]
 		meta_details?: {

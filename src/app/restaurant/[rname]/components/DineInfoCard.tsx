@@ -38,6 +38,12 @@ const RestaurantInfoCard = ({
 
 	const ratings = [
 		{
+			id: 3,
+			logo: "/google-logo.png",
+			rating: "4.5",
+			review_count: "121"
+		},
+		{
 			id: 1,
 			logo: "/zomato-logo.png",
 			rating: "4.5",
@@ -48,12 +54,6 @@ const RestaurantInfoCard = ({
 			logo: "/swiggy-logo.png",
 			rating: "4.6",
 			review_count: "935"
-		},
-		{
-			id: 3,
-			logo: "/google-logo.png",
-			rating: "4.5",
-			review_count: "121"
 		}
 	]
 
@@ -73,7 +73,7 @@ const RestaurantInfoCard = ({
 						alt="Restaurant Logo"
 						priority
 						fill
-						style={{ objectFit: "cover", width: "100%" }}
+						style={{ objectFit: "contain", width: "100%", background: "white" }}
 					/>
 				</div>
 

@@ -23,57 +23,61 @@ const DineInButtons = ({
 
 			{/* Menu & other DINE_IN button */}
 			{isDineIn &&
-				dineInOptions?.map((item: IOption, index) => (
-					<NextLink
-						key={index}
-						href={item?.path ?? "/"}
-						passHref
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
-							<Image
-								src={item.icon}
-								alt={item.value}
-								width={24}
-								height={24}
-								className="mr-4 drop-shadow-sm rounded"
-							/>
+				dineInOptions?.map((item: IOption, index) =>
+					item.show ? (
+						<NextLink
+							key={index}
+							href={item?.path ?? "/"}
+							passHref
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
+								<Image
+									src={item.icon}
+									alt={item.value}
+									width={24}
+									height={24}
+									className="mr-4 drop-shadow-sm rounded"
+								/>
 
-							{/* Button Text */}
-							<div className="text-gray-800 font-semibold text-sm">
-								{item.value}
+								{/* Button Text */}
+								<div className="text-gray-800 font-semibold text-sm">
+									{item.value}
+								</div>
 							</div>
-						</div>
-					</NextLink>
-				))}
+						</NextLink>
+					) : null
+				)}
 
 			{/* Menu & other Delivery option button */}
 			{!isDineIn &&
-				deliveryOptions?.map((item: IOption, index) => (
-					<NextLink
-						key={index}
-						href={item?.path ?? "/"}
-						passHref
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
-							<Image
-								src={item.icon}
-								alt={item.value}
-								width={24}
-								height={24}
-								className="mr-4 drop-shadow-sm rounded"
-							/>
+				deliveryOptions?.map((item: IOption, index) =>
+					item.show ? (
+						<NextLink
+							key={index}
+							href={item?.path ?? "/"}
+							passHref
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
+								<Image
+									src={item.icon}
+									alt={item.value}
+									width={24}
+									height={24}
+									className="mr-4 drop-shadow-sm rounded"
+								/>
 
-							{/* Button Text */}
-							<div className="text-gray-800 font-semibold text-sm">
-								{item.value}
+								{/* Button Text */}
+								<div className="text-gray-800 font-semibold text-sm">
+									{item.value}
+								</div>
 							</div>
-						</div>
-					</NextLink>
-				))}
+						</NextLink>
+					) : null
+				)}
 		</div>
 	)
 }

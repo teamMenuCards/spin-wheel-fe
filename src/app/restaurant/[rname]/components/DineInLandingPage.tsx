@@ -41,30 +41,41 @@ function DineInLandingPage({
 				`Hi team ${restaurantInfo.name}. Please keep me updated on the weekly offers`
 			)
 
-		const deliveryOptions = [
+		const deliveryOptions: IOption[] = [
 			{
 				id: 1,
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
-				icon: "/menu-icon.png"
+				icon: "/menu-icon.png",
+				show: true
 			},
 			{
 				id: 2,
-				value: "Find us at",
-				path: linksList["locate-us-link"],
-				icon: "/google_map.svg"
+				value: "Contact Us",
+				path: linksList["whatsapp-link"],
+				icon: "/whatsapp.svg",
+				show: !!linksList["whatsapp-link"]
 			},
 			{
 				id: 3,
-				value: "Review us on Zomato",
-				path: linksList["zomato-delivery"],
-				icon: "/zomato-logo.png"
+				value: "Find us at",
+				path: linksList["locate-us-link"],
+				icon: "/google_map.svg",
+				show: !!linksList["locate-us-link"]
 			},
 			{
 				id: 4,
-				value: "Review us on Swiggy",
+				value: "Order from Zomato",
+				path: linksList["zomato-delivery"],
+				icon: "/zomato-logo.png",
+				show: !!linksList["zomato-delivery"]
+			},
+			{
+				id: 5,
+				value: "Order from Swiggy",
 				path: linksList["swiggy-link"],
-				icon: "/swiggy-logo.png"
+				icon: "/swiggy-logo.png",
+				show: !!linksList["swiggy-link"]
 			}
 		]
 
@@ -73,26 +84,30 @@ function DineInLandingPage({
 				id: 1,
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
-				icon: "/menu-icon.png"
+				icon: "/menu-icon.png",
+				show: true
 			},
 
 			{
 				id: 2,
 				value: "Review us on Google",
 				path: linksList["google-review"],
-				icon: "/google-logo.png"
+				icon: "/google-logo.png",
+				show: !!linksList["google-review"]
 			},
 			{
 				id: 3,
 				value: "Say Hello to receive offers",
 				path: `${linksList["whatsapp-link"]}${encodedMessage} `,
-				icon: "/whatsapp.svg"
+				icon: "/whatsapp.svg",
+				show: !!linksList["whatsapp-link"]
 			},
 			{
 				id: 4,
-				value: "Instagram",
+				value: "Follow on Instagram",
 				path: linksList["insta"],
-				icon: "/instagram-icon.png"
+				icon: "/instagram-icon.png",
+				show: !!linksList["insta"]
 			}
 		]
 

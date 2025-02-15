@@ -3,4 +3,5 @@ export interface IOption {
 	value: string
 	path: string
 	icon: string
+	show?: boolean
 }

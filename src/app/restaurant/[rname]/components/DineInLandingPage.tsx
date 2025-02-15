@@ -65,14 +65,14 @@ function DineInLandingPage({
 			},
 			{
 				id: 4,
-				value: "Review us on Zomato",
+				value: "Order from Zomato",
 				path: linksList["zomato-delivery"],
 				icon: "/zomato-logo.png",
 				show: !!linksList["zomato-delivery"]
 			},
 			{
 				id: 5,
-				value: "Review us on Swiggy",
+				value: "Order from Swiggy",
 				path: linksList["swiggy-link"],
 				icon: "/swiggy-logo.png",
 				show: !!linksList["swiggy-link"]
@@ -104,7 +104,7 @@ function DineInLandingPage({
 			},
 			{
 				id: 4,
-				value: "Instagram",
+				value: "Follow on Instagram",
 				path: linksList["insta"],
 				icon: "/instagram-icon.png",
 				show: !!linksList["insta"]

@@ -1,8 +1,14 @@
 "use client"
 import React from "react"
-import DineInLandingPage from "./components/DineInLandingPage"
+import DeliveryLandingPage from "./components/DeliveryLandingPage"
 import { useParams } from "next/navigation"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+
+/* 
+		By defult the delivery page is the landing page
+		"http://menu-cards.com/restaurant/<name>/dine-in" is the Dining Landing page 
+
+*/
 
 export default function Page() {
 	const { rname } = useParams<{ rname: string }>()
@@ -11,7 +17,7 @@ export default function Page() {
 
 	return (
 		<div>
-			<DineInLandingPage rname={rname} restaurantInfo={currentData} />
+			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
 		</div>
 	)
 }

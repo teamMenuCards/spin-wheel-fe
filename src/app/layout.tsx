@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
+import Script from "next/script"
 
 import { Geist, Geist_Mono, Montserrat } from "next/font/google"
 
@@ -35,9 +36,25 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
+			<head>
+				{/* Google Tag Manager Script */}
+				<Script
+					id="google-tag-manager"
+					strategy="afterInteractive"
+					src={`https://www.googletagmanager.com/gtm.js?id=GTM-MWFQKB7H`}
+				/>
+			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
 			>
+				<noscript>
+					<iframe
+						src="https://www.googletagmanager.com/ns.html?id=GTM-MWFQKB7H"
+						height="0"
+						width="0"
+						style={{ display: "none", visibility: "hidden" }}
+					></iframe>
+				</noscript>
 				<RootProvider>{children}</RootProvider>
 			</body>
 		</html>

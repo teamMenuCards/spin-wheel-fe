@@ -1,25 +1,38 @@
 "use client"
-import React, { useRef } from "react"
-import DineInfoCard from "./DineInfoCard"
-import DineInButtons from "./DineInButtons"
-// import VerifiedReviews from "./VerifiedReviews"
-import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
-import { IOption } from "../types"
+import React, { useEffect, useRef } from "react"
+import DineInfoCard from "../shared/DineInfoCard"
+import DineInButtons from "../shared/DineInButtons"
 
-function DineInLandingPage({
-	rname,
-	restaurantInfo
-}: {
-	rname: string
-	restaurantInfo: RestaurantDetailResponse | undefined
-}) {
-	// const [currentReview, setCurrentReview] = useState(0)
+import {
+	RestaurantDetailResponse,
+	useGetRestaurantDetailByNameQuery
+} from "@/services/restaurant/get-restaurant-detail"
+import { IOption } from "../types"
+import { useParams } from "next/navigation"
+import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
+import { useAppSelector } from "@/store/hooks"
+import { useDispatch } from "react-redux"
+
+function DineInLandingPage() {
+	const { rname } = useParams<{ rname: string }>()
+	const modeFromUrl = CLIENT_APP_MODE.DINE_IN
+	const dispatch = useDispatch()
+	const mode = useAppSelector((state) => state.appState.mode)
+	const { currentData: restaurantInfo } =
+		useGetRestaurantDetailByNameQuery(rname)
+
+	// Type guard to validate `modeFromUrl`
+	const validMode = Object.values(CLIENT_APP_MODE).find(
+		(m): m is CLIENT_APP_MODE => m === modeFromUrl
+	)
+
+	useEffect(() => {
+		if (validMode && mode !== validMode) {
+			dispatch(setMode(validMode))
+		}
+	}, [validMode, dispatch, mode])
+
 	const reviewsRef = useRef<HTMLDivElement>(null!)
-	// const reviews: string[] = [
-	// 	"/reviews/p1.jpeg",
-	// 	"/reviews/p2.jpeg",
-	// 	"/reviews/p3.jpeg"
-	// ]
 
 	const DEFAULT_COVER = 'url("/goodFood.png")'
 
@@ -116,12 +129,6 @@ function DineInLandingPage({
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	// useEffect(() => {
-	// 	if (reviewsRef.current) {
-	// 		reviewsRef.current.scrollIntoView({ behavior: "smooth" })
-	// 	}
-	// }, [currentReview])
-
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
 			<div
@@ -134,11 +141,12 @@ function DineInLandingPage({
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">
 				{restaurantInfo && (
 					<DineInfoCard
+						isDineIn
 						restaurantInfo={restaurantInfo}
 						reviewsRef={reviewsRef}
 					/>
 				)}
-				{options && <DineInButtons options={options} />}
+				{options && <DineInButtons options={options} isDineIn />}
 			</div>
 		</div>
 	)

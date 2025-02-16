@@ -2,18 +2,14 @@
 import NextLink from "next/link"
 import Image from "next/image"
 import { IOption } from "../types"
-import { useAppSelector } from "@/store/hooks"
-import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 
 const DineInButtons = ({
+	isDineIn = false,
 	options
 }: {
+	isDineIn?: boolean
 	options: { deliveryOptions: IOption[]; dineInOptions: IOption[] }
 }) => {
-	const mode = useAppSelector((state) => state.appState.mode)
-
-	const isDineIn = mode == CLIENT_APP_MODE.DINE_IN
-
 	const { dineInOptions, deliveryOptions } = options
 
 	return (

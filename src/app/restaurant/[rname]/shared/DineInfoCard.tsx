@@ -1,25 +1,18 @@
 "use client"
 import Image from "next/image"
 import { Users_Ic, Phone_Ic, MapIcon_Tc } from "./icons"
-import { useSearchParams } from "next/navigation"
-import { useDispatch } from "react-redux"
-import { useAppSelector } from "@/store/hooks"
-import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
-import { useEffect } from "react"
 import Rating from "./Rating"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
 const RestaurantInfoCard = ({
+	isDineIn = false,
 	restaurantInfo,
 	reviewsRef
 }: {
+	isDineIn?: boolean
 	restaurantInfo: RestaurantDetailResponse
 	reviewsRef: React.RefObject<HTMLDivElement>
 }) => {
-	const searchParams = useSearchParams()
-	const modeFromUrl = searchParams.get("m")
-	const dispatch = useDispatch()
-	const mode = useAppSelector((state) => state.appState.mode)
 	const {
 		address,
 		phone_no,
@@ -27,18 +20,6 @@ const RestaurantInfoCard = ({
 		details: { meta_details: metaData, platform_reviews: platformReviews }
 	} = restaurantInfo?.detail
 
-	// Type guard to validate `modeFromUrl`
-	const validMode = Object.values(CLIENT_APP_MODE).find(
-		(m): m is CLIENT_APP_MODE => m === modeFromUrl
-	)
-
-	useEffect(() => {
-		if (validMode && mode !== validMode) {
-			dispatch(setMode(validMode))
-		}
-	}, [validMode, dispatch, mode])
-
-	const isDineIn = mode == CLIENT_APP_MODE.DINE_IN
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
 	const socialIcons: Record<"google" | "swiggy" | "zomato", string> = {
@@ -54,7 +35,6 @@ const RestaurantInfoCard = ({
 
 	return (
 		<>
-			{/* <div className="flex flex-wrap justify-between items-start font-metropolis "> */}
 			<div className="flex items-start md:items-center justify-between w-full max-w-[500px]  mx-auto px-4 font-metropolis font-semibold">
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">

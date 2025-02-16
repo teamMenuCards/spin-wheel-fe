@@ -20,7 +20,12 @@ const RestaurantInfoCard = ({
 	const modeFromUrl = searchParams.get("m")
 	const dispatch = useDispatch()
 	const mode = useAppSelector((state) => state.appState.mode)
-	const metaData = restaurantInfo?.detail.details.meta_details
+	const {
+		address,
+		phone_no,
+		logo,
+		details: { meta_details: metaData, platform_reviews: platformReviews }
+	} = restaurantInfo?.detail
 
 	// Type guard to validate `modeFromUrl`
 	const validMode = Object.values(CLIENT_APP_MODE).find(
@@ -36,26 +41,11 @@ const RestaurantInfoCard = ({
 	const isDineIn = mode == CLIENT_APP_MODE.DINE_IN
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
-	const ratings = [
-		{
-			id: 3,
-			logo: "/google-logo.png",
-			rating: "4.5",
-			review_count: "121"
-		},
-		{
-			id: 1,
-			logo: "/zomato-logo.png",
-			rating: "4.5",
-			review_count: "442"
-		},
-		{
-			id: 2,
-			logo: "/swiggy-logo.png",
-			rating: "4.6",
-			review_count: "935"
-		}
-	]
+	const socialIcons: Record<"google" | "swiggy" | "zomato", string> = {
+		google: "/google-logo.png",
+		swiggy: "/swiggy-logo.png",
+		zomato: "/zomato-logo.png"
+	}
 
 	const openTime = (metaData && metaData.opening_time) || ""
 	const closeTime = (metaData && metaData.closing_time) || ""
@@ -69,7 +59,7 @@ const RestaurantInfoCard = ({
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">
 					<Image
-						src={restaurantInfo?.detail?.logo || DEFAULT_logo}
+						src={logo || DEFAULT_logo}
 						alt="Restaurant Logo"
 						priority
 						fill
@@ -81,9 +71,7 @@ const RestaurantInfoCard = ({
 					{/* Restaurant Name */}
 					<div className="text-center">
 						<h2 className="text-lg font-bold">{restaurantInfo?.name}</h2>
-						<p className="text-sm text-gray-600 mb-2">
-							{restaurantInfo?.detail.details.meta_details?.category}
-						</p>
+						<p className="text-sm text-gray-600 mb-2">{metaData?.category}</p>
 					</div>
 
 					<div
@@ -108,15 +96,13 @@ const RestaurantInfoCard = ({
 
 								<div className="flex items-center gap-2">
 									<a
-										href={`tel:${restaurantInfo?.detail.phone_no}`}
+										href={`tel:${phone_no}`}
 										className="text-black underline flex items-center gap-1"
 									>
 										<div className="w-4">
 											<Phone_Ic className="w-3 h-3" />
 										</div>
-										<span className="text-sm">
-											{restaurantInfo?.detail?.phone_no}
-										</span>
+										<span className="text-sm">{phone_no}</span>
 									</a>
 								</div>
 
@@ -132,7 +118,7 @@ const RestaurantInfoCard = ({
 
 									<a
 										href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-											restaurantInfo?.detail?.address
+											address
 										)}`}
 										target="_blank"
 										rel="noopener noreferrer"
@@ -152,24 +138,28 @@ const RestaurantInfoCard = ({
 									: "justify-center text-right grid md:grid-cols-1 gap-1"
 							}`}
 						>
-							{ratings.map((item) => {
-								return (
-									<div key={item.id} className="ml-2">
-										<Rating
-											logo={item.logo}
-											rating={item.rating}
-											reviews={item.review_count}
-											onClick={() => {
-												if (reviewsRef && reviewsRef?.current) {
-													reviewsRef?.current?.scrollIntoView({
-														behavior: "smooth"
-													})
-												}
-											}}
-										/>
-									</div>
-								)
-							})}
+							{platformReviews &&
+								platformReviews?.map((item) => {
+									const platformName =
+										item.platform_name as keyof typeof socialIcons
+
+									return (
+										<div key={item.platform_name} className="ml-2">
+											<Rating
+												logo={socialIcons[platformName]}
+												rating={item.average_rating}
+												reviews={item.total_reviews}
+												onClick={() => {
+													if (reviewsRef && reviewsRef?.current) {
+														reviewsRef?.current?.scrollIntoView({
+															behavior: "smooth"
+														})
+													}
+												}}
+											/>
+										</div>
+									)
+								})}
 						</div>
 					</div>
 				</div>

@@ -3,9 +3,9 @@ import Image from "next/image"
 
 interface IRating {
 	logo: string
-	rating: string
+	rating: number
 	onClick: () => void
-	reviews: string
+	reviews: number
 }
 
 const Rating = ({ logo, rating, onClick, reviews }: IRating) => (

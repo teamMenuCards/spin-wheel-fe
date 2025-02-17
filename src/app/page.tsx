@@ -7,6 +7,7 @@ import { TextGeneratorEffect } from "./components/landing-page/TextGeneratorEffe
 import PricingSectionComponent from "./components/landing-page/PricingSection"
 import Footer from "./components/landing-page/Footer"
 import React, { useState } from "react"
+import Script from "next/script"
 
 export default function Home() {
 	const [sliderText, setSliderText] = useState("Linktree vs MenuCard")
@@ -30,6 +31,41 @@ export default function Home() {
 					{ name: "Pricing", link: "#pricing" }
 				]}
 			/>
+
+			<head>
+				{/* Google Tag Manager Script */}
+				{/* Microsoft Clarity Script */}
+
+				<Script
+					id="google-tag-manager"
+					strategy="afterInteractive"
+					src={`https://www.googletagmanager.com/gtm.js?id=GTM-MWFQKB7H`}
+				/>
+
+				<Script
+					id="clarity-script"
+					strategy="afterInteractive"
+					dangerouslySetInnerHTML={{
+						__html: `
+							 (function(c,l,a,r,i,t,y){
+								c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+								t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+								y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+							})(window, document, "clarity", "script", "qamligptbk");
+						`
+					}}
+				/>
+			</head>
+			<body>
+				<noscript>
+					<iframe
+						src="https://www.googletagmanager.com/ns.html?id=GTM-MWFQKB7H"
+						height="0"
+						width="0"
+						style={{ display: "none", visibility: "hidden" }}
+					></iframe>
+				</noscript>
+			</body>
 			<main className="max-w-full overflow-x-hidden">
 				<section id="home">
 					<HeroSection className="text-center">
@@ -108,10 +144,10 @@ export default function Home() {
 						<h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-bold font-montserrat text-black w-auto text-center whitespace-normal break-words">
 							Why use MenuCards instead of Linktree?
 						</h2>
-						<h4 className="text-1xl text-black font-montserrat w-auto text-center mt-5 whitespace-normal break-words">
+						<div className="text-1xl text-black font-montserrat w-auto text-center mt-5 whitespace-normal break-words">
 							Move beyond static links - Make a better impression of your
 							restaurant with menu cards within seconds.
-						</h4>
+						</div>
 					</div>
 					<div
 						className="relative w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/6 xl:w-1/6 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
-import Script from "next/script"
+// import Script from "next/script"
 
 import { Geist, Geist_Mono, Montserrat } from "next/font/google"
 
@@ -38,13 +38,14 @@ export default function RootLayout({
 		<html lang="en">
 			<head>
 				{/* Google Tag Manager Script */}
-				<Script
+				{/* Microsoft Clarity Script */}
+
+				{/* <Script
 					id="google-tag-manager"
 					strategy="afterInteractive"
 					src={`https://www.googletagmanager.com/gtm.js?id=GTM-MWFQKB7H`}
 				/>
 
-				{/* Microsoft Clarity Script */}
 				<Script
 					id="clarity-script"
 					strategy="afterInteractive"
@@ -57,19 +58,19 @@ export default function RootLayout({
 							})(window, document, "clarity", "script", "qamligptbk");
 						`
 					}}
-				/>
+				/> */}
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
 			>
-				<noscript>
+				{/* <noscript>
 					<iframe
 						src="https://www.googletagmanager.com/ns.html?id=GTM-MWFQKB7H"
 						height="0"
 						width="0"
 						style={{ display: "none", visibility: "hidden" }}
 					></iframe>
-				</noscript>
+				</noscript> */}
 				<RootProvider>{children}</RootProvider>
 			</body>
 		</html>

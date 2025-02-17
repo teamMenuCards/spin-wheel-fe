@@ -7,7 +7,6 @@ import { TextGeneratorEffect } from "./components/landing-page/TextGeneratorEffe
 import PricingSectionComponent from "./components/landing-page/PricingSection"
 import Footer from "./components/landing-page/Footer"
 import React, { useState } from "react"
-import Script from "next/script"
 
 export default function Home() {
 	const [sliderText, setSliderText] = useState("Linktree vs MenuCard")
@@ -32,40 +31,6 @@ export default function Home() {
 				]}
 			/>
 
-			<head>
-				{/* Google Tag Manager Script */}
-				{/* Microsoft Clarity Script */}
-
-				<Script
-					id="google-tag-manager"
-					strategy="afterInteractive"
-					src={`https://www.googletagmanager.com/gtm.js?id=GTM-MWFQKB7H`}
-				/>
-
-				<Script
-					id="clarity-script"
-					strategy="afterInteractive"
-					dangerouslySetInnerHTML={{
-						__html: `
-							 (function(c,l,a,r,i,t,y){
-								c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-								t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-								y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-							})(window, document, "clarity", "script", "qamligptbk");
-						`
-					}}
-				/>
-			</head>
-			<body>
-				<noscript>
-					<iframe
-						src="https://www.googletagmanager.com/ns.html?id=GTM-MWFQKB7H"
-						height="0"
-						width="0"
-						style={{ display: "none", visibility: "hidden" }}
-					></iframe>
-				</noscript>
-			</body>
 			<main className="max-w-full overflow-x-hidden">
 				<section id="home">
 					<HeroSection className="text-center">

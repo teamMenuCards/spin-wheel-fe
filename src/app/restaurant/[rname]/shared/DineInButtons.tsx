@@ -2,6 +2,7 @@
 import NextLink from "next/link"
 import Image from "next/image"
 import { IOption } from "../types"
+import { sendGTMEvent } from "@next/third-parties/google"
 
 const DineInButtons = ({
 	isDineIn = false,
@@ -57,7 +58,15 @@ const DineInButtons = ({
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
+							<div
+								onClick={() =>
+									sendGTMEvent({
+										event: "buttonClicked",
+										value: `xyz-${item.value}`
+									})
+								}
+								className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
+							>
 								<Image
 									src={item.icon}
 									alt={item.value}

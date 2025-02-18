@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import Script from "next/script"
-
+import { GoogleTagManager } from "@next/third-parties/google"
 import { Geist, Geist_Mono, Montserrat } from "next/font/google"
 
 import { RootProvider } from "./providers/RootProvider"
@@ -38,9 +38,11 @@ export default function RootLayout({
 		<html lang="en">
 			<head>
 				{/* Google Tag Manager Script */}
+				<GoogleTagManager gtmId="GTM-N6WPVHXW" />
+
 				{/* Microsoft Clarity Script */}
 
-				<Script
+				{/* <Script
 					id="gtm-script"
 					strategy="afterInteractive"
 					dangerouslySetInnerHTML={{
@@ -52,8 +54,7 @@ export default function RootLayout({
 								})(window,document,'script','dataLayer','N6WPVHXW');
 							`
 					}}
-				/>
-
+				/> */}
 				<Script
 					id="clarity-script"
 					strategy="afterInteractive"

@@ -18,6 +18,23 @@ const nextConfig: NextConfig = {
 				hostname: "media-assets.swiggy.com"
 			}
 		]
+	},
+
+	async redirects() {
+		return [
+			{
+				source: "/restaurant/:slug",
+				has: [
+					{
+						type: "query",
+						key: "m",
+						value: "DINE_IN"
+					}
+				],
+				destination: "/new-url/:slug",
+				permanent: true
+			}
+		]
 	}
 }
 

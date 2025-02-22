@@ -14,7 +14,6 @@ const RestaurantInfoCard = ({
 	reviewsRef: React.RefObject<HTMLDivElement>
 }) => {
 	const {
-		address,
 		phone_no,
 		logo,
 		details: { meta_details: metaData, platform_reviews: platformReviews }
@@ -97,9 +96,10 @@ const RestaurantInfoCard = ({
 									<MapIcon_Tc className="h-3 w-3" />
 
 									<a
-										href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-											address
-										)}`}
+										// href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+										// 	address
+										// )}`}
+										href={location}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex text-blue-500 underline  items-center text-sm max-w-[150px] overflow-hidden"

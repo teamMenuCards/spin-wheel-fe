@@ -20,13 +20,21 @@ export default function MenuPage() {
 		console.log(category)
 	}
 
+	const sortedCategories =
+		menudata?.categories
+			?.slice()
+			.sort((a, b) => a.display_order - b.display_order) ?? []
+
 	return (
 		<>
 			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
-			<FloatingMenu categories={categories} currentCategory={currentCategory} />
+			<FloatingMenu
+				categories={sortedCategories}
+				currentCategory={currentCategory}
+			/>
 
 			<Accordion
-				sections={menudata?.categories || []}
+				sections={sortedCategories || []}
 				onSectionSelection={handleCategorySelection}
 			/>
 		</>

@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image"
 import LineClampTypography from "@/shared/LineClampTypography"
 import { ProductType, ProductVariantType } from "@/types"

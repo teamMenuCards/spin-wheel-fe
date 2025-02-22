@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from "react"
 import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
 import {

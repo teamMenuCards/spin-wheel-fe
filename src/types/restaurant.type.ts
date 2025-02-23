@@ -6,6 +6,10 @@ export type RestaurantType = {
 	createdAt: string
 	updatedAt: string
 }
+
+export type IReviews = {
+	review_image_url: string
+}
 export type RestaurantDetailType = {
 	id: number
 	pincode: string
@@ -26,6 +30,8 @@ export type RestaurantDetailType = {
 			total_reviews: number
 			average_rating: number
 		}[]
+
+		reviews_image_url_details?: IReviews[]
 		platform_details?: {
 			platform_name: string
 			platform_uri: string

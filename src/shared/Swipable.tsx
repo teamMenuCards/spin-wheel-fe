@@ -8,7 +8,7 @@ interface VerifiedReviewsProps {
 	setCurrentReview: React.Dispatch<React.SetStateAction<number>>
 }
 
-const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
+const Swipable = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 	({ reviews, currentReview, setCurrentReview }, ref) => {
 		const touchStartX = useRef(0)
 		const touchEndX = useRef(0)
@@ -34,10 +34,7 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 		}
 
 		return (
-			<div
-				ref={ref}
-				className="relative w-full max-w-[400px] py-8 mx-auto px-4"
-			>
+			<div ref={ref}>
 				{/* Reviews Title */}
 				<div className="mb-4">
 					<h4 className="text-md font-bold truncate">Verified Reviews</h4>
@@ -64,25 +61,25 @@ const VerifiedReviews = forwardRef<HTMLDivElement, VerifiedReviewsProps>(
 							</div>
 						))}
 					</div>
+				</div>
 
-					{/* Pagination Dots */}
-					<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-						{reviews.map((_, index) => (
-							<button
-								key={index}
-								className={`w-2 h-2 rounded-full ${
-									currentReview === index ? "bg-gray-800" : "bg-gray-400"
-								}`}
-								onClick={() => setCurrentReview(index)}
-							/>
-						))}
-					</div>
+				{/* Pagination Dots */}
+				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+					{reviews.map((_, index) => (
+						<button
+							key={index}
+							className={`w-2 h-2 rounded-full ${
+								currentReview === index ? "bg-gray-800" : "bg-gray-400"
+							}`}
+							onClick={() => setCurrentReview(index)}
+						/>
+					))}
 				</div>
 			</div>
 		)
 	}
 )
 
-VerifiedReviews.displayName = "VerifiedReviews"
+Swipable.displayName = "VerifiedReviews"
 
-export default VerifiedReviews
+export default Swipable

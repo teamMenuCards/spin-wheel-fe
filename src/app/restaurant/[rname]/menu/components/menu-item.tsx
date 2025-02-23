@@ -45,13 +45,15 @@ function MenuItem({
 			<div className="flex flex-row-reverse">
 				{prdImage && (
 					<div className="relative w-[145px] h-[145px] bg-lightSteelBlue rounded-lg">
-						<Image
-							fill
-							priority
-							src={prdImage}
-							alt="food_img"
-							className="object-cover rounded-lg"
-						/>
+						{prdImage ? (
+							<Image
+								fill
+								priority
+								src={prdImage}
+								alt="food_img"
+								className="object-cover rounded-lg"
+							/>
+						) : null}
 					</div>
 				)}
 

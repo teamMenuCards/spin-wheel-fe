@@ -210,22 +210,24 @@ export const Compare = ({
 							}}
 							transition={{ duration: 0 }}
 						>
-							<Image
-								alt="first image"
-								src={firstImage}
-								width={250}
-								height={500}
-								sizes="100vw"
-								style={{
-									width: "100%",
-									height: "100%"
-								}}
-								className={cn(
-									"absolute inset-0  z-20 rounded-2xl flex-shrink-0 select-none",
-									firstImageClassName
-								)}
-								draggable={false}
-							/>
+							{firstImage ? (
+								<Image
+									alt="first image"
+									src={firstImage}
+									width={250}
+									height={500}
+									sizes="100vw"
+									style={{
+										width: "100%",
+										height: "100%"
+									}}
+									className={cn(
+										"absolute inset-0  z-20 rounded-2xl flex-shrink-0 select-none",
+										firstImageClassName
+									)}
+									draggable={false}
+								/>
+							) : null}
 						</motion.div>
 					) : null}
 				</AnimatePresence>

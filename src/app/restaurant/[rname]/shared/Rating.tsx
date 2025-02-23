@@ -15,13 +15,15 @@ const Rating = ({ logo, rating, onClick, reviews }: IRating) => (
 		aria-label="Scroll to reviews"
 	>
 		{/* social icons logo */}
-		<Image
-			src={logo}
-			alt="Rating Logo"
-			width={20}
-			height={20}
-			className="ml-auto rounded"
-		/>
+		{logo ? (
+			<Image
+				src={logo}
+				alt="Rating Logo"
+				width={20}
+				height={20}
+				className="ml-auto rounded"
+			/>
+		) : null}
 
 		{/* Rating Box */}
 		<div>

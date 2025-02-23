@@ -14,8 +14,7 @@ const DineInButtons = ({
 	const { dineInOptions, deliveryOptions } = options
 
 	return (
-		<div className="flex flex-col items-center w-full max-w-[400px] mt-8 mx-auto px-4 relative">
-			{/* Decorative Line */}
+		<div className="relative flex flex-col items-center w-full max-w-[400px] mt-8 mx-auto px-4">
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 			{/* Menu & other DINE_IN button */}
@@ -30,13 +29,15 @@ const DineInButtons = ({
 							rel="noopener noreferrer"
 						>
 							<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
-								<Image
-									src={item.icon}
-									alt={item.value}
-									width={24}
-									height={24}
-									className="mr-4 drop-shadow-sm rounded"
-								/>
+								{item.icon ? (
+									<Image
+										src={item.icon}
+										alt={item.value}
+										width={24}
+										height={24}
+										className="mr-4 drop-shadow-sm rounded"
+									/>
+								) : null}
 
 								{/* Button Text */}
 								<div className="text-gray-800 font-semibold text-sm">
@@ -67,13 +68,15 @@ const DineInButtons = ({
 								}
 								className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
 							>
-								<Image
-									src={item.icon}
-									alt={item.value}
-									width={24}
-									height={24}
-									className="mr-4 drop-shadow-sm rounded"
-								/>
+								{item.icon ? (
+									<Image
+										src={item.icon}
+										alt={item.value}
+										width={24}
+										height={24}
+										className="mr-4 drop-shadow-sm rounded"
+									/>
+								) : null}
 
 								{/* Button Text */}
 								<div className="text-gray-800 font-semibold text-sm">

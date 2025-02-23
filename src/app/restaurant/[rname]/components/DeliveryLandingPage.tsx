@@ -19,7 +19,7 @@ function DeliveryLandingPage({
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
 
-	const DEFAULT_COVER = 'url("/goodFood.png")'
+	const DEFAULT_COVER = 'url("/goodFood.webp")'
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []
@@ -126,7 +126,7 @@ function DeliveryLandingPage({
 				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
 				style={{
 					backgroundImage:
-						DEFAULT_COVER || `url(${restaurantInfo?.detail.cover_image})`
+						`url(${restaurantInfo?.detail.cover_image})` || DEFAULT_COVER
 				}}
 			/>
 

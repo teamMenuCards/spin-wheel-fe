@@ -34,7 +34,7 @@ function DineInLandingPage() {
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 
-	const DEFAULT_COVER = 'url("/goodFood.png")'
+	const DEFAULT_COVER = 'url("/goodFood.webp")'
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []

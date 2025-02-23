@@ -8,11 +8,7 @@ interface IReviewsCarousel {
 	currentReview: number
 	setCurrentReview: Dispatch<SetStateAction<number>>
 }
-function ReviewsCarousel({
-	reviews,
-	currentReview,
-	setCurrentReview
-}: IReviewsCarousel) {
+function ReviewsCarousel({ reviews }: IReviewsCarousel) {
 	const reviewList = reviews[0]?.review_image_url?.split(",")
 
 	return (
@@ -24,12 +20,8 @@ function ReviewsCarousel({
 						<DecorativeLine />
 					</div>
 
-					<div className="relative w-full max-w-[400px] mx-auto px-4">
-						<Swipable
-							reviews={reviewList}
-							currentReview={currentReview}
-							setCurrentReview={setCurrentReview}
-						/>
+					<div className="relative w-full max-w-[400px] mx-auto px-4 h-[250px]">
+						<Swipable reviews={reviewList} />
 					</div>
 				</div>
 			)}

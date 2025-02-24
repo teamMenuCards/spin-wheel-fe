@@ -1,6 +1,7 @@
 import { useState } from "react"
 import FullPageDrawerComponent from "./contact-us-drawer"
 import { DEFAULT_LOGO_IMG } from "../../constants"
+import Link from "next/link"
 
 interface NavBarProps {
 	rname: string
@@ -13,7 +14,6 @@ interface NavBarProps {
 }
 
 const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
-	rname = restaurantInfo?.name || ""
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const logoImg = `url(${restaurantInfo?.detail.logo || DEFAULT_LOGO_IMG})`
 
@@ -25,15 +25,19 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 		<>
 			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
 				<div className="max-w-7xl mx-auto flex items-center justify-between">
-					<div className="text-xl font-bold truncate">{rname}</div>
-					<div
-						className="w-12 h-12 rounded-full cursor-pointer ml-4 aspect-[1]"
-						style={{
-							backgroundImage: logoImg,
-							backgroundSize: "cover",
-							backgroundPosition: "center"
-						}}
-					/>
+					<div className="text-xl font-bold truncate">
+						{restaurantInfo?.name}
+					</div>
+					<Link href={`/restaurant/${rname}`}>
+						<div
+							className="w-12 h-12 rounded-full cursor-pointer ml-4 aspect-[1]"
+							style={{
+								backgroundImage: logoImg,
+								backgroundSize: "cover",
+								backgroundPosition: "center"
+							}}
+						/>
+					</Link>
 				</div>
 			</nav>
 

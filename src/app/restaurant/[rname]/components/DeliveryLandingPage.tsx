@@ -121,14 +121,6 @@ function DeliveryLandingPage({
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
-			{/* <div
-				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
-				style={{
-					backgroundImage:
-						`url(${restaurantInfo?.detail.cover_image})` || DEFAULT_COVER_IMG
-				}}
-			/> */}
-
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
 
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">

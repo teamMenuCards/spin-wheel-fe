@@ -1,5 +1,6 @@
 import { NextURL } from "next/dist/server/web/next-url"
 import { NextResponse } from "next/server"
+import { CLIENT_APP_MODE } from "./store/features/app.slice"
 
 export function middleware(req: {
 	nextUrl: NextURL
@@ -16,8 +17,10 @@ export function middleware(req: {
 		const mParam = searchParams.get("m")
 
 		// If query parameter `m` is `DINE_IN`, redirect and remove query params
-		if (mParam === "DINE_IN") {
-			return NextResponse.redirect(new URL(`/restaurant/${slug}`, req.url))
+		if (mParam === CLIENT_APP_MODE.DINE_IN) {
+			return NextResponse.redirect(
+				new URL(`/restaurant/${slug}/dine-in`, req.url)
+			)
 		}
 	}
 

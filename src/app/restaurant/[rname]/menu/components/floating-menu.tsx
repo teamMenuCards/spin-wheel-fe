@@ -6,18 +6,25 @@ import { Category } from "@/services/product/get-menu-list"
 
 interface FloatingMenuProps {
 	categories: Category[]
-	currentCategory?: string
 }
 
-const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
+const FloatingMenu = ({ categories }: FloatingMenuProps) => {
+	const currentCategory =
+		categories && categories.length > 0 ? categories[0].id : ""
 	const [open, setOpen] = useState(false)
 	const menuRef = useRef<HTMLDivElement>(null)
 	const [scrollTarget, setScrollTarget] = useState<string | null>(null)
+	const [selectedCategory, setSelectedcategory] = useState(currentCategory)
+
+	useEffect(() => {
+		setSelectedcategory(currentCategory)
+	}, [currentCategory])
 
 	const handleClick = (categoryId: string) => {
 		setOpen(false) // Close the menu first
-
 		setTimeout(() => {
+			setSelectedcategory(categoryId)
+
 			const targetSection = document.getElementById(categoryId)
 
 			if (targetSection) {
@@ -98,23 +105,25 @@ const FloatingMenu = ({ categories, currentCategory }: FloatingMenuProps) => {
 					</div>
 
 					<ul>
-						{categories.map((category) => (
-							<li
-								id={category.id}
-								key={category.id}
-								onClick={() => handleClick(category.id)}
-								className={`flex justify-between items-center py-2 px-4 cursor-pointer hover:bg-gray-900 rounded-md transition ${
-									category.id === currentCategory
-										? "text-red-400"
-										: "text-white"
-								}`}
-							>
-								<span className="text-sm">{category.display_name}</span>
-								<span className="text-xs text-gray-400">
-									{category?.products?.length || 0}
-								</span>
-							</li>
-						))}
+						{categories?.map((category) => {
+							return (
+								<li
+									id={category.id}
+									key={category.id}
+									onClick={() => handleClick(category.id)}
+									className={`flex justify-between items-center py-2 px-4 cursor-pointer hover:bg-gray-900 rounded-md transition ${
+										category.id === selectedCategory
+											? "text-red-400"
+											: "text-white"
+									}`}
+								>
+									<span className="text-sm">{category.display_name}</span>
+									<span className="text-xs text-gray-400">
+										{category?.products?.length || 0}
+									</span>
+								</li>
+							)
+						})}
 					</ul>
 				</div>
 			</Dialog>

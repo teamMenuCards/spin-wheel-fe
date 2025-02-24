@@ -13,8 +13,6 @@ export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
 	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
 	const { data: restaurantInfo } = useGetRestaurantDetailByNameQuery(rname)
-	const categories = menudata?.categories || []
-	const currentCategory = categories.length > 0 ? categories[0].id : ""
 
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
@@ -28,10 +26,7 @@ export default function MenuPage() {
 	return (
 		<>
 			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
-			<FloatingMenu
-				categories={sortedCategories}
-				currentCategory={currentCategory}
-			/>
+			<FloatingMenu categories={sortedCategories} />
 
 			<Accordion
 				sections={sortedCategories || []}

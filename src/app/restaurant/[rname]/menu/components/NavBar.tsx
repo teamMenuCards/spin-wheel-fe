@@ -1,5 +1,6 @@
 import { useState } from "react"
 import FullPageDrawerComponent from "./contact-us-drawer"
+import { DEFAULT_LOGO_IMG } from "../../constants"
 
 interface NavBarProps {
 	rname: string
@@ -11,12 +12,10 @@ interface NavBarProps {
 	}
 }
 
-const DEFAULT_IMG = 'url("https://dummyimage.com/600x400/000/fff")'
-
 const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 	rname = restaurantInfo?.name || ""
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-	const coverImage = `url(${restaurantInfo?.detail.logo || DEFAULT_IMG})`
+	const logoImg = `url(${restaurantInfo?.detail.logo || DEFAULT_LOGO_IMG})`
 
 	const handleCloseDrawer = () => {
 		setIsDrawerOpen(false)
@@ -30,7 +29,7 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 					<div
 						className="w-12 h-12 rounded-full cursor-pointer ml-4 aspect-[1]"
 						style={{
-							backgroundImage: coverImage,
+							backgroundImage: logoImg,
 							backgroundSize: "cover",
 							backgroundPosition: "center"
 						}}

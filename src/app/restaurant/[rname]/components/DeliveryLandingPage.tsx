@@ -6,6 +6,7 @@ import DineInfoCard from "../shared/DineInfoCard"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IOption } from "../types"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
+import BackgroundImage from "../shared/BackgroundImg"
 
 function DeliveryLandingPage({
 	rname,
@@ -18,8 +19,6 @@ function DeliveryLandingPage({
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
-
-	const DEFAULT_COVER = 'url("/goodFood.webp")'
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
 		const details = data?.detail?.details || []
@@ -122,13 +121,15 @@ function DeliveryLandingPage({
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
-			<div
+			{/* <div
 				className="fixed top-0 left-0 w-screen h-[188px] bg-cover bg-center z-[1]"
 				style={{
 					backgroundImage:
-						`url(${restaurantInfo?.detail.cover_image})` || DEFAULT_COVER
+						`url(${restaurantInfo?.detail.cover_image})` || DEFAULT_COVER_IMG
 				}}
-			/>
+			/> */}
+
+			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
 
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">
 				{restaurantInfo && (

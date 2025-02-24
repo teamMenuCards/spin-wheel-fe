@@ -1,189 +1,194 @@
-"use client";
-import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+"use client"
+import { motion, useMotionValueEvent, useScroll } from "framer-motion"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { cn } from "@/lib/utils"
 
 export const StickyScroll = ({
-  content,
-  contentClassName,
-  title,
+	content,
+	contentClassName,
+	title
 }: {
-  content: {
-    title: string;
-    description: string;
-    content?: React.ReactNode;
-  }[];
-  contentClassName?: string;
-  title: string;
+	content: {
+		title: string
+		description: string
+		content?: React.ReactNode
+	}[]
+	contentClassName?: string
+	title: string
 }) => {
-  const [activeCard, setActiveCard] = React.useState(0);
-  const ref = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+	const [activeCard, setActiveCard] = React.useState(0)
+	const ref = useRef(null)
+	const [isMobile, setIsMobile] = useState(false)
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth < 1024)
+		}
 
-  const { scrollYProgress } = useScroll({
-    container: ref,
-    offset: ["start start", "end end"],
-  });
-  
-  const cardLength = content.length;
+		checkMobile()
+		window.addEventListener("resize", checkMobile)
+		return () => window.removeEventListener("resize", checkMobile)
+	}, [])
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (isMobile) return;
-    // Adjusted breakpoint calculation
-    const cardsBreakpoints = content.map((_, index) => index / (cardLength - 1));
-    const closestBreakpointIndex = cardsBreakpoints.reduce(
-      (acc, breakpoint, index) => {
-        const distance = Math.abs(latest - breakpoint);
-        if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
-          return index;
-        }
-        return acc;
-      },
-      0
-    );
-    setActiveCard(closestBreakpointIndex);
-  });
+	const { scrollYProgress } = useScroll({
+		container: ref,
+		offset: ["start start", "end end"]
+	})
 
+	const cardLength = content.length
 
-  const backgroundColors = ["var(--white)"];
-  const linearGradients = useMemo(
-    () => [
-      "linear-gradient(to bottom right, grey, white)",
-      "linear-gradient(to bottom right, grey, white)",
-      "linear-gradient(to bottom right, grey, white)",
-      "linear-gradient(to bottom right, grey, white)",
-    ],
-    []
-  );
+	useMotionValueEvent(scrollYProgress, "change", (latest) => {
+		if (isMobile) return
+		// Adjusted breakpoint calculation
+		const cardsBreakpoints = content.map((_, index) => index / (cardLength - 1))
+		const closestBreakpointIndex = cardsBreakpoints.reduce(
+			(acc, breakpoint, index) => {
+				const distance = Math.abs(latest - breakpoint)
+				if (distance < Math.abs(latest - cardsBreakpoints[acc])) {
+					return index
+				}
+				return acc
+			},
+			0
+		)
+		setActiveCard(closestBreakpointIndex)
+	})
 
-  const [backgroundGradient, setBackgroundGradient] = useState(linearGradients[0]);
+	const backgroundColors = ["var(--white)"]
+	const linearGradients = useMemo(
+		() => [
+			"linear-gradient(to bottom right, grey, white)",
+			"linear-gradient(to bottom right, grey, white)",
+			"linear-gradient(to bottom right, grey, white)",
+			"linear-gradient(to bottom right, grey, white)"
+		],
+		[]
+	)
 
-  useEffect(() => {
-    setBackgroundGradient(linearGradients[activeCard % linearGradients.length]);
-  }, [activeCard, linearGradients]);
+	const [backgroundGradient, setBackgroundGradient] = useState(
+		linearGradients[0]
+	)
 
+	useEffect(() => {
+		setBackgroundGradient(linearGradients[activeCard % linearGradients.length])
+	}, [activeCard, linearGradients])
 
-  const featureIcons = [
-    "/feature-icon1.png",
-    "/feature-icon2.png",
-    "/feature-icon3.png",
-    "/feature-icon4.png",
-  ];
+	const featureIcons = [
+		"/feature-icon1.webp",
+		"/feature-icon2.webp",
+		"/feature-icon3.webp",
+		"/feature-icon4.webp"
+	]
 
-  // Mobile view with fixed title
-  if (isMobile) {
-    return (
-      <motion.div
-        animate={{
-          backgroundColor: backgroundColors[activeCard % backgroundColors.length],
-        }}
-        className="h-screen flex flex-col"
-      >
-        <div className="py-8 bg-white sticky top-0 z-10">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black">
-            {title}
-          </h2>
-        </div>
-        <div className="space-y-8 px-4 h-[calc(100vh-180px)] overflow-y-auto">
-          {content.map((item, index) => (
-            <div 
-              key={item.title + index} 
-              className="bg-white rounded-lg p-6 shadow-md"
-              onClick={() => setActiveCard(index)}
-            >
-              <div 
-                className="mb-6 h-40 rounded-md relative"
-                style={{ background: linearGradients[index % linearGradients.length] }}
-              >
-                <motion.img
-                  src={featureIcons[index]}
-                  alt={`Feature Icon ${index + 1}`}
-                  className="absolute inset-0 m-auto h-24 w-24"
-                />
-              </div>
-              <h2 className="text-xl font-bold text-black mb-4">{item.title}</h2>
-              <p className="text-black">{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    );
-  }
+	// Mobile view with fixed title
+	if (isMobile) {
+		return (
+			<motion.div
+				animate={{
+					backgroundColor:
+						backgroundColors[activeCard % backgroundColors.length]
+				}}
+				className="h-screen flex flex-col"
+			>
+				<div className="py-8 bg-white sticky top-0 z-10">
+					<h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black">
+						{title}
+					</h2>
+				</div>
+				<div className="space-y-8 px-4 h-[calc(100vh-180px)] overflow-y-auto">
+					{content.map((item, index) => (
+						<div
+							key={item.title + index}
+							className="bg-white rounded-lg p-6 shadow-md"
+							onClick={() => setActiveCard(index)}
+						>
+							<div
+								className="mb-6 h-40 rounded-md relative"
+								style={{
+									background: linearGradients[index % linearGradients.length]
+								}}
+							>
+								<motion.img
+									src={featureIcons[index]}
+									alt={`Feature Icon ${index + 1}`}
+									className="absolute inset-0 m-auto h-24 w-24"
+								/>
+							</div>
+							<h2 className="text-xl font-bold text-black mb-4">
+								{item.title}
+							</h2>
+							<p className="text-black">{item.description}</p>
+						</div>
+					))}
+				</div>
+			</motion.div>
+		)
+	}
 
-  // Original desktop view exactly as provided
+	// Original desktop view exactly as provided
 
-  return (
-    <motion.div
-      animate={{
-        backgroundColor: backgroundColors[activeCard % backgroundColors.length],
-      }}
+	return (
+		<motion.div
+			animate={{
+				backgroundColor: backgroundColors[activeCard % backgroundColors.length]
+			}}
+			style={{ paddingTop: "100px" }}
+			className="py-12 pt-20 font-montserrat"
+		>
+			<h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black mb-8">
+				{title}
+			</h2>
 
-      style={{ paddingTop: '100px' }}
-      className="py-12 pt-20 font-montserrat"
-    >
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-4xl font-montserrat text-center font-bold text-black mb-8">{title}</h2>
+			<div
+				ref={ref}
+				className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
+			>
+				<div className="div relative flex items-start px-4">
+					<div className="max-w-2xl">
+						{content.map((item, index) => (
+							<div key={item.title + index} className="my-20">
+								<motion.h2
+									initial={{
+										opacity: 0
+									}}
+									animate={{
+										opacity: activeCard === index ? 1 : 0.3
+									}}
+									className="text-2xl font-bold text-black font-montserrat"
+								>
+									{item.title}
+								</motion.h2>
+								<motion.p
+									initial={{
+										opacity: 0
+									}}
+									animate={{
+										opacity: activeCard === index ? 1 : 0.3
+									}}
+									className="text-kg text-black max-w-sm mt-10 font-montserrat"
+								>
+									{item.description}
+								</motion.p>
+							</div>
+						))}
+						<div className="h-40" />
+					</div>
+				</div>
+				<div
+					style={{
+						background: backgroundGradient,
+						boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)"
+					}}
+					className={cn(
+						"hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
+						contentClassName
+					)}
+				>
+					{content[activeCard].content ?? null}
+				</div>
+			</div>
+		</motion.div>
+	)
+}
 
-      <div
-        ref={ref}
-        className="h-[30rem] overflow-y-auto flex justify-center relative space-x-10 rounded-md p-10"
-      >
-        <div className="div relative flex items-start px-4">
-          <div className="max-w-2xl">
-            {content.map((item, index) => (
-              <div key={item.title + index} className="my-20">
-                <motion.h2
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: activeCard === index ? 1 : 0.3,
-                  }}
-
-                  className="text-2xl font-bold text-black font-montserrat"
-
-                >
-                  {item.title}
-                </motion.h2>
-                <motion.p
-                  initial={{
-                    opacity: 0,
-                  }}
-                  animate={{
-                    opacity: activeCard === index ? 1 : 0.3,
-                  }}
-
-                  className="text-kg text-black max-w-sm mt-10 font-montserrat"
-
-                >
-                  {item.description}
-                </motion.p>
-              </div>
-            ))}
-            <div className="h-40" />
-          </div>
-        </div>
-        <div
-          style={{ background: backgroundGradient, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }}
-          className={cn(
-            "hidden lg:block h-60 w-80 rounded-md bg-white sticky top-10 overflow-hidden",
-            contentClassName
-          )}
-        >
-          {content[activeCard].content ?? null}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export default StickyScroll;
+export default StickyScroll

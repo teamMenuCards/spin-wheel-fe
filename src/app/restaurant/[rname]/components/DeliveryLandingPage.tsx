@@ -43,7 +43,7 @@ function DeliveryLandingPage({
 				id: 1,
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
-				icon: "/menu-icon.png",
+				icon: "/menu-icon.webp",
 				show: true
 			},
 			{
@@ -64,14 +64,14 @@ function DeliveryLandingPage({
 				id: 4,
 				value: "Order from Zomato",
 				path: linksList["zomato-delivery"],
-				icon: "/zomato-logo.png",
+				icon: "/zomato-logo.webp",
 				show: !!linksList["zomato-delivery"]
 			},
 			{
 				id: 5,
 				value: "Order from Swiggy",
 				path: linksList["swiggy-link"],
-				icon: "/swiggy-logo.png",
+				icon: "/swiggy-logo.webp",
 				show: !!linksList["swiggy-link"]
 			}
 		]
@@ -81,7 +81,7 @@ function DeliveryLandingPage({
 				id: 1,
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
-				icon: "/menu-icon.png",
+				icon: "/menu-icon.webp",
 				show: true
 			},
 
@@ -89,7 +89,7 @@ function DeliveryLandingPage({
 				id: 2,
 				value: "Review us on Google",
 				path: linksList["google-review"],
-				icon: "/google-logo.png",
+				icon: "/google-logo.webp",
 				show: !!linksList["google-review"]
 			},
 			{
@@ -103,7 +103,7 @@ function DeliveryLandingPage({
 				id: 4,
 				value: "Follow on Instagram",
 				path: linksList["insta"],
-				icon: "/instagram-icon.png",
+				icon: "/instagram-icon.webp",
 				show: !!linksList["insta"]
 			}
 		]

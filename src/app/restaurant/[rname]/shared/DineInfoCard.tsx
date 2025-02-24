@@ -22,9 +22,9 @@ const RestaurantInfoCard = ({
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
 	const socialIcons: Record<"google" | "swiggy" | "zomato", string> = {
-		google: "/google-logo.png",
-		swiggy: "/swiggy-logo.png",
-		zomato: "/zomato-logo.png"
+		google: "/google-logo.webp",
+		swiggy: "/swiggy-logo.webp",
+		zomato: "/zomato-logo.webp"
 	}
 
 	const openTime = (metaData && metaData.opening_time) || ""
@@ -65,7 +65,7 @@ const RestaurantInfoCard = ({
 							<div className="flex flex-col gap-2 text-left">
 								<div className="flex items-center gap-2">
 									<Image
-										src="/clock-icon.png"
+										src="/clock-icon.webp"
 										alt="Time"
 										width={14}
 										height={14}

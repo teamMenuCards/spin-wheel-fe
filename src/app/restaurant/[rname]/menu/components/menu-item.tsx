@@ -17,7 +17,7 @@ function MenuItem({
 
 	const getVegIcon = () => (
 		<Image
-			src="/ic_veg.png"
+			src="/ic_veg.webp"
 			alt="veg/nonveg icon"
 			width={15}
 			height={15}
@@ -27,7 +27,7 @@ function MenuItem({
 
 	const getNonVegIcon = () => (
 		<Image
-			src="/ic_nonveg.png"
+			src="/ic_nonveg.webp"
 			alt="veg/nonveg icon"
 			width={15}
 			height={15}

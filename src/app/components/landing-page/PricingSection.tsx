@@ -55,7 +55,7 @@ const PricingSectionComponent = () => {
 					<h4 className="text-4xl font-bold text-center flex items-center justify-center">
 						Free
 						<Image
-							src="/prize-icon.png"
+							src="/prize-icon.webp"
 							alt="Prize Icon"
 							width={40}
 							height={40}
@@ -110,7 +110,7 @@ const PricingSectionComponent = () => {
 					<h4 className="text-4xl font-bold text-center flex items-center justify-center">
 						1 Large Pizza
 						<Image
-							src="/pizza-icon.png"
+							src="/pizza-icon.webp"
 							alt="Pizza Icon"
 							width={40}
 							height={40}
@@ -167,7 +167,7 @@ const PricingSectionComponent = () => {
 					<h4 className="text-4xl font-bold text-center flex items-center justify-center">
 						1 kg Biryani
 						<Image
-							src="/biryani-icon.png"
+							src="/biryani-icon.webp"
 							alt="Biryani Icon"
 							width={40}
 							height={40}

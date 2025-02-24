@@ -119,8 +119,8 @@ export default function Home() {
 						style={{ height: "auto", background: "white" }}
 					>
 						<Compare
-							secondImage="/MenuCardsUI.png"
-							firstImage="/linktreeUI.png"
+							secondImage="/MenuCardsUI.webp"
+							firstImage="/linktreeUI.webp"
 							slideMode="drag"
 							onSliderChange={handleSliderChange}
 						/>

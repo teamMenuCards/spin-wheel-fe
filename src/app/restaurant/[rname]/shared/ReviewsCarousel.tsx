@@ -1,12 +1,9 @@
 import { IReviews } from "@/types"
 import DecorativeLine from "../shared/DecorativeLine"
-import { Dispatch, SetStateAction } from "react"
 import Swipable from "@/shared/Swipable"
 
 interface IReviewsCarousel {
 	reviews: IReviews[]
-	currentReview: number
-	setCurrentReview: Dispatch<SetStateAction<number>>
 }
 function ReviewsCarousel({ reviews }: IReviewsCarousel) {
 	const reviewList = reviews[0]?.review_image_url?.split(",")

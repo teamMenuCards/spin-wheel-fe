@@ -49,7 +49,9 @@ const RestaurantInfoCard = ({
 				<div className="m-auto mt-3">
 					{/* Restaurant Name */}
 					<div className="text-center">
-						<h2 className="text-lg font-bold">{restaurantInfo?.name}</h2>
+						<h2 className="text-lg font-bold text-black">
+							{restaurantInfo?.name}
+						</h2>
 						<p className="text-sm text-gray-600 mb-2">{metaData?.category}</p>
 					</div>
 
@@ -62,7 +64,7 @@ const RestaurantInfoCard = ({
 					>
 						{/* Restaurant Details Section */}
 						{!isDineIn && (
-							<div className="flex flex-col gap-2 text-left">
+							<div className="flex flex-col gap-2 text-left text-black">
 								<div className="flex items-center gap-2">
 									<Image
 										src="/clock-icon.webp"

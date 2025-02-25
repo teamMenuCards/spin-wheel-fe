@@ -1,13 +1,16 @@
 "use client"
+import { useState } from "react"
 import Image from "next/image"
 import LineClampTypography from "@/shared/LineClampTypography"
 import { ProductType, ProductVariantType } from "@/types"
+import ImageOverlay from "@/shared/ImageOverlay"
 
 function MenuItem({
 	product
 }: {
 	product: ProductType & { variants: ProductVariantType[] }
 }) {
+	const [isOpen, setIsOpen] = useState(false)
 	const rating: number = Number(product.variants?.[0]?.average_rating) || 4
 	const starsArray: number[] = Array.from({ length: rating })
 
@@ -51,6 +54,7 @@ function MenuItem({
 								priority
 								src={prdImage}
 								alt="food_img"
+								onClick={() => setIsOpen(true)}
 								className="object-cover rounded-lg"
 							/>
 						) : null}
@@ -106,6 +110,10 @@ function MenuItem({
 					</div>
 				</div>
 			</div>
+
+			{isOpen ? (
+				<ImageOverlay imageUrl={prdImage} onClose={() => setIsOpen(false)} />
+			) : null}
 		</div>
 	)
 }

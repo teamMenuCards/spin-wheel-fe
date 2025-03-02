@@ -80,7 +80,8 @@ function DeliveryLandingPage({
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
 				icon: "/menu-icon.webp",
-				show: true
+				show: true,
+				preload: true
 			},
 
 			{
@@ -88,21 +89,24 @@ function DeliveryLandingPage({
 				value: "Review us on Google",
 				path: linksList["google-review"],
 				icon: "/google-logo.webp",
-				show: !!linksList["google-review"]
+				show: !!linksList["google-review"],
+				preload: false
 			},
 			{
 				id: 3,
 				value: "Say Hello to receive offers",
 				path: `${linksList["whatsapp-link"]}${encodedMessage} `,
 				icon: "/whatsapp.svg",
-				show: !!linksList["whatsapp-link"]
+				show: !!linksList["whatsapp-link"],
+				preload: false
 			},
 			{
 				id: 4,
 				value: "Follow on Instagram",
 				path: linksList["insta"],
 				icon: "/instagram-icon.webp",
-				show: !!linksList["insta"]
+				show: !!linksList["insta"],
+				preload: false
 			}
 		]
 

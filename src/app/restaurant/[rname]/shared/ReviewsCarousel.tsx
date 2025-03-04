@@ -17,6 +17,10 @@ function ReviewsCarousel({ reviews }: IReviewsCarousel) {
 						<DecorativeLine />
 					</div>
 
+					<div className="my-4 px-4 text-md font-metropolis font-semibold text-center">
+						Featured Reviews
+					</div>
+
 					<div className="relative w-full max-w-[400px] mx-auto px-4 h-[250px]">
 						<Swipable reviews={reviewList} />
 					</div>

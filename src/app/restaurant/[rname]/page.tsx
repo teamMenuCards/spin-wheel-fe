@@ -29,9 +29,9 @@ export default async function Page({
 			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
 			<footer className="bg-slate-900 mt-4 flex justify-center p-2">
 				<div className="text-stone-300">
-					powered by{" "}
+					Powered by{" "}
 					<Link href={`/`} className="underline">
-						menucards
+						Menucards
 					</Link>
 				</div>
 			</footer>

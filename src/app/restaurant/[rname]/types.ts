@@ -4,4 +4,5 @@ export interface IOption {
 	path: string
 	icon: string
 	show?: boolean
+	preload?: boolean
 }

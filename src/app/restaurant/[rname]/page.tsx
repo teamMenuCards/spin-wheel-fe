@@ -1,8 +1,10 @@
-"use client"
 import React from "react"
 import DeliveryLandingPage from "./components/DeliveryLandingPage"
-import { useParams } from "next/navigation"
-import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+
+import { axiosServerQuery } from "@/services/http-server"
+import { apiRoutes } from "@/services/api-routes"
+import { parseDynamicURL } from "@/services/utils"
+import Link from "next/link"
 
 /* 
 		By defult the delivery page is the landing page
@@ -10,14 +12,29 @@ import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-res
 
 */
 
-export default function Page() {
-	const { rname } = useParams<{ rname: string }>()
+export default async function Page({
+	params
+}: {
+	params: Promise<{ rname: string }>
+}) {
+	const { rname } = await params
 
-	const { currentData } = useGetRestaurantDetailByNameQuery(rname)
+	const { data: currentData } = await axiosServerQuery({
+		url: parseDynamicURL(apiRoutes.restaurantDetail, { name: rname }),
+		method: "GET"
+	})
 
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
+			<footer className="bg-slate-900 mt-4 flex justify-center p-2">
+				<div className="text-stone-300">
+					Powered by{" "}
+					<Link href={`/`} className="underline">
+						Menucards
+					</Link>
+				</div>
+			</footer>
 		</div>
 	)
 }

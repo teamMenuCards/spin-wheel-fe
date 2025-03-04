@@ -25,6 +25,7 @@ const DineInButtons = ({
 							key={index}
 							href={item?.path ?? "/"}
 							passHref
+							prefetch={item.preload}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
@@ -55,6 +56,7 @@ const DineInButtons = ({
 						<NextLink
 							key={index}
 							href={item?.path ?? "/"}
+							prefetch={item.preload}
 							passHref
 							target="_blank"
 							rel="noopener noreferrer"

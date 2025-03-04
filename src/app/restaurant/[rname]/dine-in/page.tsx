@@ -129,10 +129,10 @@ function DineInLandingPage() {
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
 	return (
-		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
+		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
 
-			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">
+			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 rounded-t-[20px] p-[60px_16px_16px]">
 				{restaurantInfo && (
 					<DineInfoCard
 						isDineIn

@@ -1,6 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react"
-// import DineInfoCard from "./DineInfoCard"
+import React, { useRef } from "react"
 import DineInButtons from "../shared/DineInButtons"
 import DineInfoCard from "../shared/DineInfoCard"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
@@ -15,7 +14,6 @@ function DeliveryLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
-	const [currentReview, setCurrentReview] = useState(0)
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
@@ -82,7 +80,8 @@ function DeliveryLandingPage({
 				value: "Menu",
 				path: `/restaurant/${rid}/menu`,
 				icon: "/menu-icon.webp",
-				show: true
+				show: true,
+				preload: true
 			},
 
 			{
@@ -90,21 +89,24 @@ function DeliveryLandingPage({
 				value: "Review us on Google",
 				path: linksList["google-review"],
 				icon: "/google-logo.webp",
-				show: !!linksList["google-review"]
+				show: !!linksList["google-review"],
+				preload: false
 			},
 			{
 				id: 3,
 				value: "Say Hello to receive offers",
 				path: `${linksList["whatsapp-link"]}${encodedMessage} `,
 				icon: "/whatsapp.svg",
-				show: !!linksList["whatsapp-link"]
+				show: !!linksList["whatsapp-link"],
+				preload: false
 			},
 			{
 				id: 4,
 				value: "Follow on Instagram",
 				path: linksList["insta"],
 				icon: "/instagram-icon.webp",
-				show: !!linksList["insta"]
+				show: !!linksList["insta"],
+				preload: false
 			}
 		]
 
@@ -113,17 +115,11 @@ function DeliveryLandingPage({
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	useEffect(() => {
-		if (reviewsRef.current) {
-			reviewsRef.current.scrollIntoView({ behavior: "smooth" })
-		}
-	}, [currentReview])
-
 	return (
-		<div className="w-screen min-h-screen relative overflow-hidden bg-black">
+		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
 
-			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 shadow-md rounded-t-[20px] p-[60px_16px_16px]">
+			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 rounded-t-[20px] p-[60px_16px_16px]">
 				{restaurantInfo && (
 					<DineInfoCard
 						restaurantInfo={restaurantInfo}
@@ -133,11 +129,9 @@ function DeliveryLandingPage({
 				{options && <DineInButtons options={options} />}
 
 				{reviews && (
-					<ReviewsCarousel
-						reviews={reviews}
-						currentReview={currentReview}
-						setCurrentReview={setCurrentReview}
-					/>
+					<div ref={reviewsRef}>
+						<ReviewsCarousel reviews={reviews} />
+					</div>
 				)}
 			</div>
 		</div>

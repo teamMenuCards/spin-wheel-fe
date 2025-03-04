@@ -11,7 +11,7 @@ function BackgroundImageComponent({
 		<>
 			<div
 				className=" fixed top-0 w-screen h-[250px]"
-				style={{ filter: "brightness(0.5) blur(2px)" }}
+				style={{ filter: "brightness(0.8)" }}
 			>
 				<Image
 					alt="first image"

@@ -30,9 +30,9 @@ const Carousel: React.FC<CarouselProps> = ({ reviews }) => {
 	}, [currentSlide])
 
 	return (
-		<div className="relative w-full h-[200px]">
+		<div className="relative w-full">
 			<div
-				className="flex transition-transform duration-300 ease-in-out"
+				className="flex transition-transform h-auto duration-300 ease-in-out"
 				ref={sliderRef}
 			>
 				{reviews.map((image, index) => (

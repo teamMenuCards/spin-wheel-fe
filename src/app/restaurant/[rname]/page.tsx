@@ -4,7 +4,7 @@ import DeliveryLandingPage from "./components/DeliveryLandingPage"
 import { axiosServerQuery } from "@/services/http-server"
 import { apiRoutes } from "@/services/api-routes"
 import { parseDynamicURL } from "@/services/utils"
-import Link from "next/link"
+import Footer from "@/shared/Footer"
 
 /* 
 		By defult the delivery page is the landing page
@@ -27,14 +27,7 @@ export default async function Page({
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
-			<footer className="bg-slate-900 mt-4  flex justify-center p-2">
-				<div className="text-stone-300 text-sm">
-					Powered by{" "}
-					<Link href={`/`} className="underline text-sm">
-						Menucards
-					</Link>
-				</div>
-			</footer>
+			<Footer />
 		</div>
 	)
 }

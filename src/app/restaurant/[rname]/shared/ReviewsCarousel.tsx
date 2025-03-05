@@ -21,7 +21,7 @@ function ReviewsCarousel({ reviews }: IReviewsCarousel) {
 						Featured Reviews
 					</div>
 
-					<div className="relative w-full max-w-[400px] mx-auto px-4 h-[250px]">
+					<div className="relative w-full max-w-[400px] min-h-[400px] mx-auto px-4">
 						<Swipable reviews={reviewList} />
 					</div>
 				</div>

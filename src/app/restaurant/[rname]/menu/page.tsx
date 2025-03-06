@@ -8,6 +8,7 @@ import Accordion from "@/shared/Accordian"
 import FloatingMenu from "./components/floating-menu"
 import NavBar from "./components/NavBar"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+import { ProductCategoryType } from "@/types"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
@@ -18,8 +19,30 @@ export default function MenuPage() {
 		console.log(category)
 	}
 
+	const isCurrentTimeWithinRange = (
+		availableFrom: ProductCategoryType["available_from"],
+		availableTo: ProductCategoryType["available_to"]
+	) => {
+		const now = new Date()
+		const currentTime = now.getHours() * 60 + now.getMinutes() // Convert current time to minutes
+
+		const [fromHours, fromMinutes] = availableFrom.split(":").map(Number)
+		const [toHours, toMinutes] = availableTo.split(":").map(Number)
+
+		const fromTime = fromHours * 60 + fromMinutes
+		const toTime = toHours * 60 + toMinutes
+
+		return currentTime >= fromTime && currentTime <= toTime
+	}
+
+	const validCategories = menudata?.categories.filter(
+		(item) =>
+			isCurrentTimeWithinRange(item?.available_from, item?.available_to) ||
+			menudata?.categories
+	)
+
 	const sortedCategories =
-		menudata?.categories
+		validCategories
 			?.slice()
 			.sort((a, b) => a.display_order - b.display_order) ?? []
 

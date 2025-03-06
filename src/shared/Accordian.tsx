@@ -38,39 +38,43 @@ const Accordion: React.FC<AccordionProps> = ({
 	return (
 		<div className="w-full max-w-md mx-auto">
 			<div className="space-y-2">
-				{sections.map((section, index) => (
-					<div
-						key={section.id}
-						id={section.id}
-						className="border rounded-lg overflow-hidden"
-					>
-						{/* Accordion Title */}
-						<button
-							className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
-							onClick={() => onClickSection(index, section)}
-						>
-							{section.display_name}
-							<span>
-								{openIndexes.includes(index) ? (
-									<ChevronUp_Ic className="w-4 h-4" />
-								) : (
-									<ChevronDown_Ic className="w-4 h-4" />
-								)}
-							</span>
-						</button>
+				{sections.map((section, index) => {
+					return (
+						<>
+							<div
+								key={section.id}
+								id={section.id}
+								className="border rounded-lg overflow-hidden"
+							>
+								{/* Accordion Title */}
+								<button
+									className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
+									onClick={() => onClickSection(index, section)}
+								>
+									{section.display_name}
+									<span>
+										{openIndexes.includes(index) ? (
+											<ChevronUp_Ic className="w-4 h-4" />
+										) : (
+											<ChevronDown_Ic className="w-4 h-4" />
+										)}
+									</span>
+								</button>
 
-						{/* Accordion Items */}
-						{openIndexes.includes(index) && (
-							<div className="py-2 px-4 bg-gray-50 text-gray-700">
-								<ul className="list-disc pl-5 space-y-1">
-									{section.products.map((item) => (
-										<MenuItem product={item} key={item.id} />
-									))}
-								</ul>
+								{/* Accordion Items */}
+								{openIndexes.includes(index) && (
+									<div className="py-2 px-4 bg-gray-50 text-gray-700">
+										<ul className="list-disc pl-5 space-y-1">
+											{section.products.map((item) => (
+												<MenuItem product={item} key={item.id} />
+											))}
+										</ul>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
-				))}
+						</>
+					)
+				})}
 			</div>
 		</div>
 	)

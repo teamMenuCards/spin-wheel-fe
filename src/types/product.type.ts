@@ -32,6 +32,8 @@ export type ProductType = {
 }
 
 export type ProductCategoryType = {
+	available_from: string
+	available_to: string
 	id: string
 	name: string
 	active: boolean

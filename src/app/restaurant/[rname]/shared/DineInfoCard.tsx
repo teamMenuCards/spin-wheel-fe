@@ -14,6 +14,7 @@ const RestaurantInfoCard = ({
 	reviewsRef: React.RefObject<HTMLDivElement>
 }) => {
 	const {
+		address,
 		phone_no,
 		logo,
 		details: { meta_details: metaData, platform_reviews: platformReviews }
@@ -30,7 +31,7 @@ const RestaurantInfoCard = ({
 	const openTime = (metaData && metaData.opening_time) || ""
 	const closeTime = (metaData && metaData.closing_time) || ""
 	const avgPrice = (metaData && metaData.avg_price) || ""
-	const location = (metaData && metaData.location_info) || ""
+	const locationLink = (metaData && metaData.location_info) || ""
 
 	return (
 		<>
@@ -101,12 +102,12 @@ const RestaurantInfoCard = ({
 										// href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
 										// 	address
 										// )}`}
-										href={location}
+										href={locationLink}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex text-blue-500 underline  items-center text-sm max-w-[150px] overflow-hidden"
 									>
-										{location}
+										{address}
 									</a>
 								</div>
 							</div>

@@ -24,21 +24,28 @@ export default function MenuPage() {
 		availableTo: ProductCategoryType["available_to"]
 	) => {
 		const now = new Date()
-		const currentTime = now.getHours() * 60 + now.getMinutes() // Convert current time to minutes
+		const currentTime = now.getHours() * 60 + now.getMinutes() // Local time
 
-		const [fromHours, fromMinutes] = availableFrom.split(":").map(Number)
-		const [toHours, toMinutes] = availableTo.split(":").map(Number)
+		const [fromHours, fromMinutes] = availableFrom
+			.split(":")
+			.slice(0, 2)
+			.map(Number)
+		const [toHours, toMinutes] = availableTo.split(":").slice(0, 2).map(Number)
 
 		const fromTime = fromHours * 60 + fromMinutes
 		const toTime = toHours * 60 + toMinutes
 
-		return currentTime >= fromTime && currentTime <= toTime
+		// Handle overnight case
+		const isWithinRange =
+			fromTime <= toTime
+				? currentTime >= fromTime && currentTime <= toTime
+				: currentTime >= fromTime || currentTime <= toTime
+
+		return isWithinRange
 	}
 
-	const validCategories = menudata?.categories.filter(
-		(item) =>
-			isCurrentTimeWithinRange(item?.available_from, item?.available_to) ||
-			menudata?.categories
+	const validCategories = menudata?.categories.filter((item) =>
+		isCurrentTimeWithinRange(item?.available_from, item?.available_to)
 	)
 
 	const sortedCategories =

@@ -44,9 +44,15 @@ export default function MenuPage() {
 		return isWithinRange
 	}
 
-	const validCategories = menudata?.categories.filter((item) =>
-		isCurrentTimeWithinRange(item?.available_from, item?.available_to)
-	)
+	const validCategories = menudata?.categories.filter((item) => {
+		const isTimingsAvailable = item?.available_from && item?.available_to
+
+		if (isTimingsAvailable) {
+			return isCurrentTimeWithinRange(item?.available_from, item?.available_to)
+		}
+
+		return menudata?.categories
+	})
 
 	const sortedCategories =
 		validCategories

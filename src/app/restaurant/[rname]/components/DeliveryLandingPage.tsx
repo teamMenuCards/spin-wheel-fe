@@ -36,6 +36,8 @@ function DeliveryLandingPage({
 				`Hi team ${restaurantInfo.name}. Please keep me updated on the weekly offers`
 			)
 
+		console.log("test--", linksList["whatsapp-link"])
+
 		const deliveryOptions: IOption[] = [
 			{
 				id: 1,

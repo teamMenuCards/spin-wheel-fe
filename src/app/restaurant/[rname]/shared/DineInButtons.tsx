@@ -6,9 +6,11 @@ import { sendGTMEvent } from "@next/third-parties/google"
 
 const DineInButtons = ({
 	isDineIn = false,
+	dynamicOptions = [],
 	options
 }: {
 	isDineIn?: boolean
+	dynamicOptions?: []
 	options: { deliveryOptions: IOption[]; dineInOptions: IOption[] }
 }) => {
 	const { dineInOptions, deliveryOptions } = options
@@ -19,7 +21,7 @@ const DineInButtons = ({
 
 			{/* Menu & other DINE_IN button */}
 			{isDineIn &&
-				dineInOptions?.map((item: IOption, index) =>
+				(dynamicOptions || dineInOptions)?.map((item: IOption, index) =>
 					item.show ? (
 						<NextLink
 							key={index}
@@ -30,9 +32,9 @@ const DineInButtons = ({
 							rel="noopener noreferrer"
 						>
 							<div className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50">
-								{item.icon ? (
+								{item.image_url || item.icon ? (
 									<Image
-										src={item.icon}
+										src={item.image_url || item.icon}
 										alt={item.value}
 										width={24}
 										height={24}
@@ -42,16 +44,16 @@ const DineInButtons = ({
 
 								{/* Button Text */}
 								<div className="text-gray-800 font-semibold text-sm">
-									{item.value}
+									{item.name || item.value}
 								</div>
 							</div>
 						</NextLink>
 					) : null
 				)}
 
-			{/* Menu & other Delivery option button */}
+			{/* Menu & other DELIVEVRY option button */}
 			{!isDineIn &&
-				deliveryOptions?.map((item: IOption, index) =>
+				(dynamicOptions || deliveryOptions)?.map((item: IOption, index) =>
 					item.show ? (
 						<NextLink
 							key={index}
@@ -72,7 +74,7 @@ const DineInButtons = ({
 							>
 								{item.icon ? (
 									<Image
-										src={item.icon}
+										src={item.image_url || item.icon}
 										alt={item.value}
 										width={24}
 										height={24}
@@ -82,7 +84,7 @@ const DineInButtons = ({
 
 								{/* Button Text */}
 								<div className="text-gray-800 font-semibold text-sm">
-									{item.value}
+									{item.name || item.value}
 								</div>
 							</div>
 						</NextLink>

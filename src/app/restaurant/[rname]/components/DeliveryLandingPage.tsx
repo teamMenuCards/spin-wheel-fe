@@ -128,7 +128,12 @@ function DeliveryLandingPage({
 						reviewsRef={reviewsRef}
 					/>
 				)}
-				{options && <DineInButtons options={options} />}
+				{options && (
+					<DineInButtons
+						options={options}
+						dynamicOptions={restaurantInfo?.dashboardLinks}
+					/>
+				)}
 
 				{reviews && (
 					<div ref={reviewsRef}>

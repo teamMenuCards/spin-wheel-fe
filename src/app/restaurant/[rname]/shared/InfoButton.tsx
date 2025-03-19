@@ -17,7 +17,7 @@ const InfoButton: React.FC<Props> = (props) => {
 	return (
 		<>
 			<NextLink
-				href={props.href}
+				href={props?.href}
 				prefetch={true}
 				target="_blank"
 				rel="noopener noreferrer"
@@ -40,8 +40,9 @@ const InfoButton: React.FC<Props> = (props) => {
 							className="mr-4 drop-shadow-sm rounded"
 						/>
 					) : null}
+
 					{/* Button Text */}
-					<div className="text-gray-800 font-semibold text-sm">
+					<div className="text-gray-800 font-semibold text-sm text-center flex justify-center items-center">
 						{toSentenceCase(props.value)}
 					</div>
 				</div>

@@ -8,5 +8,5 @@ export const ICON_MAP: Record<IconKey, string> = {
 	whatsapp: "/whatsapp.svg",
 	swiggy: "/swiggy-logo.webp",
 	zomato: "/zomato-logo.webp",
-	menu: "./menu-icon.webp"
+	menu: "/menu-icon.webp"
 }

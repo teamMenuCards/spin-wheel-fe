@@ -20,16 +20,15 @@ const DineInButtons = ({
 
 			{/* DYNAMIC Menu is only for IS_DELIVERY page */}
 			{!isDineIn &&
-				dynamicOptions?.map((item: IDynamicLink) => {
+				dynamicOptions &&
+				dynamicOptions?.map((item: IDynamicLink, index) => {
 					return (
-						<>
-							<InfoButton
-								key={item.id}
-								value={item.name}
-								href={item?.url ?? "/"}
-								icon={item.image_url}
-							></InfoButton>
-						</>
+						<InfoButton
+							key={index}
+							value={item.name}
+							href={item?.url ?? "/"}
+							icon={item.image_url}
+						></InfoButton>
 					)
 				})}
 
@@ -37,14 +36,12 @@ const DineInButtons = ({
 			{isDineIn &&
 				dineInOptions?.map((item: IOption, index) =>
 					item.show ? (
-						<>
-							<InfoButton
-								key={index}
-								href={item?.path ?? "/"}
-								icon={item.icon}
-								value={item.value}
-							></InfoButton>
-						</>
+						<InfoButton
+							key={index}
+							href={item?.path ?? "/"}
+							icon={item.icon}
+							value={item.value}
+						></InfoButton>
 					) : null
 				)}
 

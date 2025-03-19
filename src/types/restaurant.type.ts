@@ -21,6 +21,7 @@ export type RestaurantDetailType = {
 	state: string
 	logo: string
 	cover_image: string
+	dashboardLinks?: []
 	details: {
 		wa_api_details?: {
 			wa_number: string

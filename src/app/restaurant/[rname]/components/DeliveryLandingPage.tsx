@@ -115,6 +115,8 @@ function DeliveryLandingPage({
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
+	console.log("optionsjj--", options)
+
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
@@ -126,7 +128,12 @@ function DeliveryLandingPage({
 						reviewsRef={reviewsRef}
 					/>
 				)}
-				{options && <DineInButtons options={options} />}
+
+				{restaurantInfo?.dashboardLinks?.length ? (
+					<DineInButtons dynamicOptions={restaurantInfo.dashboardLinks} />
+				) : options ? (
+					<DineInButtons options={options} />
+				) : null}
 
 				{reviews && (
 					<div ref={reviewsRef}>

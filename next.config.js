@@ -14,6 +14,14 @@ const nextConfig = {
 			{
 				protocol: "https",
 				hostname: "media-assets.swiggy.com"
+			},
+			{
+				protocol: "https",
+				hostname: "ugc.production.linktr.ee"
+			},
+			{
+				protocol: "https",
+				hostname: "picsum.photos"
 			}
 		]
 	}

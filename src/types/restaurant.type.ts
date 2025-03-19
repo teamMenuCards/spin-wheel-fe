@@ -5,10 +5,22 @@ export type RestaurantType = {
 	active: boolean
 	createdAt: string
 	updatedAt: string
+	dashboardLinks?: IDynamicLink[]
 }
 
 export type IReviews = {
 	review_image_url: string
+}
+
+export type IDynamicLink = {
+	id: number
+	name: string
+	url: string
+	image_url?: string
+	display_order?: number
+	active: boolean
+	createdAt?: string
+	updatedAt?: string
 }
 export type RestaurantDetailType = {
 	id: number
@@ -21,7 +33,6 @@ export type RestaurantDetailType = {
 	state: string
 	logo: string
 	cover_image: string
-	dashboardLinks?: []
 	details: {
 		wa_api_details?: {
 			wa_number: string

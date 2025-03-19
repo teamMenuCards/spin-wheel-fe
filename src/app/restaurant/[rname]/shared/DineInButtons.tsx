@@ -1,4 +1,5 @@
 "use client"
+import { IDynamicLink } from "@/types"
 import { IOption } from "../types"
 import InfoButton from "./InfoButton"
 
@@ -8,7 +9,7 @@ const DineInButtons = ({
 	dynamicOptions
 }: {
 	isDineIn?: boolean
-	dynamicOptions?: []
+	dynamicOptions?: IDynamicLink[]
 	options?: { deliveryOptions: IOption[]; dineInOptions: IOption[] }
 }) => {
 	const { dineInOptions = [], deliveryOptions = [] } = options || {}
@@ -19,7 +20,7 @@ const DineInButtons = ({
 
 			{/* DYNAMIC Menu is only for IS_DELIVERY page */}
 			{!isDineIn &&
-				dynamicOptions?.map((item: IOption) => {
+				dynamicOptions?.map((item: IDynamicLink) => {
 					return (
 						<>
 							<InfoButton

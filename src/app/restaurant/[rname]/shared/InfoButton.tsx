@@ -4,19 +4,23 @@ import Image from "next/image"
 import { toSentenceCase } from "@/utils/toSentenceCase"
 import { ICON_MAP } from "../constants"
 
-function InfoButton(props) {
-	console.log("heyye--", ICON_MAP["swiggy"])
+interface Props {
+	icon?: string
+	value: string
+	href: string
+}
 
-	const iconValue = props.icon || ICON_MAP[props.value.toLowerCase()]
+const InfoButton: React.FC<Props> = (props) => {
+	const iconValue =
+		props.icon || ICON_MAP[props.value.toLowerCase() as keyof typeof ICON_MAP]
 
 	return (
 		<>
 			<NextLink
-				passHref
+				href={props.href}
 				prefetch={true}
 				target="_blank"
 				rel="noopener noreferrer"
-				{...props}
 			>
 				<div
 					onClick={() =>

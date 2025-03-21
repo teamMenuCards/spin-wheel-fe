@@ -14,14 +14,18 @@ const DineInButtons = ({
 }) => {
 	const { dineInOptions = [], deliveryOptions = [] } = options || {}
 
+	const links = (dynamicOptions ?? []).sort(
+		(a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)
+	)
+
 	return (
 		<div className="relative flex flex-col items-center w-full max-w-[400px] mt-8 mx-auto px-4">
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 			{/* DYNAMIC Menu is only for IS_DELIVERY page */}
 			{!isDineIn &&
-				dynamicOptions &&
-				dynamicOptions?.map((item: IDynamicLink, index) => {
+				links &&
+				links?.map((item: IDynamicLink, index) => {
 					return (
 						<InfoButton
 							key={index}

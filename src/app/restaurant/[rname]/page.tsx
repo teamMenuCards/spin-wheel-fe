@@ -5,6 +5,7 @@ import { axiosServerQuery } from "@/services/http-server"
 import { apiRoutes } from "@/services/api-routes"
 import { parseDynamicURL } from "@/services/utils"
 import Footer from "@/shared/Footer"
+import ScrollButton from "./shared/ScrollButton"
 
 /* 
 		By defult the delivery page is the landing page
@@ -29,6 +30,7 @@ export default async function Page({
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
+			<ScrollButton/>
 			<Footer />
 		</div>
 	)

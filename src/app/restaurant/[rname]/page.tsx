@@ -30,7 +30,8 @@ export default async function Page({
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
-			<ScrollButton/>
+			{/* changes for ScrollButton */}
+			<ScrollButton />
 			<Footer />
 		</div>
 	)

@@ -53,9 +53,9 @@ const ScrollButton: React.FC = () => {
 			onClick={handleScroll}
 		>
 			{isAtBottom ? (
-				<ChevronUp_Ic className="w-4 h-4 stroke-3" />
+				<ChevronUp_Ic className="w-5 h-5 stroke-3" />
 			) : (
-				<ChevronDown_Ic className="w-4 h-4 stroke-3" />
+				<ChevronDown_Ic className="w-5 h-5 stroke-3" />
 			)}
 		</button>
 	)

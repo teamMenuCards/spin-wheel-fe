@@ -115,8 +115,6 @@ function DeliveryLandingPage({
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	console.log("optionsjj--", options)
-
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}

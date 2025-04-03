@@ -42,6 +42,7 @@ function MenuItem({
 		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
 	const prdImage = product.variants?.[0]?.image_url || ""
+	const price = product.variants?.[0]?.price
 
 	return (
 		<div className="mb-4">
@@ -83,9 +84,9 @@ function MenuItem({
 						)}
 
 						{/* Price */}
-						{product.variants?.[0]?.price && (
+						{price && (
 							<p className="text-secondary text-sm font-bold pt-1">
-								₹{product.variants[0].price}
+								{price != 0.0 ? `₹${product.variants[0].price}` : "APS"}
 							</p>
 						)}
 

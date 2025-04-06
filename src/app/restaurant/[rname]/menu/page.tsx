@@ -10,12 +10,16 @@ import NavBar from "./components/NavBar"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 import { ProductCategoryType } from "@/types"
 import Loading from "@/app/loading"
+import { isSafeArray } from "@/utils/isSafeArray"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
 	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
-	const { data: restaurantInfo, isLoading } =
-		useGetRestaurantDetailByNameQuery(rname)
+	const {
+		data: restaurantInfo,
+		isFetching: isFetchingMenu,
+		isError: hasErrorMenu
+	} = useGetRestaurantDetailByNameQuery(rname)
 
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
@@ -61,24 +65,40 @@ export default function MenuPage() {
 			?.slice()
 			.sort((a, b) => a.display_order - b.display_order) ?? []
 
-	if (isLoading) {
+	const isLoadingMenu = isFetchingMenu || menudata?.categories === undefined
+
+	if (isLoadingMenu) {
 		return <Loading />
 	}
+
+	if (hasErrorMenu) {
+		return <div>Error fetching data</div>
+	}
+
+	if (!isLoadingMenu && !sortedCategories.length) {
+		return (
+			<>
+				<NavBar rname={rname} restaurantInfo={restaurantInfo} />
+				<FloatingMenu categories={sortedCategories} />
+				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+					Menu Coming Soon!
+				</div>
+			</>
+		)
+	}
+
+	const hasLoadedMenu = !isFetchingMenu && isSafeArray(sortedCategories)
 
 	return (
 		<>
 			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
 			<FloatingMenu categories={sortedCategories} />
 
-			{sortedCategories.length ? (
+			{hasLoadedMenu && (
 				<Accordion
 					sections={sortedCategories}
 					onSectionSelection={handleCategorySelection}
 				/>
-			) : (
-				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
-					Menu Coming Soon!
-				</div>
 			)}
 		</>
 	)

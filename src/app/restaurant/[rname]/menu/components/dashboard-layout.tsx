@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: Props) {
 			{/* <MenuNavBar /> */}
 
 			<main className="flex-grow">
-				<div className="h-16" /> {/* Equivalent to MUI's Toolbar spacing */}
+				<div className="h-16" />
 				{children}
 			</main>
 		</div>

@@ -49,7 +49,7 @@ const Accordion: React.FC<AccordionProps> = ({
 									>
 										{/* Accordion Title */}
 										<button
-											className="w-full text-left py-4 px-4 bg-gray-100 text-gray-900 font-semibold hover:bg-gray-200 flex justify-between items-center"
+											className="w-full text-left py-4 px-4 bg-gray-100 text-black font-semibold hover:bg-gray-200 flex justify-between items-center"
 											onClick={() => onClickSection(index, section)}
 										>
 											{section.display_name}

@@ -24,7 +24,7 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 	return (
 		<>
 			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
-				<div className="max-w-7xl mx-auto flex items-center justify-between">
+				<div className="max-w-7xl mx-auto flex items-center justify-between text-black">
 					<div className="text-xl font-bold truncate">
 						{restaurantInfo?.name}
 					</div>

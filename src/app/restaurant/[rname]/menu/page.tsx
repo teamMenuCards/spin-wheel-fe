@@ -9,11 +9,13 @@ import FloatingMenu from "./components/floating-menu"
 import NavBar from "./components/NavBar"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 import { ProductCategoryType } from "@/types"
+import Loading from "@/app/loading"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()
 	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
-	const { data: restaurantInfo } = useGetRestaurantDetailByNameQuery(rname)
+	const { data: restaurantInfo, isLoading } =
+		useGetRestaurantDetailByNameQuery(rname)
 
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
@@ -59,15 +61,25 @@ export default function MenuPage() {
 			?.slice()
 			.sort((a, b) => a.display_order - b.display_order) ?? []
 
+	if (isLoading) {
+		return <Loading />
+	}
+
 	return (
 		<>
 			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
 			<FloatingMenu categories={sortedCategories} />
 
-			<Accordion
-				sections={sortedCategories || []}
-				onSectionSelection={handleCategorySelection}
-			/>
+			{sortedCategories.length ? (
+				<Accordion
+					sections={sortedCategories}
+					onSectionSelection={handleCategorySelection}
+				/>
+			) : (
+				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+					Menu Coming Soon!
+				</div>
+			)}
 		</>
 	)
 }

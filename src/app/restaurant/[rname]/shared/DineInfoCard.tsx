@@ -96,7 +96,7 @@ const RestaurantInfoCard = ({
 								)}
 
 								<div className="flex items-center gap-2 w-fit">
-									<MapIcon_Tc className="h-3 w-3" />
+									<MapIcon_Tc className="h-4 w-4" />
 
 									<a
 										// href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(

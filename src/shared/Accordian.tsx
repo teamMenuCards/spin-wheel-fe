@@ -6,6 +6,8 @@ import {
 	ChevronUp_Ic
 } from "@/app/restaurant/[rname]/menu/icons"
 import { Category } from "@/services/product/get-menu-list"
+import ChefRecommendation from "@/app/restaurant/[rname]/menu/components/ChefRecommendation"
+import { isSafeArray } from "@/utils/isSafeArray"
 
 interface AccordionProps {
 	sections?: Category[]
@@ -18,6 +20,22 @@ const Accordion: React.FC<AccordionProps> = ({
 }) => {
 	const [openIndexes, setOpenIndexes] = useState<number[]>([])
 
+	// Extract featured products from all sections
+	const featuredProducts = sections.flatMap((section) =>
+		section.products
+			.filter((product) => product.is_featured)
+			.map((product) => {
+				const variant = product.variants?.[0] || {}
+				return {
+					name: product.name,
+					is_veg: variant.is_veg ?? false,
+					image_url: variant.image_url || "",
+					description: product.description || "",
+					price: variant.price || product.price || ""
+				}
+			})
+	)
+
 	// Ensure all sections are open when sections data is available
 	useEffect(() => {
 		if (sections.length) {
@@ -26,11 +44,10 @@ const Accordion: React.FC<AccordionProps> = ({
 	}, [sections])
 
 	const onClickSection = (index: number, section: Category) => {
-		setOpenIndexes(
-			(prevIndexes) =>
-				prevIndexes.includes(index)
-					? prevIndexes.filter((i) => i !== index) // Close if already open
-					: [...prevIndexes, index] // Open if closed
+		setOpenIndexes((prevIndexes) =>
+			prevIndexes.includes(index)
+				? prevIndexes.filter((i) => i !== index)
+				: [...prevIndexes, index]
 		)
 		onSectionSelection(section)
 	}
@@ -38,6 +55,11 @@ const Accordion: React.FC<AccordionProps> = ({
 	return (
 		<div className="w-full max-w-md mx-auto">
 			<div className="space-y-2">
+				{/* Chef recommendation */}
+				{isSafeArray(featuredProducts) && (
+					<ChefRecommendation recommendations={featuredProducts} />
+				)}
+				 {/* Menu list */}
 				{sections && sections.length
 					? sections.map((section, index) => {
 							return (

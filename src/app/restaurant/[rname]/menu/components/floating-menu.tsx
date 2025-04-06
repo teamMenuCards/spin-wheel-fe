@@ -54,7 +54,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 			}
 			setScrollTarget(null) // Reset after scrolling
 		}
-	}, [open])
+	}, [open,scrollTarget])
 
 	useEffect(() => {
 		if (open) {

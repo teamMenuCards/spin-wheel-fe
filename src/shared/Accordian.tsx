@@ -59,7 +59,8 @@ const Accordion: React.FC<AccordionProps> = ({
 				{isSafeArray(featuredProducts) && (
 					<ChefRecommendation recommendations={featuredProducts} />
 				)}
-				 {/* Menu list */}
+
+				{/* Menu list */}
 				{sections && sections.length
 					? sections.map((section, index) => {
 							return (

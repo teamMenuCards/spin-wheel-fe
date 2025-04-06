@@ -17,7 +17,7 @@ function ReviewsCarousel({ reviews }: IReviewsCarousel) {
 						<DecorativeLine />
 					</div>
 
-					<div className="my-4 px-4 text-md font-metropolis font-semibold text-center">
+					<div className="my-4 px-4 text-md text-black font-metropolis font-semibold text-center">
 						Featured Reviews
 					</div>
 

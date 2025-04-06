@@ -33,8 +33,8 @@ const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 		<div className="px-4">
 			<h2 className="font-semibold text-md text-gray-800 my-2">Bestsellers</h2>
 			<div
-				className="overflow-x-auto flex gap-3 no-scrollbar pb-4 relative z-10"
-				style={{ height: "240px" }}
+				className="overflow-x-auto flex gap-3 no-scrollbar relative z-10"
+				style={{ height: "235px" }}
 			>
 				{recommendations.map((item, key) => (
 					<div

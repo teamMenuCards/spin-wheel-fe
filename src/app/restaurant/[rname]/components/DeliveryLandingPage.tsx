@@ -51,13 +51,13 @@ function DeliveryLandingPage({
 				icon: "/whatsapp.svg",
 				show: !!linksList["whatsapp-link"]
 			},
-			{
-				id: 3,
-				value: "Find us at",
-				path: linksList["locate-us-link"],
-				icon: "/google_map.svg",
-				show: !!linksList["locate-us-link"]
-			},
+			// {
+			// 	id: 3,
+			// 	value: "Find us at",
+			// 	path: linksList["locate-us-link"],
+			// 	icon: "/google_map.svg",
+			// 	show: !!linksList["locate-us-link"]
+			// },
 			{
 				id: 4,
 				value: "Order from Zomato",

@@ -34,7 +34,7 @@ const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 	const [isOpen, setIsOpen] = useState(false)
 	const [selectedImg, setSelectedImg] = useState("")
 
-	const handleImgClick = (img) => {
+	const handleImgClick = (img: string) => {
 		setSelectedImg(img)
 		setIsOpen(true)
 	}

@@ -17,7 +17,8 @@ const RestaurantInfoCard = ({
 		address,
 		phone_no,
 		logo,
-		details: { meta_details: metaData, platform_reviews: platformReviews }
+		details: { meta_details: metaData, platform_reviews: platformReviews },
+		order_count_display = 500
 	} = restaurantInfo?.detail
 
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
@@ -149,6 +150,30 @@ const RestaurantInfoCard = ({
 					</div>
 				</div>
 			</div>
+			{!isDineIn && (
+				<div className="w-full flex justify-center my-3">
+					<div
+						className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-4  rounded-full shadow-lg
+							 transform transition-transform hover:scale-105 flex items-center font-metropolis"
+					>
+						<div className="mr-2">
+							<Image
+								src="/order-icon.png"
+								alt="Orders"
+								width={20}
+								height={20}
+								className="text-green-500"
+							/>
+						</div>
+						<div>
+							<span className="font-bold text-md">{order_count_display}</span>
+							<span className="ml-1 text-md font-semibold">
+								People ordered this week
+							</span>
+						</div>
+					</div>
+				</div>
+			)}
 		</>
 	)
 }

@@ -32,6 +32,7 @@ export type RestaurantDetailType = {
 	country: string
 	state: string
 	logo: string
+	order_count_display: number
 	cover_image: string
 	dashboardLinks?: []
 	details: {

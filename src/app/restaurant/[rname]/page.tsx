@@ -25,7 +25,7 @@ export default async function Page({
 		method: "GET"
 	})
 
-	console.log("currentData--", currentData)
+	console.log("currentData--", JSON.stringify(currentData))
 
 	return (
 		<div>

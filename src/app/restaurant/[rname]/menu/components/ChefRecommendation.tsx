@@ -1,5 +1,6 @@
 import Image from "next/image"
-import React from "react"
+import React, { useState } from "react"
+import ImageOverlay from "@/shared/ImageOverlay"
 
 const getVegIcon = () => (
 	<Image src="/ic_veg.webp" alt="veg icon" width={18} height={18} priority />
@@ -30,6 +31,14 @@ interface ChefRecommendationProps {
 const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 	recommendations
 }) => {
+	const [isOpen, setIsOpen] = useState(false)
+	const [selectedImg, setSelectedImg] = useState("")
+
+	const handleImgClick = (img) => {
+		setSelectedImg(img)
+		setIsOpen(true)
+	}
+
 	return (
 		<div className="px-4">
 			<h2 className="font-semibold text-md text-gray-800 my-2">Bestsellers</h2>
@@ -56,6 +65,7 @@ const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 									alt={item.name}
 									fill
 									style={{ objectFit: "cover" }}
+									onClick={() => handleImgClick(item.image_url)}
 									className="hover:scale-105 transition-transform duration-200"
 									priority
 								/>
@@ -91,6 +101,10 @@ const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 					scrollbar-width: none;
 				}
 			`}</style>
+
+			{isOpen && selectedImg ? (
+				<ImageOverlay imageUrl={selectedImg} onClose={() => setIsOpen(false)} />
+			) : null}
 		</div>
 	)
 }

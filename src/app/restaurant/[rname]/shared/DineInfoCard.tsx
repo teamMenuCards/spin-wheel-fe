@@ -158,6 +158,7 @@ const RestaurantInfoCard = ({
 					>
 						<div className="mr-2">
 							<Image
+								unoptimized
 								src="/order-icon.png"
 								alt="Orders"
 								width={20}

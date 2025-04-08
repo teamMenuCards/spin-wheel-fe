@@ -1,6 +1,7 @@
 const nextConfig = {
 	/* config options here */
 	images: {
+		minimumCacheTTL: 2678400, // 31 days in seconds
 		domains: ["res.cloudinary.com", "dummyimage.com", "ik.imagekit.io"],
 		remotePatterns: [
 			{
@@ -23,7 +24,11 @@ const nextConfig = {
 				protocol: "https",
 				hostname: "picsum.photos"
 			}
-		]
+		],
+		formats: ["image/webp"],
+		qualities: [75, 85],
+		deviceSizes: [640, 768, 1024, 1280], // Responsive breakpoints
+		imageSizes: [16, 32, 48, 64, 96] // Non-responsive images (e.g., avatars, icons)
 	}
 }
 

@@ -20,6 +20,7 @@ function MenuItem({
 
 	const getVegIcon = () => (
 		<Image
+			unoptimized
 			src="/ic_veg.webp"
 			alt="veg/nonveg icon"
 			width={15}
@@ -30,6 +31,7 @@ function MenuItem({
 
 	const getNonVegIcon = () => (
 		<Image
+			unoptimized
 			src="/ic_nonveg.webp"
 			alt="veg/nonveg icon"
 			width={15}
@@ -53,6 +55,7 @@ function MenuItem({
 							<Image
 								fill
 								priority
+								unoptimized
 								src={prdImage}
 								alt="food_img"
 								onClick={() => setIsOpen(true)}

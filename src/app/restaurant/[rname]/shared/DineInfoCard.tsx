@@ -39,6 +39,7 @@ const RestaurantInfoCard = ({
 				{/* Logo */}
 				<div className="absolute top-[-62.5px] left-1/2 transform -translate-x-1/2 w-[125px] h-[125px] rounded-full overflow-hidden border-2 border-white bg-pink shadow-md transition-transform hover:scale-105">
 					<Image
+						unoptimized
 						src={logo || DEFAULT_logo}
 						alt="Restaurant Logo"
 						priority
@@ -68,6 +69,7 @@ const RestaurantInfoCard = ({
 							<div className="flex flex-col gap-2 text-left text-black">
 								<div className="flex items-center gap-2">
 									<Image
+										unoptimized
 										src="/clock-icon.webp"
 										alt="Time"
 										width={14}

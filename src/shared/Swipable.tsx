@@ -38,6 +38,7 @@ const Carousel: React.FC<CarouselProps> = ({ reviews }) => {
 				{reviews.map((image, index) => (
 					<div key={index} className="w-full flex-shrink-0">
 						<Image
+							unoptimized
 							src={image}
 							alt={`Slide ${index + 1}`}
 							width={800}

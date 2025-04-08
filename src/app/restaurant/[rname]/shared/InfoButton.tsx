@@ -33,6 +33,7 @@ const InfoButton: React.FC<Props> = (props) => {
 				>
 					{iconValue ? (
 						<Image
+							unoptimized
 							src={iconValue}
 							alt={props.value}
 							width={24}

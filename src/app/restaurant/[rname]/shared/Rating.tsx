@@ -17,6 +17,7 @@ const Rating = ({ logo, rating, onClick, reviews }: IRating) => (
 		{/* social icons logo */}
 		{logo ? (
 			<Image
+				unoptimized
 				src={logo}
 				alt="Rating Logo"
 				width={20}

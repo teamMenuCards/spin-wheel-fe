@@ -14,6 +14,7 @@ function BackgroundImageComponent({
 				style={{ filter: "brightness(0.8)" }}
 			>
 				<Image
+					unoptimized
 					alt="first image"
 					src={restaurantInfo?.detail.cover_image || DEFAULT_COVER_IMG}
 					width={250}

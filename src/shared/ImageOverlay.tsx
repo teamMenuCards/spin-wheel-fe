@@ -15,6 +15,7 @@ function ImageOverlay({
 		>
 			<div className="p-4" onClick={onClose}>
 				<Image
+					unoptimized
 					className="z-200 rounded-xl"
 					src={imageUrl}
 					alt="Full View"

@@ -7,6 +7,7 @@ const getVegIcon = () => (
 
 const getNonVegIcon = () => (
 	<Image
+		unoptimized
 		src="/ic_nonveg.webp"
 		alt="nonveg icon"
 		width={18}
@@ -50,6 +51,7 @@ const ChefRecommendation: React.FC<ChefRecommendationProps> = ({
 						<div className="w-full h-[140px] rounded-xl overflow-hidden mb-2 flex items-center justify-center relative">
 							{item.image_url && (
 								<Image
+									unoptimized
 									src={item.image_url}
 									alt={item.name}
 									fill

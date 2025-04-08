@@ -212,6 +212,7 @@ export const Compare = ({
 						>
 							{firstImage ? (
 								<Image
+									unoptimized
 									alt="first image"
 									src={firstImage}
 									width={250}
@@ -236,6 +237,7 @@ export const Compare = ({
 			<AnimatePresence initial={false}>
 				{secondImage ? (
 					<Image
+						unoptimized
 						className={cn(
 							"absolute top-0 left-0 z-[19]  rounded-2xl select-none",
 							secondImageClassname

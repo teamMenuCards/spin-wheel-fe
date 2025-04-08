@@ -167,7 +167,11 @@ const RestaurantInfoCard = ({
 							/>
 						</div>
 						<div>
-							<span className="font-bold text-md">{order_count_display}</span>
+							{order_count_display ? (
+								<span className="font-bold text-md">{order_count_display}</span>
+							) : (
+								<span className="font-bold text-md">300+</span>
+							)}
 							<span className="ml-1 text-md font-semibold">
 								People ordered this week
 							</span>

@@ -173,7 +173,7 @@ const RestaurantInfoCard = ({
 								<span className="font-bold text-md">300+</span>
 							)}
 							<span className="ml-1 text-md font-semibold">
-								People ordered this week
+								People ordered last week
 							</span>
 						</div>
 					</div>

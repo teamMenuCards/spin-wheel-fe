@@ -8,7 +8,7 @@ import Accordion from "@/shared/Accordian"
 import FloatingMenu from "./components/floating-menu"
 import NavBar from "./components/NavBar"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
-import { ProductCategoryType } from "@/types"
+// import { ProductCategoryType } from "@/types"
 import { isSafeArray } from "@/utils/isSafeArray"
 import Loading from "./loading"
 
@@ -50,7 +50,7 @@ export default function MenuPage() {
 	// 	return isWithinRange
 	// }
 
-	const validCategories = menudata?.categories.filter((item) => {
+	const validCategories = menudata?.categories.filter(() => {
 		// const isTimingsAvailable = item?.available_from && item?.available_to
 
 		// if (isTimingsAvailable) {

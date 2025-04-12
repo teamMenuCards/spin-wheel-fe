@@ -7,7 +7,7 @@ export type ProductVariantType = {
 	is_veg: boolean
 	contains_egg: boolean
 	active: boolean
-	price: number | string
+	price: string
 	discounted_price: number | null
 	image_url: string
 	preparation_time_minutes: number | null
@@ -27,7 +27,7 @@ export type ProductType = {
 	name: string
 	price: string | number
 	active: boolean
-	description:string
+	description: string
 	is_featured: boolean
 	variants?: ProductVariantType[]
 	createdAt: string

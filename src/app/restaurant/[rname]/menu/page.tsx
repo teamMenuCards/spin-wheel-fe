@@ -9,8 +9,8 @@ import FloatingMenu from "./components/floating-menu"
 import NavBar from "./components/NavBar"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 import { ProductCategoryType } from "@/types"
-import Loading from "@/app/loading"
 import { isSafeArray } from "@/utils/isSafeArray"
+import Loading from "./loading"
 
 export default function MenuPage() {
 	const { rname } = useParams<{ rname: string }>()

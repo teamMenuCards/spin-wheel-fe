@@ -5,7 +5,6 @@ import {
 	RestaurantType
 } from "@/types"
 import { createApi } from "@reduxjs/toolkit/query/react"
-
 import { apiRoutes } from "../api-routes"
 import { axiosBaseQuery } from "../http-client"
 import { parseDynamicURL } from "../utils"
@@ -31,11 +30,25 @@ export const getMenuListAPI = createApi({
 			query: (name) => ({
 				url: parseDynamicURL(apiRoutes.menuItemtList, { name }),
 				method: "GET"
-			})
+			}),
+			transformResponse: (response: MenuListResponseType) => {
+				const sortedCategories = response.categories?.map((category) => ({
+					...category,
+					products: category.products?.map((product) => ({
+						...product,
+						variants: product.variants.sort(
+							(a, b) => parseFloat(a.price) - parseFloat(b.price)
+						)
+					}))
+				}))
+
+				return {
+					...response,
+					categories: sortedCategories
+				}
+			}
 		})
 	})
 })
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
 export const { useGetMenuListByNameQuery } = getMenuListAPI

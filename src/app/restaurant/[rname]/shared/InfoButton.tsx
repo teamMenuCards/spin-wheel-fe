@@ -16,12 +16,7 @@ const InfoButton: React.FC<Props> = (props) => {
 
 	return (
 		<>
-			<NextLink
-				href={props?.href}
-				prefetch={true}
-				target="_blank"
-				rel="noopener noreferrer"
-			>
+			<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
 				<div
 					onClick={() =>
 						sendGTMEvent({

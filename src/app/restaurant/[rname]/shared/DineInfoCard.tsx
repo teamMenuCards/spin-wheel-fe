@@ -18,7 +18,7 @@ const RestaurantInfoCard = ({
 		phone_no,
 		logo,
 		details: { meta_details: metaData, platform_reviews: platformReviews },
-		order_count_display = 500,
+		order_count_display = 500
 	} = restaurantInfo?.detail
 
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"

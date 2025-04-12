@@ -1,9 +1,10 @@
 "use client"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Image from "next/image"
 import LineClampTypography from "@/shared/LineClampTypography"
 import { ProductType, ProductVariantType } from "@/types"
 import ImageOverlay from "@/shared/ImageOverlay"
+import { isSafeArray } from "@/utils/isSafeArray"
 
 function MenuItem({
 	product
@@ -13,6 +14,11 @@ function MenuItem({
 	const [isOpen, setIsOpen] = useState(false)
 	const rating: number = Number(product.variants?.[0]?.average_rating) || 4
 	const starsArray: number[] = Array.from({ length: rating })
+
+	const hasVariants = useMemo(
+		() => isSafeArray(product.variants) && product.variants.length > 1,
+		[product.variants]
+	)
 
 	if (!product) {
 		return null
@@ -40,11 +46,14 @@ function MenuItem({
 		/>
 	)
 
+	const validatedPrice = (price: string): string => {
+		return parseFloat(price) === 0 ? "APS" : `₹${price}`
+	}
+
 	const getProductType = () =>
 		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
 	const prdImage = product.variants?.[0]?.image_url || ""
-	const price = product.variants?.[0]?.price
 
 	return (
 		<div className="mb-4">
@@ -67,7 +76,9 @@ function MenuItem({
 
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>
-						<div className="flex items-center">{getProductType()}</div>
+						{!hasVariants && (
+							<div className="flex items-center">{getProductType()}</div>
+						)}
 
 						{/* Product Name */}
 						{product.name && (
@@ -86,11 +97,32 @@ function MenuItem({
 							</LineClampTypography>
 						)}
 
-						{/* Price */}
-						{price && (
-							<p className="text-secondary text-sm font-bold pt-1">
-								{price != 0.0 ? `₹${product.variants[0].price}` : "APS"}
-							</p>
+						{/* Show variants with price else show only price */}
+						{hasVariants ? (
+							<>
+								{product.variants.map((item) => {
+									return !item.variant_name.includes(product.name) ? (
+										<div
+											className="flex text-secondary text-gray-500 text-sm font-semibold pt-1"
+											key={item.id}
+										>
+											<span className="flex items-center mr-1">
+												{item.is_veg ? getVegIcon() : getNonVegIcon()}
+											</span>
+											<span>{item.variant_name}</span>
+											<span className="ml-4 text-black">
+												{validatedPrice(item.price)}
+											</span>
+										</div>
+									) : null
+								})}
+							</>
+						) : (
+							product?.variants[0]?.price && (
+								<p className="text-secondary text-sm font-bold pt-1">
+									{validatedPrice(product?.variants[0]?.price)}
+								</p>
+							)
 						)}
 
 						<div className="flex">

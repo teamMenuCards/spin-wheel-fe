@@ -64,39 +64,37 @@ const Accordion: React.FC<AccordionProps> = ({
 				{sections && sections.length
 					? sections.map((section, index) => {
 							return section.active ? (
-								<>
-									<div
-										key={section.id}
-										id={section.id}
-										className="border rounded-lg overflow-hidden"
+								<div
+									key={section.id}
+									id={section.id}
+									className="border rounded-lg overflow-hidden"
+								>
+									{/* Accordion Title */}
+									<button
+										className="w-full text-left py-4 px-4 bg-gray-100 text-black font-semibold hover:bg-gray-200 flex justify-between items-center"
+										onClick={() => onClickSection(index, section)}
 									>
-										{/* Accordion Title */}
-										<button
-											className="w-full text-left py-4 px-4 bg-gray-100 text-black font-semibold hover:bg-gray-200 flex justify-between items-center"
-											onClick={() => onClickSection(index, section)}
-										>
-											{section.display_name}
-											<span>
-												{openIndexes.includes(index) ? (
-													<ChevronUp_Ic className="w-4 h-4" />
-												) : (
-													<ChevronDown_Ic className="w-4 h-4" />
-												)}
-											</span>
-										</button>
+										{section.display_name}
+										<span>
+											{openIndexes.includes(index) ? (
+												<ChevronUp_Ic className="w-4 h-4" />
+											) : (
+												<ChevronDown_Ic className="w-4 h-4" />
+											)}
+										</span>
+									</button>
 
-										{/* Accordion Items */}
-										{openIndexes.includes(index) && (
-											<div className="py-2 px-4 bg-gray-50 text-gray-700">
-												<ul className="list-disc pl-5 space-y-1">
-													{section.products.map((item) => (
-														<MenuItem product={item} key={item.id} />
-													))}
-												</ul>
-											</div>
-										)}
-									</div>
-								</>
+									{/* Accordion Items */}
+									{openIndexes.includes(index) && (
+										<div className="py-2 px-4 bg-gray-50 text-gray-700">
+											<ul className="list-disc pl-5 space-y-1">
+												{section.products.map((item) => (
+													<MenuItem product={item} key={item.id} />
+												))}
+											</ul>
+										</div>
+									)}
+								</div>
 							) : null
 					  })
 					: null}

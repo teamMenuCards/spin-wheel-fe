@@ -33,7 +33,8 @@ const NavBar = ({ rname, restaurantInfo }: NavBarProps) => {
 							className="w-12 h-12 rounded-full cursor-pointer ml-4 aspect-[1]"
 							style={{
 								backgroundImage: logoImg,
-								backgroundSize: "cover",
+								backgroundSize: "contain",
+								backgroundRepeat: "no-repeat",
 								backgroundPosition: "center"
 							}}
 						/>

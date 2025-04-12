@@ -63,7 +63,7 @@ const Accordion: React.FC<AccordionProps> = ({
 				{/* Menu list */}
 				{sections && sections.length
 					? sections.map((section, index) => {
-							return (
+							return section.active ? (
 								<>
 									<div
 										key={section.id}
@@ -97,7 +97,7 @@ const Accordion: React.FC<AccordionProps> = ({
 										)}
 									</div>
 								</>
-							)
+							) : null
 					  })
 					: null}
 			</div>

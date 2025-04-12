@@ -54,7 +54,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 			}
 			setScrollTarget(null) // Reset after scrolling
 		}
-	}, [open,scrollTarget])
+	}, [open, scrollTarget])
 
 	useEffect(() => {
 		if (open) {
@@ -106,7 +106,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 
 					<ul>
 						{categories?.map((category) => {
-							return (
+							return category.active ? (
 								<li
 									id={category.id}
 									key={category.id}
@@ -122,7 +122,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 										{category?.products?.length || 0}
 									</span>
 								</li>
-							)
+							) : null
 						})}
 					</ul>
 				</div>

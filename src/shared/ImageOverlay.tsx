@@ -4,7 +4,7 @@ function ImageOverlay({
 	imageUrl,
 	onClose
 }: {
-	imageUrl: string
+	imageUrl: string | null
 	onClose: () => void
 }) {
 	return (
@@ -13,17 +13,19 @@ function ImageOverlay({
 			className="fixed z-50 inset-0 flex justify-center items-center"
 			onClick={onClose}
 		>
-			<div className="p-4" onClick={onClose}>
-				<Image
-					unoptimized
-					className="z-200 rounded-xl"
-					src={imageUrl}
-					alt="Full View"
-					width={300}
-					height={300}
-					priority
-				/>
-			</div>
+			{imageUrl ? (
+				<div className="p-4" onClick={onClose}>
+					<Image
+						unoptimized
+						className="z-200 rounded-xl"
+						src={imageUrl}
+						alt="Full View"
+						width={300}
+						height={300}
+						priority
+					/>
+				</div>
+			) : null}
 		</div>
 	)
 }

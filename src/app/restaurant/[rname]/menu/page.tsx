@@ -53,9 +53,9 @@ export default function MenuPage() {
 	const validCategories = menudata?.categories.filter((item) => {
 		const isTimingsAvailable = item?.available_from && item?.available_to
 
-		if (isTimingsAvailable) {
-			return isCurrentTimeWithinRange(item?.available_from, item?.available_to)
-		}
+		// if (isTimingsAvailable) {
+		// 	return isCurrentTimeWithinRange(item?.available_from, item?.available_to)
+		// }
 
 		return menudata?.categories
 	})

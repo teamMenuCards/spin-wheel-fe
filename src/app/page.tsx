@@ -10,6 +10,7 @@ import React, { useState } from "react"
 
 export default function Home() {
 	const [sliderText, setSliderText] = useState("Linktree vs MenuCard")
+	// This is for swipe functionality
 	const handleSliderChange = (sliderXPercent: number) => {
 		if (sliderXPercent === 50) {
 			setSliderText("Linktree vs MenuCard")

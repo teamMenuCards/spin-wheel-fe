@@ -43,7 +43,7 @@ export const getMenuListAPI = createApi({
 					)
 
 					/*  
-						Sorts menu item's by their prices of "Regular" variant.
+						Sorts menu items by their prices of "Regular" variant.
 						If that is not present then considers menu item's name
 					
 					*/

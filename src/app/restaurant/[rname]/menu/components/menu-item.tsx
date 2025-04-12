@@ -46,6 +46,11 @@ function MenuItem({
 		/>
 	)
 
+	const findPrdImage = (variants: ProductVariantType[], prdName: string) => {
+		if (!variants) return null
+		const found = variants.find((item) => item.variant_name === prdName)
+		return found?.image_url || null
+	}
 	const validatedPrice = (price: string): string => {
 		return parseFloat(price) === 0 ? "APS" : `₹${price}`
 	}
@@ -53,26 +58,27 @@ function MenuItem({
 	const getProductType = () =>
 		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
-	const prdImage = product.variants?.[0]?.image_url || ""
+	const prdImage =
+		product.variants?.[0]?.image_url ||
+		findPrdImage(product.variants, product.name) ||
+		null
 
 	return (
 		<div className="mb-4">
 			<div className="flex flex-row-reverse">
-				{prdImage && (
+				{!!prdImage ? (
 					<div className="relative w-[145px] h-[145px] bg-lightSteelBlue rounded-lg">
-						{prdImage ? (
-							<Image
-								fill
-								priority
-								unoptimized
-								src={prdImage}
-								alt="food_img"
-								onClick={() => setIsOpen(true)}
-								className="object-cover rounded-lg"
-							/>
-						) : null}
+						<Image
+							fill
+							priority
+							unoptimized
+							src={prdImage}
+							alt="food_img"
+							onClick={() => setIsOpen(true)}
+							className="object-cover rounded-lg"
+						/>
 					</div>
-				)}
+				) : null}
 
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>

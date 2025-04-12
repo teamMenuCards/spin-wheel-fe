@@ -32,15 +32,42 @@ export const getMenuListAPI = createApi({
 				method: "GET"
 			}),
 			transformResponse: (response: MenuListResponseType) => {
-				const sortedCategories = response.categories?.map((category) => ({
-					...category,
-					products: category.products?.map((product) => ({
-						...product,
-						variants: product.variants.sort(
-							(a, b) => parseFloat(a.price) - parseFloat(b.price)
-						)
-					}))
-				}))
+				const sortedCategories = response.categories?.map((category) => {
+					const productsWithSortedVariants = category.products?.map(
+						(product) => ({
+							...product,
+							variants: product.variants.sort(
+								(a, b) => parseFloat(a.price) - parseFloat(b.price)
+							)
+						})
+					)
+
+					/*  
+						Sorts menu item's by their prices of "Regular" variant.
+						If that is not present then considers menu item's name
+					
+					*/
+					const productsSortedByRegularPrice = productsWithSortedVariants?.sort(
+						(a, b) => {
+							const aRegular = a.variants.find(
+								(v) => v.variant_name === "Regular" || a.name
+							)
+							const bRegular = b.variants.find(
+								(v) => v.variant_name === "Regular" || a.name
+							)
+
+							const aPrice = aRegular ? parseFloat(aRegular.price) : Infinity
+							const bPrice = bRegular ? parseFloat(bRegular.price) : Infinity
+
+							return aPrice - bPrice
+						}
+					)
+
+					return {
+						...category,
+						products: productsSortedByRegularPrice
+					}
+				})
 
 				return {
 					...response,

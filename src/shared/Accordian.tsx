@@ -88,9 +88,11 @@ const Accordion: React.FC<AccordionProps> = ({
 									{openIndexes.includes(index) && (
 										<div className="py-2 px-4 bg-gray-50 text-gray-700">
 											<ul className="list-disc pl-5 space-y-1">
-												{section.products.map((item) => (
-													<MenuItem product={item} key={item.id} />
-												))}
+												{section.products.map((item) =>
+													item?.active ? (
+														<MenuItem product={item} key={item.id} />
+													) : null
+												)}
 											</ul>
 										</div>
 									)}

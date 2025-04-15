@@ -52,7 +52,7 @@ function MenuItem({
 		return found?.image_url || null
 	}
 	const validatedPrice = (price: string): string => {
-		return parseFloat(price) === 0 ? "APS" : `₹${price}`
+		return parseFloat(price) === 0 ? "APS" : `₹${Number(price).toString()}`
 	}
 
 	const getProductType = () =>

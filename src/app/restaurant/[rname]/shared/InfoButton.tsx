@@ -11,8 +11,12 @@ interface Props {
 }
 
 const InfoButton: React.FC<Props> = (props) => {
+	const matchedKey = Object.keys(ICON_MAP).find((key) =>
+		props.value.toLowerCase().includes(key)
+	) as keyof typeof ICON_MAP | undefined
+
 	const iconValue =
-		props.icon || ICON_MAP[props.value.toLowerCase() as keyof typeof ICON_MAP]
+		props.icon || (matchedKey ? ICON_MAP[matchedKey] : undefined)
 
 	return (
 		<>

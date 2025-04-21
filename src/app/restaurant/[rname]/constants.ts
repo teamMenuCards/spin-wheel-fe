@@ -8,7 +8,7 @@ export type IconKey =
 	| "zomato"
 	| "menu"
 	| "contact us"
-	| "instagram" // You can extend this list as necessary
+	| "instagram"
 
 export const ICON_MAP: Record<IconKey, string> = {
 	whatsapp: "/whatsapp.svg",

@@ -29,6 +29,7 @@ export type ProductType = {
 	active: boolean
 	description: string
 	is_featured: boolean
+	display_order: number
 	variants?: ProductVariantType[]
 	createdAt: string
 	updatedAt: string

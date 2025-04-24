@@ -43,11 +43,10 @@ export const getMenuListAPI = createApi({
 					)
 
 					/*  
-						Sorts menu items by their prices of "Regular" variant.
-						If that is not present then considers menu item's name
+						Sorts menu items by their display_order of "Regular" variant || item Name .
 					
 					*/
-					const productsSortedByRegularPrice = productsWithSortedVariants?.sort(
+					const productsSortedByDisplayOrder = productsWithSortedVariants?.sort(
 						(a, b) => {
 							const aRegular = a.variants.find(
 								(v) => v.variant_name === "Regular" || a.name
@@ -56,16 +55,20 @@ export const getMenuListAPI = createApi({
 								(v) => v.variant_name === "Regular" || a.name
 							)
 
-							const aPrice = aRegular ? parseFloat(aRegular.price) : Infinity
-							const bPrice = bRegular ? parseFloat(bRegular.price) : Infinity
+							const aDisplayOrder = aRegular
+								? parseFloat(aRegular?.display_order)
+								: 0
+							const bDisplayOrder = bRegular
+								? parseFloat(bRegular?.display_order)
+								: 0
 
-							return aPrice - bPrice
+							return aDisplayOrder - bDisplayOrder
 						}
 					)
 
 					return {
 						...category,
-						products: productsSortedByRegularPrice
+						products: productsSortedByDisplayOrder
 					}
 				})
 

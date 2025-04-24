@@ -10,6 +10,7 @@ export type ProductVariantType = {
 	price: string
 	discounted_price: number | null
 	image_url: string
+	display_order: string
 	preparation_time_minutes: number | null
 	allergens: string | null
 	average_rating: number | null

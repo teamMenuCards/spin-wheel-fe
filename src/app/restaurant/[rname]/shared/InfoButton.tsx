@@ -2,7 +2,7 @@ import NextLink from "next/link"
 import { sendGTMEvent } from "@next/third-parties/google"
 import Image from "next/image"
 import { toSentenceCase } from "@/utils/toSentenceCase"
-import { ICON_MAP } from "../constants"
+import { URL_PATTERNS } from "../constants"
 
 interface Props {
 	icon?: string
@@ -11,12 +11,12 @@ interface Props {
 }
 
 const InfoButton: React.FC<Props> = (props) => {
-	const matchedKey = Object.keys(ICON_MAP).find((key) =>
-		props.value.toLowerCase().includes(key)
-	) as keyof typeof ICON_MAP | undefined
+	const matchedKey = Object.keys(URL_PATTERNS).find((key) =>
+		props.href.toLowerCase().includes(key)
+	) as keyof typeof URL_PATTERNS | undefined
 
 	const iconValue =
-		props.icon || (matchedKey ? ICON_MAP[matchedKey] : undefined)
+		props.icon || (matchedKey ? URL_PATTERNS[matchedKey] : undefined)
 
 	return (
 		<>

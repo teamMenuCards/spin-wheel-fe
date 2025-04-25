@@ -18,3 +18,13 @@ export const ICON_MAP: Record<IconKey, string> = {
 	menu: "/menu-icon.webp",
 	instagram: "/instagram-icon.webp"
 }
+
+export const URL_PATTERNS: Record<string, string> = {
+	"wa.me": "whatsapp",
+	"api.whatsapp.com": "whatsapp",
+	"swiggy.com": "swiggy",
+	"zomato.com": "zomato",
+	"instagram.com": "instagram",
+	menu: "menu",
+	"contact us": "contact us"
+}

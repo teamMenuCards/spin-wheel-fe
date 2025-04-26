@@ -10,17 +10,16 @@ interface Props {
 	href: string
 }
 
+const Default_Icon = "/star.webp"
+
 const InfoButton: React.FC<Props> = (props) => {
 	const matchedKey = Object.keys(URL_PATTERNS).find((key) =>
 		props.href.toLowerCase().includes(key)
 	) as keyof typeof URL_PATTERNS | undefined
 
+	const iconKey = matchedKey ? URL_PATTERNS[matchedKey] : undefined
 	const iconValue =
-		props.icon ||
-		(matchedKey &&
-			(URL_PATTERNS[matchedKey]
-				? ICON_MAP[URL_PATTERNS[matchedKey] as IconKey]
-				: undefined))
+		props.icon || (iconKey ? ICON_MAP[iconKey as IconKey] : Default_Icon)
 
 	return (
 		<>

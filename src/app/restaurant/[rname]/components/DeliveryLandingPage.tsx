@@ -117,8 +117,9 @@ function DeliveryLandingPage({
 	const defualtBtns = restaurantInfo && getPath(rname, restaurantInfo)
 
 	const dynamicBtns =
-		restaurantInfo?.dashboardLinks.deliveryLinks ||
-		restaurantInfo?.dashboardLinks
+		restaurantInfo?.dashboardLinks?.deliveryLinks ??
+		restaurantInfo?.dashboardLinks ??
+		[]
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">

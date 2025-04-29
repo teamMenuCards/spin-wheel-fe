@@ -129,7 +129,7 @@ function DineInLandingPage() {
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	const diningLinks = restaurantInfo?.dashboardLinks.filter(
+	const diningLinks = restaurantInfo?.dashboardLinks?.filter(
 		(link) => link.link_type === "DINING"
 	)
 

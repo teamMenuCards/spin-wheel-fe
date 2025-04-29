@@ -21,6 +21,7 @@ export type IDynamicLink = {
 	active: boolean
 	createdAt?: string
 	updatedAt?: string
+	deliveryLinks?: []
 }
 export type RestaurantDetailType = {
 	id: number

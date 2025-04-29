@@ -5,7 +5,10 @@ export type RestaurantType = {
 	active: boolean
 	createdAt: string
 	updatedAt: string
-	dashboardLinks?: IDynamicLink[]
+	dashboardLinks?: {
+		deliveryLinks?: IDynamicLink[]
+		diningLinks?: IDynamicLink[]
+	}
 }
 
 export type IReviews = {
@@ -21,7 +24,7 @@ export type IDynamicLink = {
 	active: boolean
 	createdAt?: string
 	updatedAt?: string
-	deliveryLinks?: []
+	link_type?: "DINING" | "DELIVERY"
 }
 export type RestaurantDetailType = {
 	id: number

@@ -6,6 +6,7 @@ import { apiRoutes } from "@/services/api-routes"
 import { parseDynamicURL } from "@/services/utils"
 import Footer from "@/shared/Footer"
 import ScrollButton from "./shared/ScrollButton"
+import { IDynamicLink } from "@/types"
 
 /* 
 		By defult the delivery page is the landing page
@@ -28,10 +29,10 @@ export default async function Page({
 	const dashboardLinks = currentData?.dashboardLinks || []
 
 	const diningLinks = dashboardLinks.filter(
-		(link) => link.link_type === "DINING"
+		(link: IDynamicLink) => link.link_type === "DINING"
 	)
 	const deliveryLinks = dashboardLinks.filter(
-		(link) => link.link_type === "DELIVERY"
+		(link: IDynamicLink) => link.link_type === "DELIVERY"
 	)
 
 	console.log("currentData--", JSON.stringify(currentData))

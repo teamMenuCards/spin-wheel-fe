@@ -129,9 +129,7 @@ function DineInLandingPage() {
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	const diningLinks = restaurantInfo?.dashboardLinks?.filter(
-		(link) => link.link_type === "DINING"
-	)
+	const diningLinks = restaurantInfo?.dashboardLinks?.diningLinks
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">

@@ -25,11 +25,26 @@ export default async function Page({
 		method: "GET"
 	})
 
+	const dashboardLinks = currentData?.dashboardLinks || []
+
+	const diningLinks = dashboardLinks.filter(
+		(link) => link.link_type === "DINING"
+	)
+	const deliveryLinks = dashboardLinks.filter(
+		(link) => link.link_type === "DELIVERY"
+	)
+
 	console.log("currentData--", JSON.stringify(currentData))
 
 	return (
 		<div>
-			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
+			<DeliveryLandingPage
+				rname={rname}
+				restaurantInfo={{
+					...currentData,
+					dashboardLinks: { diningLinks, deliveryLinks }
+				}}
+			/>
 			{/* changes for ScrollButton */}
 			<ScrollButton />
 			<Footer />

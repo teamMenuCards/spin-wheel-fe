@@ -6,6 +6,7 @@ import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-d
 import { IOption } from "../types"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
 import BackgroundImage from "../shared/BackgroundImg"
+import { isSafeArray } from "@/utils/isSafeArray"
 
 function DeliveryLandingPage({
 	rname,
@@ -113,7 +114,11 @@ function DeliveryLandingPage({
 		return { deliveryOptions, dineInOptions }
 	}
 
-	const options = restaurantInfo && getPath(rname, restaurantInfo)
+	const defualtBtns = restaurantInfo && getPath(rname, restaurantInfo)
+
+	const dynamicBtns =
+		restaurantInfo?.dashboardLinks.deliveryLinks ||
+		restaurantInfo?.dashboardLinks
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
@@ -127,10 +132,10 @@ function DeliveryLandingPage({
 					/>
 				)}
 
-				{restaurantInfo?.dashboardLinks?.length ? (
-					<DineInButtons dynamicOptions={restaurantInfo.dashboardLinks} />
-				) : options ? (
-					<DineInButtons options={options} />
+				{isSafeArray(dynamicBtns) ? (
+					<DineInButtons dynamicOptions={dynamicBtns} />
+				) : defualtBtns ? (
+					<DineInButtons options={defualtBtns} />
 				) : null}
 
 				{reviews && (

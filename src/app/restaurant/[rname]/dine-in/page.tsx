@@ -13,6 +13,7 @@ import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import { useAppSelector } from "@/store/hooks"
 import { useDispatch } from "react-redux"
 import BackgroundImage from "../shared/BackgroundImg"
+import { isSafeArray } from "@/utils/isSafeArray"
 
 function DineInLandingPage() {
 	const { rname } = useParams<{ rname: string }>()
@@ -128,6 +129,10 @@ function DineInLandingPage() {
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
+	const diningLinks = restaurantInfo?.dashboardLinks.filter(
+		(link) => link.link_type === "DINING"
+	)
+
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
@@ -140,7 +145,14 @@ function DineInLandingPage() {
 						reviewsRef={reviewsRef}
 					/>
 				)}
-				{options && <DineInButtons options={options} isDineIn />}
+
+				{isSafeArray(diningLinks) ? (
+					<DineInButtons dynamicOptions={diningLinks} />
+				) : options ? (
+					<DineInButtons options={options} />
+				) : null}
+
+				{/* {options && <DineInButtons options={options} isDineIn />} */}
 			</div>
 		</div>
 	)

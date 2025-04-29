@@ -40,7 +40,7 @@ const InfoButton: React.FC<Props> = (props) => {
 							alt={props.value}
 							width={24}
 							height={24}
-							className="mr-4 drop-shadow-sm rounded"
+							className="mr-4 w-6 h-6 drop-shadow-sm rounded"
 						/>
 					) : null}
 

@@ -5,14 +5,26 @@ export type RestaurantType = {
 	active: boolean
 	createdAt: string
 	updatedAt: string
-	dashboardLinks?: {
-		deliveryLinks?: IDynamicLink[]
-		diningLinks?: IDynamicLink[]
-	}
+	dashboardLinks?: []
 }
 
 export type IReviews = {
 	review_image_url: string
+}
+
+export type IDashboardLinksRaw = IDynamicLink[]
+
+export type IDashboardLinksGrouped = {
+	deliveryLinks?: IDynamicLink[]
+	diningLinks?: IDynamicLink[]
+}
+
+export type IMetaData = {
+	opening_time?: string
+	closing_time?: string
+	avg_price?: string | number
+	location_info?: string
+	category?: string
 }
 
 export type IDynamicLink = {
@@ -38,7 +50,7 @@ export type RestaurantDetailType = {
 	logo: string
 	order_count_display: number
 	cover_image: string
-	dashboardLinks?: []
+	dashboardLinks?: IDynamicLink[]
 	details: {
 		wa_api_details?: {
 			wa_number: string

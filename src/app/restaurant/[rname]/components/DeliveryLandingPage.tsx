@@ -7,6 +7,7 @@ import { IOption } from "../types"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
 import BackgroundImage from "../shared/BackgroundImg"
 import { isSafeArray } from "@/utils/isSafeArray"
+import { IDynamicLink } from "@/types"
 
 function DeliveryLandingPage({
 	rname,
@@ -15,6 +16,12 @@ function DeliveryLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
+	const deliveryLinks =
+		isSafeArray(restaurantInfo?.dashboardLinks) &&
+		restaurantInfo?.dashboardLinks.filter(
+			(link: IDynamicLink) => link.link_type === "DELIVERY"
+		)
+
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
@@ -116,8 +123,6 @@ function DeliveryLandingPage({
 
 	const defualtBtns = restaurantInfo && getPath(rname, restaurantInfo)
 
-	const dynamicBtns = restaurantInfo?.dashboardLinks?.deliveryLinks ?? null
-
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
@@ -130,8 +135,8 @@ function DeliveryLandingPage({
 					/>
 				)}
 
-				{isSafeArray(dynamicBtns) ? (
-					<DineInButtons dynamicOptions={dynamicBtns} />
+				{deliveryLinks && isSafeArray(deliveryLinks) ? (
+					<DineInButtons dynamicOptions={deliveryLinks} />
 				) : defualtBtns ? (
 					<DineInButtons options={defualtBtns} />
 				) : null}

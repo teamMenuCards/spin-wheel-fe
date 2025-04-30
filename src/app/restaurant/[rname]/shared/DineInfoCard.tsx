@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Users_Ic, Phone_Ic, MapIcon_Tc } from "./icons"
 import Rating from "./Rating"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { IMetaData } from "@/types"
 
 const RestaurantInfoCard = ({
 	isDineIn = false,
@@ -18,7 +19,7 @@ const RestaurantInfoCard = ({
 		phone_no,
 		logo,
 		details: {
-			meta_details: metaData = {},
+			meta_details: metaData = {} as IMetaData,
 			platform_reviews: platformReviews = []
 		} = {},
 		order_count_display = 500
@@ -32,10 +33,10 @@ const RestaurantInfoCard = ({
 		zomato: "/zomato-logo.webp"
 	}
 
-	const openTime = (metaData && metaData.opening_time) || ""
-	const closeTime = (metaData && metaData.closing_time) || ""
-	const avgPrice = (metaData && metaData.avg_price) || ""
-	const locationLink = (metaData && metaData.location_info) || ""
+	const openTime: string = metaData.opening_time || ""
+	const closeTime: string = metaData.closing_time || ""
+	const avgPrice: string | number = metaData.avg_price || 0
+	const locationLink: string = metaData.location_info || ""
 
 	return (
 		<>

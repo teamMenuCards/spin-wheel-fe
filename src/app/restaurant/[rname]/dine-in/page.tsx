@@ -26,9 +26,10 @@ function DineInLandingPage() {
 
 	const dashboardLinks = restaurantInfo?.dashboardLinks || []
 
-	const diningLinks = dashboardLinks?.filter(
-		(link: IDynamicLink) => link.link_type === "DINING"
-	)
+	const diningLinks =
+		isSafeArray(dashboardLinks) &&
+		dashboardLinks?.filter((link: IDynamicLink) => link.link_type === "DINING")
+
 	// Type guard to validate `modeFromUrl`
 	const validMode = Object.values(CLIENT_APP_MODE).find(
 		(m): m is CLIENT_APP_MODE => m === modeFromUrl
@@ -148,7 +149,7 @@ function DineInLandingPage() {
 					/>
 				)}
 
-				{isSafeArray(diningLinks) ? (
+				{diningLinks && isSafeArray(diningLinks) ? (
 					<DineInButtons dynamicOptions={diningLinks} />
 				) : options ? (
 					<DineInButtons options={options} />

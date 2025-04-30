@@ -16,7 +16,7 @@ function BackgroundImageComponent({
 				<Image
 					unoptimized
 					alt="first image"
-					src={restaurantInfo?.detail.cover_image || DEFAULT_COVER_IMG}
+					src={restaurantInfo?.detail?.cover_image || DEFAULT_COVER_IMG}
 					width={250}
 					loading="lazy"
 					height={500}

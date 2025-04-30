@@ -14,6 +14,7 @@ import { useAppSelector } from "@/store/hooks"
 import { useDispatch } from "react-redux"
 import BackgroundImage from "../shared/BackgroundImg"
 import { isSafeArray } from "@/utils/isSafeArray"
+import { IDynamicLink } from "@/types"
 
 function DineInLandingPage() {
 	const { rname } = useParams<{ rname: string }>()
@@ -23,6 +24,11 @@ function DineInLandingPage() {
 	const { currentData: restaurantInfo } =
 		useGetRestaurantDetailByNameQuery(rname)
 
+	const dashboardLinks = restaurantInfo?.dashboardLinks || []
+
+	const diningLinks = dashboardLinks?.filter(
+		(link: IDynamicLink) => link.link_type === "DINING"
+	)
 	// Type guard to validate `modeFromUrl`
 	const validMode = Object.values(CLIENT_APP_MODE).find(
 		(m): m is CLIENT_APP_MODE => m === modeFromUrl
@@ -129,8 +135,6 @@ function DineInLandingPage() {
 
 	const options = restaurantInfo && getPath(rname, restaurantInfo)
 
-	const diningLinks = restaurantInfo?.dashboardLinks?.diningLinks
-
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
 			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
@@ -149,8 +153,6 @@ function DineInLandingPage() {
 				) : options ? (
 					<DineInButtons options={options} />
 				) : null}
-
-				{/* {options && <DineInButtons options={options} isDineIn />} */}
 			</div>
 		</div>
 	)

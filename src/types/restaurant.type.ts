@@ -37,6 +37,7 @@ export type IDynamicLink = {
 	createdAt?: string
 	updatedAt?: string
 	link_type?: "DINING" | "DELIVERY"
+	is_premium?: boolean
 }
 export type RestaurantDetailType = {
 	id: number

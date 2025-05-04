@@ -3,11 +3,13 @@ import { sendGTMEvent } from "@next/third-parties/google"
 import Image from "next/image"
 import { toSentenceCase } from "@/utils/toSentenceCase"
 import { ICON_MAP, URL_PATTERNS, IconKey } from "../constants"
+import clsx from "clsx"
 
 interface Props {
 	icon?: string
 	value: string
 	href: string
+	premium?: boolean
 }
 
 const Default_Icon = "/star.webp"
@@ -21,9 +23,14 @@ const InfoButton: React.FC<Props> = (props) => {
 	const iconValue =
 		props.icon || (iconKey ? ICON_MAP[iconKey as IconKey] : Default_Icon)
 
-	return (
-		<>
-			<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
+	const premiumBtn = () => (
+		<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
+			<div
+				className={clsx(
+					"mb-4 shadow-md w-[80vw] border border-gray-200 rounded-lg",
+					props.premium ? "bg-lime-200" : "bg-white"
+				)}
+			>
 				<div
 					onClick={() =>
 						sendGTMEvent({
@@ -31,7 +38,9 @@ const InfoButton: React.FC<Props> = (props) => {
 							value: `xyz-${props.value}`
 						})
 					}
-					className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
+					className={clsx(
+						"flex items-center px-6 py-4 md:max-w-[500px] rounded-tl-lg rounded-tr-lg mx-auto cursor-pointer relative backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+					)}
 				>
 					{iconValue ? (
 						<Image
@@ -45,13 +54,49 @@ const InfoButton: React.FC<Props> = (props) => {
 					) : null}
 
 					{/* Button Text */}
-					<div className="text-gray-800 font-semibold text-sm text-center flex justify-center items-center">
+
+					<div className="font-semibold text-sm text-center flex justify-center items-center">
 						{toSentenceCase(props.value)}
 					</div>
 				</div>
-			</NextLink>
-		</>
+
+				<div className="font-semibold text-white rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
+					For first 20 customers only
+				</div>
+			</div>
+		</NextLink>
 	)
+
+	const defaultBtn = () => (
+		<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
+			<div
+				onClick={() =>
+					sendGTMEvent({
+						event: "buttonClicked",
+						value: `xyz-${props.value}`
+					})
+				}
+				className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
+			>
+				{iconValue ? (
+					<Image
+						unoptimized
+						src={iconValue}
+						alt={props.value}
+						width={24}
+						height={24}
+						className="mr-4 w-6 h-6 drop-shadow-sm rounded"
+					/>
+				) : null}
+
+				{/* Button Text */}
+				<div className="text-gray-800 font-semibold text-sm text-center flex justify-center items-center">
+					{toSentenceCase(props.value)}
+				</div>
+			</div>
+		</NextLink>
+	)
+	return <>{props.premium ? premiumBtn() : defaultBtn()}</>
 }
 
 export default InfoButton

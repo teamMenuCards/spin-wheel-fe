@@ -56,7 +56,7 @@ const InfoButton: React.FC<Props> = (props) => {
 					{/* Button Text */}
 
 					<div className="font-semibold text-sm text-left flex justify-center items-center">
-						{toSentenceCase(props.value)}
+						{props.value}
 					</div>
 				</div>
 
@@ -91,7 +91,7 @@ const InfoButton: React.FC<Props> = (props) => {
 
 				{/* Button Text */}
 				<div className="text-gray-800 font-semibold text-sm text-center flex justify-center items-center">
-					{toSentenceCase(props.value)}
+					{props.value}
 				</div>
 			</div>
 		</NextLink>

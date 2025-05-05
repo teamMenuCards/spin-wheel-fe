@@ -25,7 +25,7 @@ const DineInButtons = ({
 			{/* DYNAMIC Menu */}
 			{links &&
 				links?.map((item: IDynamicLink, index) => {
-					return (
+					return item.active ? (
 						<InfoButton
 							key={index}
 							value={item.name}
@@ -33,7 +33,7 @@ const DineInButtons = ({
 							icon={item.image_url}
 							premium={item?.is_premium}
 						/>
-					)
+					) : null
 				})}
 
 			{/* Menu & other DINE_IN button */}

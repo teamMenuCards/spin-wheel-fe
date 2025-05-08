@@ -55,12 +55,12 @@ const InfoButton: React.FC<Props> = (props) => {
 
 					{/* Button Text */}
 
-					<div className="font-semibold text-sm text-center flex justify-center items-center">
+					<div className="font-semibold text-black text-sm text-center flex justify-center items-center">
 						{toSentenceCase(props.value)}
 					</div>
 				</div>
 
-				<div className="font-semibold text-white rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
+				<div className="font-semibold text-black rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
 					For first 20 customers only
 				</div>
 			</div>

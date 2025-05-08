@@ -27,7 +27,7 @@ const InfoButton: React.FC<Props> = (props) => {
 		<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
 			<div
 				className={clsx(
-					"mb-4 shadow-md w-[80vw] border border-gray-200 rounded-lg",
+					"mb-4 shadow-md w-[80vw] md:max-w-[500px] border border-gray-200 rounded-lg",
 					props.premium ? "bg-lime-200" : "bg-white"
 				)}
 			>
@@ -55,7 +55,11 @@ const InfoButton: React.FC<Props> = (props) => {
 
 					{/* Button Text */}
 
+ feature/added-text-color
 					<div className="font-semibold text-black text-sm text-center flex justify-center items-center">
+
+					<div className="font-semibold text-sm text-left flex justify-center items-center">
+ main
 						{toSentenceCase(props.value)}
 					</div>
 				</div>

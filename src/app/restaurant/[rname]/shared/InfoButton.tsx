@@ -55,7 +55,11 @@ const InfoButton: React.FC<Props> = (props) => {
 
 					{/* Button Text */}
 
+ feature/added-text-color
+					<div className="font-semibold text-black text-sm text-center flex justify-center items-center">
+
 					<div className="font-semibold text-sm text-left flex justify-center items-center">
+ main
 						{toSentenceCase(props.value)}
 					</div>
 				</div>

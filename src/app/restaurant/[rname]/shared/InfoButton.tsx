@@ -60,7 +60,7 @@ const InfoButton: React.FC<Props> = (props) => {
 					</div>
 				</div>
 
-				<div className="font-semibold text-black rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
+				<div className="font-semibold text-white rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
 					For first 20 customers only
 				</div>
 			</div>

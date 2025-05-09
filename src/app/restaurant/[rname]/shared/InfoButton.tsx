@@ -52,7 +52,6 @@ const InfoButton: React.FC<Props> = (props) => {
 						/>
 					) : null}
 					{/* Button Text */}
-					feature/added-text-color
 					<div className="font-semibold text-black text-sm text-center flex justify-center items-center">
 						<div className="font-semibold text-sm text-left flex justify-center items-center">
 							{props.value}

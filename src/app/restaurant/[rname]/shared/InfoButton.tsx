@@ -51,16 +51,15 @@ const InfoButton: React.FC<Props> = (props) => {
 							className="mr-4 w-6 h-6 drop-shadow-sm rounded"
 						/>
 					) : null}
-
 					{/* Button Text */}
-
-					<div className="font-semibold text-sm text-black text-left flex justify-center items-center">
-						{props.value}
+					<div className="font-semibold text-black text-sm text-center flex justify-center items-center">
+						<div className="font-semibold text-sm text-left flex justify-center items-center">
+							{props.value}
+						</div>
 					</div>
-				</div>
-
-				<div className="font-semibold text-white rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
-					For first 20 customers only
+					<div className="font-semibold text-white rounded-bl-lg rounded-br-lg bg-lime-500 text-xs text-center flex justify-center items-center">
+						For first 20 customers only
+					</div>
 				</div>
 			</div>
 		</NextLink>
@@ -95,6 +94,7 @@ const InfoButton: React.FC<Props> = (props) => {
 			</div>
 		</NextLink>
 	)
+
 	return <>{props.premium ? premiumBtn() : defaultBtn()}</>
 }
 

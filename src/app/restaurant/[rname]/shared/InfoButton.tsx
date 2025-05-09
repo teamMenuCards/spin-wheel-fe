@@ -1,7 +1,6 @@
 import NextLink from "next/link"
 import { sendGTMEvent } from "@next/third-parties/google"
 import Image from "next/image"
-import { toSentenceCase } from "@/utils/toSentenceCase"
 import { ICON_MAP, URL_PATTERNS, IconKey } from "../constants"
 import clsx from "clsx"
 

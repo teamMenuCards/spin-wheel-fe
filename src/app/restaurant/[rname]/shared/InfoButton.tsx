@@ -51,8 +51,7 @@ const InfoButton: React.FC<Props> = (props) => {
 							className="mr-4 w-6 h-6 drop-shadow-sm rounded"
 						/>
 					) : null}
-
-					{/* Button Text */}
+					{/* Button textname value */}
 
 					<div className="font-semibold text-sm text-black text-left flex justify-center items-center">
 						{props.value}

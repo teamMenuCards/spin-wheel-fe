@@ -88,7 +88,7 @@ const InfoButton: React.FC<Props> = (props) => {
 				) : null}
 
 				{/* Button Text */}
-				<div className="text-gray-800 font-semibold text-sm text-center flex justify-center items-center">
+				<div className="text-gray-800 font-semibold text-sm text-left flex justify-center items-center">
 					{props.value}
 				</div>
 			</div>

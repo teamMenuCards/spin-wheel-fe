@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zomato/Swiggy Monthly Profit Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 30px;
+      background: #f0f2f5;
+      color: #333;
+    }
+    h2 {
+      color: #007bff;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      padding: 8px;
+      width: 100%;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 25px;
+      padding: 12px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .button-negative {
+      background: #dc3545;
+    }
+    .result {
+      margin-top: 30px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-left: 5px solid #28a745;
+      border-radius: 5px;
+    }
+    .result.negative {
+      border-left-color: #dc3545;
+    }
+    .result.negative::before {
+      content: "⚠️ Warning: Your business is running at a loss!";
+      display: block;
+      color: #dc3545;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .section-header {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #444;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Zomato/Swiggy Monthly Profit Calculator</h2>
+
+    <label>Total Monthly Sales (before discount):
+      <input type="number" id="totalSales" />
+    </label>
+
+    <label>Total Discount Given (₹):
+      <input type="number" id="discountGiven" />
+    </label>
+
+    <label>Zomato/Swiggy Commission (%):
+      <input type="number" id="commissionPercent" />
+    </label>
+
+    <div class="section-header">Monthly Expenses</div>
+
+    <label>Food Cost:
+      <input type="number" id="foodCost" />
+      <select id="foodCostType">
+        <option value="percent">%</option>
+        <option value="amount">₹</option>
+      </select>
+    </label>
+
+    <label>Staff Salary:
+      <input type="number" id="staffSalary" />
+      <select id="staffSalaryType">
+        <option value="percent">%</option>
+        <option value="amount">₹</option>
+      </select>
+    </label>
+
+    <label>Electricity & Rent:
+      <input type="number" id="electricityRent" />
+      <select id="electricityRentType">
+        <option value="percent">%</option>
+        <option value="amount">₹</option>
+      </select>
+    </label>
+
+    <label>Misc. (Packaging, Transport, etc.):
+      <input type="number" id="miscCost" />
+      <select id="miscCostType">
+        <option value="percent">%</option>
+        <option value="amount">₹</option>
+      </select>
+    </label>
+
+    <label>Order Cancellations & Wastage:
+      <input type="number" id="wastageCost" />
+      <select id="wastageCostType">
+        <option value="percent">%</option>
+        <option value="amount">₹</option>
+      </select>
+    </label>
+
+    <button id="calcButton" onclick="calculateMonthlyProfit()">Calculate Monthly Profit</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateMonthlyProfit() {
+      const totalSales = parseFloat(document.getElementById('totalSales').value);
+      const discountGiven = parseFloat(document.getElementById('discountGiven').value);
+      const commissionPercent = parseFloat(document.getElementById('commissionPercent').value);
+
+      const foodCostValue = parseFloat(document.getElementById('foodCost').value);
+      const foodCostType = document.getElementById('foodCostType').value;
+
+      const staffSalaryValue = parseFloat(document.getElementById('staffSalary').value);
+      const staffSalaryType = document.getElementById('staffSalaryType').value;
+
+      const electricityRentValue = parseFloat(document.getElementById('electricityRent').value);
+      const electricityRentType = document.getElementById('electricityRentType').value;
+
+      const miscCostValue = parseFloat(document.getElementById('miscCost').value);
+      const miscCostType = document.getElementById('miscCostType').value;
+
+      const wastageCostValue = parseFloat(document.getElementById('wastageCost').value);
+      const wastageCostType = document.getElementById('wastageCostType').value;
+
+      const afterDiscount = totalSales - discountGiven;
+      const commissionAmount = (commissionPercent / 100) * afterDiscount;
+      const payoutToRestaurant = afterDiscount - commissionAmount;
+      const baseForExpenses = totalSales - commissionAmount;
+
+      const foodCost = foodCostType === 'percent' ? (foodCostValue / 100) * baseForExpenses : foodCostValue;
+      const staffSalary = staffSalaryType === 'percent' ? (staffSalaryValue / 100) * baseForExpenses : staffSalaryValue;
+      const electricityRent = electricityRentType === 'percent' ? (electricityRentValue / 100) * baseForExpenses : electricityRentValue;
+      const miscCost = miscCostType === 'percent' ? (miscCostValue / 100) * baseForExpenses : miscCostValue;
+      const wastageCost = wastageCostType === 'percent' ? (wastageCostValue / 100) * baseForExpenses : wastageCostValue;
+
+      const totalExpenses = foodCost + staffSalary + electricityRent + miscCost + wastageCost;
+      const profit = payoutToRestaurant - totalExpenses;
+      const profitPercent = (profit / payoutToRestaurant) * 100;
+
+      const resultDiv = document.getElementById('result');
+      const button = document.getElementById('calcButton');
+
+      resultDiv.className = 'result' + (profit < 0 ? ' negative' : '');
+      button.className = profit < 0 ? 'button-negative' : '';
+
+      resultDiv.innerHTML = `
+        <strong>Total Monthly Sales:</strong> ₹${totalSales.toFixed(2)}<br>
+        <strong>Total Expenses:</strong> ₹${totalExpenses.toFixed(2)}<br>
+        <strong>Net Profit:</strong> ₹${profit.toFixed(2)}<br>
+        <strong>Final Profit Percentage (on payout):</strong> ${profitPercent.toFixed(2)}%
+      `;
+    }
+  </script>
+</body>
+</html>

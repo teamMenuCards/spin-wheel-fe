@@ -1,13 +1,15 @@
 "use client"
-import React, { useRef } from "react"
+import React, { useRef, useEffect } from "react"
 import DineInButtons from "../shared/DineInButtons"
 import DineInfoCard from "../shared/DineInfoCard"
-import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IOption } from "../types"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
 import BackgroundImage from "../shared/BackgroundImg"
 import { isSafeArray } from "@/utils/isSafeArray"
 import { IDynamicLink } from "@/types"
+import { useDispatch } from "react-redux"
+import { setRestaurantDetails } from "@/store/features/restaurant.slice"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
 function DeliveryLandingPage({
 	rname,
@@ -16,6 +18,27 @@ function DeliveryLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
+	const dispatch = useDispatch()
+
+	if (restaurantInfo) {
+		dispatch(setRestaurantDetails(restaurantInfo))
+	}
+
+	useEffect(() => {
+		/*  Find Enabled features  */
+		if (restaurantInfo?.detail?.feature_flags) {
+			const featureList = restaurantInfo?.detail?.feature_flags
+
+			const enabledFeatures = Object.keys(featureList).filter(
+				(item) => featureList[item]
+			)
+
+			localStorage.setItem(rname, JSON.stringify(enabledFeatures))
+		}
+	}, [dispatch, restaurantInfo, rname])
+
+	useEffect(() => {}, [rname])
+
 	const deliveryLinks =
 		isSafeArray(restaurantInfo?.dashboardLinks) &&
 		restaurantInfo?.dashboardLinks.filter(
@@ -27,10 +50,13 @@ function DeliveryLandingPage({
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
 
 	const getPath = (rid: string, data: RestaurantDetailResponse) => {
-		const details = data?.detail?.details || []
+		const details = data?.detail?.details
 
 		const linksList: Record<string, string> = {}
-		details?.platform_details?.forEach((item) => {
+
+		const platformDetails = details.platform_details ?? []
+
+		platformDetails.forEach((item) => {
 			linksList[item.platform_name] = item.platform_uri
 		})
 

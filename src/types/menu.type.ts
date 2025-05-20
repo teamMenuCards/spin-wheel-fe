@@ -44,16 +44,16 @@ export interface VariantsEntity {
 	contains_egg: boolean
 	active: boolean
 	price: string
-	discounted_price: string
+	discounted_price: number | null
 	image_url?: string | null
 	preparation_time_minutes: number
 	allergens: string
-	average_rating?: null
+	average_rating?: number | null
 	rating_count: number
-	dietary_info: string
-	calories: number
-	spiciness: number
-	ingredients: string
+	dietary_info: string | null
+	calories: number | null
+	spiciness: number | null
+	ingredients: string | null
 	createdAt: string
 	updatedAt: string
 }

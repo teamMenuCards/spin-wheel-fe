@@ -1,5 +1,6 @@
 "use client"
 import { useParams } from "next/navigation"
+import { useEffect } from "react"
 import {
 	Category,
 	useGetMenuListByNameQuery
@@ -11,15 +12,28 @@ import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-res
 // import { ProductCategoryType } from "@/types"
 import { isSafeArray } from "@/utils/isSafeArray"
 import Loading from "./loading"
+import dynamic from "next/dynamic"
+import { useDispatch } from "react-redux"
+import { setRestaurantDetails } from "@/store/features/restaurant.slice"
+
+const AddToCartDrawer = dynamic(
+	() => import("../components/add-to-cart-drawer")
+)
 
 export default function MenuPage() {
+	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
+
 	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
 	const {
 		data: restaurantInfo,
 		isFetching: isFetchingMenu,
 		isError: hasErrorMenu
 	} = useGetRestaurantDetailByNameQuery(rname)
+
+	useEffect(() => {
+		dispatch(setRestaurantDetails(restaurantInfo ?? null))
+	}, [dispatch, restaurantInfo])
 
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
@@ -91,7 +105,7 @@ export default function MenuPage() {
 
 	return (
 		<>
-			<NavBar rname={rname} restaurantInfo={restaurantInfo} />
+			<NavBar showCart rname={rname} restaurantInfo={restaurantInfo} />
 			<FloatingMenu categories={sortedCategories} />
 
 			{hasLoadedMenu && (
@@ -100,6 +114,8 @@ export default function MenuPage() {
 					onSectionSelection={handleCategorySelection}
 				/>
 			)}
+
+			{<AddToCartDrawer />}
 		</>
 	)
 }

@@ -49,6 +49,7 @@ export type RestaurantDetailType = {
 	country: string
 	state: string
 	logo: string
+	feature_flags?: Record<string, boolean>
 	order_count_display: number
 	cover_image: string
 	dashboardLinks?: IDynamicLink[]
@@ -56,6 +57,7 @@ export type RestaurantDetailType = {
 		wa_api_details?: {
 			wa_number: string
 		}
+
 		platform_reviews?: {
 			platform_name: string
 			total_reviews: number
@@ -63,10 +65,12 @@ export type RestaurantDetailType = {
 		}[]
 
 		reviews_image_url_details?: IReviews[]
+
 		platform_details?: {
 			platform_name: string
 			platform_uri: string
 		}[]
+
 		meta_details?: {
 			category: string
 			opening_time: string

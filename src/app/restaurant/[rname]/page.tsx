@@ -20,16 +20,16 @@ export default async function Page({
 }) {
 	const { rname } = await params
 
-	const { data: currentData } = await axiosServerQuery({
+	const { data: restaurantDetails } = await axiosServerQuery({
 		url: parseDynamicURL(apiRoutes.restaurantDetail, { name: rname }),
 		method: "GET"
 	})
 
-	console.log("currentData--", JSON.stringify(currentData))
+	console.log("currentData--", JSON.stringify(restaurantDetails))
 
 	return (
 		<div>
-			<DeliveryLandingPage rname={rname} restaurantInfo={currentData} />
+			<DeliveryLandingPage rname={rname} restaurantInfo={restaurantDetails} />
 			{/* changes for ScrollButton */}
 			<ScrollButton />
 			<Footer />

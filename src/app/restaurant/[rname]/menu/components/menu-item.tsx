@@ -1,19 +1,54 @@
 "use client"
 import { useMemo, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import Image from "next/image"
 import LineClampTypography from "@/shared/LineClampTypography"
 import { ProductType, ProductVariantType } from "@/types"
 import ImageOverlay from "@/shared/ImageOverlay"
 import { isSafeArray } from "@/utils/isSafeArray"
+import {
+	openCart,
+	selectProduct,
+	increaseProductQuantity,
+	decreaseProductQuantity,
+	removeProduct
+} from "@/store/features/cart.slice"
+import IncrementOperator from "../../components/increment-operator"
+import { FEATURES } from "../../types"
+import { useParams } from "next/navigation"
+import { RootState } from "@/store/store"
 
+/* TODO: Fix type issues */
 function MenuItem({
 	product
 }: {
 	product: ProductType & { variants: ProductVariantType[] }
 }) {
-	const [isOpen, setIsOpen] = useState(false)
+	const showAdd = true
+	const dispatch = useDispatch()
+	const { rname } = useParams<{ rname: string }>()
+	const [openImg, setIsOpen] = useState(false)
+
+	const featureList: string[] = localStorage.getItem(rname)
+		? JSON.parse(localStorage.getItem(rname) || "[]")
+		: []
+	/* 
+		Only specific restarants will have Ordering feature. 
+		Not all of them will have. featureList is for habdling the same
+	*/
+	const hasOrderfeature = featureList.includes(FEATURES.RESTAURANT_ORDER_MODULE)
+
+	const { products } = useSelector((state: RootState) => state.cart)
+	const { mode } = useSelector((state: RootState) => state.appState)
+
 	const rating: number = Number(product.variants?.[0]?.average_rating) || 4
 	const starsArray: number[] = Array.from({ length: rating })
+
+	const updatedProduct = products.find((item) => {
+		return item.id === product.id
+	})
+
+	const showAddBtn = hasOrderfeature && showAdd && mode === "DELIVERY"
 
 	const hasVariants = useMemo(
 		() => isSafeArray(product.variants) && product.variants.length > 1,
@@ -63,23 +98,90 @@ function MenuItem({
 		findPrdImage(product.variants, product.name) ||
 		null
 
+	const handleAdd = () => {
+		dispatch(openCart())
+		dispatch(selectProduct(product))
+	}
+
+	const handleIncrement = () => {
+		if (updatedProduct) {
+			dispatch(increaseProductQuantity(updatedProduct.id))
+		}
+	}
+
+	const handleDecrement = () => {
+		if (
+			updatedProduct &&
+			updatedProduct.quantity &&
+			updatedProduct.quantity > 1
+		) {
+			dispatch(decreaseProductQuantity(updatedProduct.id))
+		} else if (updatedProduct) {
+			dispatch(removeProduct(updatedProduct.id))
+		}
+	}
+
+	/* 
+		- If Ordering flow is Disabled, only show image of product & open image in overlay
+		- if Ordering flow is Enabled, show image of product and ADD button, opens image in Drawer
+	*/
+
+	const handleImgContainerClick = () => {
+		if (!showAddBtn) {
+			setIsOpen(true)
+		} else {
+			handleAdd()
+		}
+	}
+
 	return (
 		<div className="mb-4">
 			<div className="flex flex-row-reverse">
-				{!!prdImage ? (
-					<div className="relative w-[145px] h-[145px] bg-lightSteelBlue rounded-lg">
-						<Image
-							fill
-							priority
-							unoptimized
-							src={prdImage}
-							alt="food_img"
-							onClick={() => setIsOpen(true)}
-							className="object-cover rounded-lg"
-						/>
-					</div>
-				) : null}
+				<div className="relative w-[145px]">
+					{!!prdImage ? (
+						<div
+							className="h-[145px] bg-lightSteelBlue rounded-lg overflow-hidden"
+							onClick={handleImgContainerClick}
+						>
+							<Image
+								fill
+								priority
+								unoptimized
+								src={prdImage}
+								alt="food_img"
+								className="object-cover rounded-lg max-w-full h-auto"
+							/>
 
+							{/* If product has quantity, show Increment operator else show ADD button */}
+							{updatedProduct?.quantity ? (
+								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-12px] h-[30px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+									<IncrementOperator
+										product={updatedProduct}
+										onClickPlus={handleIncrement}
+										onClickMinus={handleDecrement}
+									/>
+								</div>
+							) : (
+								showAddBtn && (
+									<button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+										ADD+
+									</button>
+								)
+							)}
+						</div>
+					) : (
+						<div className="h-[120px]">
+							{showAddBtn && (
+								<button
+									className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+									onClick={handleAdd}
+								>
+									ADD+
+								</button>
+							)}
+						</div>
+					)}
+				</div>
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>
 						{!hasVariants && (
@@ -124,6 +226,7 @@ function MenuItem({
 								})}
 							</>
 						) : (
+							product?.variants &&
 							product?.variants[0]?.price && (
 								<p className="text-secondary text-sm font-bold pt-1">
 									{validatedPrice(product?.variants[0]?.price)}
@@ -153,7 +256,8 @@ function MenuItem({
 				</div>
 			</div>
 
-			{isOpen ? (
+			{/* Open Full screen Image on Overlay */}
+			{openImg ? (
 				<ImageOverlay imageUrl={prdImage} onClose={() => setIsOpen(false)} />
 			) : null}
 		</div>

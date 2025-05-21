@@ -6,3 +6,7 @@ export interface IOption {
 	show?: boolean
 	preload?: boolean
 }
+
+export const enum FEATURES {
+	RESTAURANT_ORDER_MODULE = "RESTAURANT_ORDER_MODULE"
+}

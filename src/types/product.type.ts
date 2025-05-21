@@ -12,7 +12,7 @@ export type ProductVariantType = {
 	image_url: string
 	display_order: string
 	preparation_time_minutes: number | null
-	allergens: string | null
+	allergens: string
 	average_rating: number | null
 	rating_count: number
 	dietary_info: string | null
@@ -29,6 +29,7 @@ export type ProductType = {
 	price: string | number
 	active: boolean
 	description: string
+	quantity?: number
 	is_featured: boolean
 	display_order: number
 	variants?: ProductVariantType[]

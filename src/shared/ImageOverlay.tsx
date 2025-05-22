@@ -18,7 +18,7 @@ function ImageOverlay({
 					<Image
 						unoptimized
 						className="z-200 rounded-xl"
-						src={imageUrl}
+						src={imageUrl.trim()}
 						alt="Full View"
 						width={300}
 						height={300}

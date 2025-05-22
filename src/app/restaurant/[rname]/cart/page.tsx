@@ -1,0 +1,100 @@
+"use client"
+import { useSelector } from "react-redux"
+import { useParams } from "next/navigation"
+
+import NavBar from "../menu/components/NavBar"
+import { isSafeArray } from "@/utils/isSafeArray"
+import ProductCard from "../components/product-card"
+import { RootState } from "@/store/store"
+import { VariantsEntity } from "@/types/menu.type"
+import { ProductType } from "@/types"
+
+const CartPage = () => {
+	const { rname } = useParams<{ rname: string }>()
+	const { restaurantData } = useSelector((state: RootState) => state.restaurant)
+	const { products } = useSelector((state: RootState) => state.cart)
+
+	const getPrice = ({
+		name,
+		variants
+	}: {
+		name: string
+		variants?: VariantsEntity[] | null
+	}): string => {
+		const validVariants = variants ?? undefined // Convert null to undefined
+
+		const found =
+			isSafeArray(validVariants) &&
+			validVariants.find(
+				(item) => item.variant_name === name || item.variant_name === "Regular"
+			)
+
+		return found && typeof found !== "boolean" ? found.price : "0"
+	}
+
+	const handleConfirm = () => {
+		let message = `/******** NEW ORDER ********/\n`
+
+		if (isSafeArray(products)) {
+			products.forEach((item) => {
+				const { name, quantity, variants } = item as ProductType
+				message += `${name} - Rs.${getPrice({
+					name,
+					variants: variants
+						? variants.map((variant) => ({
+								...variant,
+								preparation_time_minutes: variant.preparation_time_minutes ?? 0 // Convert null to 0
+						  }))
+						: undefined // Handle undefined variants
+				})} - *${quantity} Qty*\n`
+			})
+		}
+
+		const encodedMessage = encodeURIComponent(message)
+		const whatsappUrl = `https://wa.me/919757024944?text=${encodedMessage}`
+		window.open(whatsappUrl, "_blank")
+	}
+
+	return (
+		<div className="flex flex-col min-h-screen">
+			{/* Navbar */}
+			{restaurantData && (
+				<NavBar
+					rname={rname}
+					restaurantInfo={restaurantData}
+					showLogo={false}
+				/>
+			)}
+
+			{/* Cart Items */}
+			<div className="flex-1 bg-white rounded-lg px-2">
+				{isSafeArray(products) ? (
+					products.map((item) => {
+						return (
+							<div key={item.id}>
+								<ProductCard product={item} />
+							</div>
+						)
+					})
+				) : (
+					<div className="text-lg font-semibold text-gray-800 text-center">
+						<div>Your cart is empty!!</div>
+					</div>
+				)}
+			</div>
+
+			{/* Confirm Button */}
+			<div className="p-4">
+				<button
+					className="w-full bg-lime-500 text-md font-semibold text-white py-2 rounded-xl shadow-md hover:bg-green-600"
+					onClick={handleConfirm}
+					type="submit"
+				>
+					Confirm over WhatsApp
+				</button>
+			</div>
+		</div>
+	)
+}
+
+export default CartPage

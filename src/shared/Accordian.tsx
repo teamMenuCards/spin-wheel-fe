@@ -25,7 +25,7 @@ const Accordion: React.FC<AccordionProps> = ({
 		section.products
 			.filter((product) => product.is_featured)
 			.map((product) => {
-				const variant = product.variants?.[0] || {}
+				const variant = product.variants?.[0]
 				return {
 					name: product.name,
 					is_veg: variant.is_veg ?? false,

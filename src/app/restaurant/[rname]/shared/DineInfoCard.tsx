@@ -70,6 +70,8 @@ const RestaurantInfoCard = ({
 						}`}
 					>
 						{/* Restaurant Details Section */}
+
+						{/* This Section would be seen only for DELIVERY PAGE */}
 						{!isDineIn && (
 							<div className="flex flex-col gap-2 text-left text-black">
 								<div className="flex items-center gap-2">
@@ -106,9 +108,6 @@ const RestaurantInfoCard = ({
 									<MapIcon_Tc className="h-4 w-4" />
 
 									<a
-										// href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-										// 	address
-										// )}`}
 										href={locationLink}
 										target="_blank"
 										rel="noopener noreferrer"

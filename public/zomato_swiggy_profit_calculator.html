@@ -6,6 +6,8 @@
   <title>Zomato/Swiggy Monthly Profit Calculator</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,6 +15,7 @@
       padding: 30px;
       color: #333;
     }
+ 
     .container {
       max-width: 700px;
       margin: auto;
@@ -146,7 +149,7 @@
     </div>
     <h2>Zomato/Swiggy Monthly Profit Calculator</h2>
 
-    <label>Total Monthly Sales:
+    <label>Monthly Sales:
       <input type="text" id="totalSales"  oninput="formatInput(this)" onfocus="unformatInput(this)" />
     </label>
     <label>Total Discount Given:
@@ -224,6 +227,8 @@
     </div>
 
     <button id="calcButton" onclick="calculateMonthlyProfit()">Calculate Monthly Profit</button>
+    <button id="downloadBtn" style="background-color: #007bff;" onclick="downloadPDF()">📄 Download Report as PDF</button>
+
     <h3>💰 Monthly Profit Summary</h3>
 
     <div class="result" id="result"></div>
@@ -287,11 +292,13 @@
 
 
     result.innerHTML = `
-    <strong>📈 Total Monthly Sales:</strong> ₹${totalSales.toLocaleString('en-IN')}<br>
+    <strong>📈 Monthly Sales:</strong> ₹${totalSales.toLocaleString('en-IN')}<br>
+    <strong>🏪 Operational Costs:</strong> ₹${totalOperationalCost.toLocaleString('en-IN')}<br>
     <strong>🎁 Discount Given:</strong> ₹${discount.toLocaleString('en-IN')}<br>
     <strong>🧾 Platform Commission Paid:</strong> ₹${commission.toLocaleString('en-IN')}<br>
-    <strong>🏪 Operational Costs:</strong> ₹${totalOperationalCost.toLocaleString('en-IN')}<br>
-    <strong>💸 Total Expense:</strong> ₹${totalExpense.toLocaleString('en-IN')}<br><br>
+  💸 <strong style="color: #e25d2d; background-color: #f4ddb8; padding: 3px 8px; border-radius: 6px;">
+    <u>Total Expense</u>:
+  </strong> ₹${totalExpense.toLocaleString('en-IN')}<br>
     
     <h3>📊 Profit Analysis</h3>
     <strong>✅ Net Profit/Loss:</strong> ₹${netProfit.toLocaleString('en-IN')}<br>
@@ -302,6 +309,8 @@
     // Direct Profit if Delivered Directly (No Commission + No Discount)
   const directProfit = totalSales - totalOperationalCost;
   const directProfitPercent = totalSales !== 0 ? (directProfit / totalSales) * 100 : 0;
+  const directTotalExpense = totalOperationalCost;
+
 
   // Append direct comparison box
   const directBox = document.createElement('div');
@@ -309,10 +318,13 @@
   directBox.innerHTML = `
     <h3>🚚 Direct Delivery Scenario (No Zomato/Swiggy)</h3>
 
-    <strong>💰 Sales (Direct):</strong>₹${totalSales.toLocaleString('en-IN')}<br>
-    <strong>🏪 Operational Costs:</strong>₹${totalOperationalCost.toLocaleString('en-IN')}<br><br>
+    <strong>💰 Monthly Sales (Direct):</strong>₹${totalSales.toLocaleString('en-IN')}<br>
+    <strong>🏪 Operational Costs:</strong>₹${totalOperationalCost.toLocaleString('en-IN')}<br>
+     <strong style="color: #e25d2d; background-color: #f4ddb8; padding: 3px 8px; border-radius: 6px;">
+    <u>Total Expense</u>:
+  </strong> ₹${directTotalExpense.toLocaleString('en-IN')}<br><br>
   
-   
+       <h3>📊 Profit Analysis</h3>
     <strong>🚀 Profit (No Commission/ Discount):</strong> ₹${directProfit.toLocaleString('en-IN')}<br>
     <strong>📊 Profit Margin (Direct):</strong> ${directProfitPercent.toFixed(2)}%
 
@@ -410,7 +422,34 @@
         plugins: [ChartDataLabels]
       });
     }
-  </script>
+    
+
+    function downloadPDF() {
+  const element = document.querySelector('.container');
+
+  // Remove unexpected spacing or clipping
+  element.style.marginTop = '0';
+  element.style.paddingTop = '0';
+  element.style.overflow = 'visible';
+
+  const opt = {
+    margin:       0.1,
+    filename:     'ZomatoSwiggy_Monthly_Report.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 3, scrollY: 0, useCORS: true },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  // Wait a little if dynamic charts are rendering
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+    html2pdf().set(opt).from(element).save();
+  }, 500);
+}
+
+
+
+</script>
 </body>
 </html>
 

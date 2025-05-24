@@ -88,7 +88,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 			<Dialog
 				open={open}
 				onClose={() => setOpen(false)}
-				className="fixed inset-0 flex items-end justify-end p-4 z-50"
+				className="fixed inset-0 flex items-end justify-end p-4 z-[1500]"
 			>
 				<div
 					ref={menuRef}

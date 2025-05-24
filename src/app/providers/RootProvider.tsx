@@ -2,7 +2,10 @@
 
 import { ReactNode } from "react"
 import StoreProvider from "./StoreProvider"
+import { SnackbarProvider } from "notistack"
 
 export const RootProvider = ({ children }: { children: ReactNode }) => (
-	<StoreProvider>{children}</StoreProvider>
+	<StoreProvider>
+		<SnackbarProvider maxSnack={1}>{children}</SnackbarProvider>
+	</StoreProvider>
 )

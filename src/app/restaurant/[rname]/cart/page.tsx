@@ -1,4 +1,5 @@
 "use client"
+import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { useParams } from "next/navigation"
 
@@ -8,11 +9,20 @@ import ProductCard from "../components/product-card"
 import { RootState } from "@/store/store"
 import { VariantsEntity } from "@/types/menu.type"
 import { ProductType } from "@/types"
+import { useSnackbar } from "notistack"
 
 const CartPage = () => {
 	const { rname } = useParams<{ rname: string }>()
+	const { closeSnackbar } = useSnackbar()
 	const { restaurantData } = useSelector((state: RootState) => state.restaurant)
 	const { products } = useSelector((state: RootState) => state.cart)
+
+	const whatsappNumber =
+		restaurantData?.detail.details.wa_api_details?.wa_number
+
+	useEffect(() => {
+		closeSnackbar()
+	}, [closeSnackbar])
 
 	const getPrice = ({
 		name,
@@ -51,7 +61,7 @@ const CartPage = () => {
 		}
 
 		const encodedMessage = encodeURIComponent(message)
-		const whatsappUrl = `https://wa.me/919757024944?text=${encodedMessage}`
+		const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`
 		window.open(whatsappUrl, "_blank")
 	}
 

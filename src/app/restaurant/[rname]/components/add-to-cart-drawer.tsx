@@ -77,8 +77,6 @@ const App = () => {
 	const getSnackbarMssg = () => {
 		const count = products.length
 
-		console.log("productskk--", count, products)
-
 		if (count == 1) {
 			return `1 item added to the cart`
 		} else {
@@ -96,7 +94,9 @@ const App = () => {
 				style: {
 					backgroundColor: "#84cc15",
 					fontWeight: "bold",
-					fontSize: "16px"
+					fontSize: "16px",
+					position: "fixed",
+					bottom: "40px"
 				},
 
 				action: () => (

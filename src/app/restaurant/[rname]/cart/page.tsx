@@ -10,12 +10,14 @@ import { RootState } from "@/store/store"
 import { VariantsEntity } from "@/types/menu.type"
 import { ProductType } from "@/types"
 import { useSnackbar } from "notistack"
+import { selectCartTotal } from "@/store/features/cart.slice"
 
 const CartPage = () => {
 	const { rname } = useParams<{ rname: string }>()
 	const { closeSnackbar } = useSnackbar()
 	const { restaurantData } = useSelector((state: RootState) => state.restaurant)
 	const { products } = useSelector((state: RootState) => state.cart)
+	const total = useSelector(selectCartTotal)
 
 	const whatsappNumber =
 		restaurantData?.detail.details.wa_api_details?.wa_number
@@ -55,9 +57,10 @@ const CartPage = () => {
 								...variant,
 								preparation_time_minutes: variant.preparation_time_minutes ?? 0 // Convert null to 0
 						  }))
-						: undefined // Handle undefined variants
+						: undefined
 				})} - *${quantity} Qty*\n`
 			})
+			message += `Total -  Rs.${total}\n`
 		}
 
 		const encodedMessage = encodeURIComponent(message)
@@ -79,13 +82,22 @@ const CartPage = () => {
 			{/* Cart Items */}
 			<div className="flex-1 bg-white rounded-lg px-2">
 				{isSafeArray(products) ? (
-					products.map((item) => {
-						return (
-							<div key={item.id}>
-								<ProductCard product={item} />
-							</div>
-						)
-					})
+					<>
+						{products.map((item) => {
+							return (
+								<>
+									<div key={item.id}>
+										<ProductCard product={item} />
+									</div>
+								</>
+							)
+						})}
+
+						<div className="flex justify-between px-2 py-2 rounded-md shadow-md m-2">
+							<div className="text-md font-semibold">Total</div>
+							<span className="text-md font-semibold">Rs.{total}</span>
+						</div>
+					</>
 				) : (
 					<div className="text-lg font-semibold text-gray-800 text-center">
 						<div>Your cart is empty!!</div>

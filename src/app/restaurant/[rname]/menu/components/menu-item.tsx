@@ -103,13 +103,16 @@ function MenuItem({
 		dispatch(selectProduct(product))
 	}
 
-	const handleIncrement = () => {
+	const handleIncrement = (e) => {
+		e.stopPropagation()
 		if (updatedProduct) {
 			dispatch(increaseProductQuantity(updatedProduct.id))
 		}
 	}
 
-	const handleDecrement = () => {
+	const handleDecrement = (e) => {
+		e.stopPropagation()
+
 		if (
 			updatedProduct &&
 			updatedProduct.quantity &&

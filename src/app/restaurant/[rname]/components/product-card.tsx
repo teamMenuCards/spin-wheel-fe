@@ -42,7 +42,8 @@ function ProductCard({ product }: { product: ProductType }) {
 		return isVeg ? getVegIcon() : getNonVegIcon()
 	}
 
-	const handleIncrement = () => {
+	const handleIncrement = (e: { stopPropagation: () => void }) => {
+		e.stopPropagation()
 		dispatch(increaseProductQuantity(product.id))
 	}
 

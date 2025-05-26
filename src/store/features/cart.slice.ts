@@ -1,5 +1,6 @@
 import { ProductType } from "@/types"
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { RootState } from "../store"
 
 interface CartState {
 	isOpen: boolean
@@ -47,7 +48,7 @@ export const cartSlice = createSlice({
 		},
 		increaseProductQuantity(state, action: PayloadAction<string>) {
 			const product = state.products.find(
-				(product) => product.id === action.payload
+				(product: ProductType) => product.id === action.payload
 			)
 			if (product) {
 				product.quantity = (product.quantity || 0) + 1
@@ -76,3 +77,24 @@ export const {
 } = cartSlice.actions
 
 export default cartSlice.reducer
+
+// Selector for cart total
+export const selectCartTotal = createSelector(
+	(state: RootState) => state.cart.products,
+	(products) => {
+		return products?.reduce((sum: number, product: ProductType) => {
+			// Handle cases where variants may be missing
+			const variants = product.variants || []
+
+			// Sum all variants prices for this product
+			const productTotal = variants.reduce((variantSum, variant) => {
+				const variantPrice = Number(variant.price) || 0
+				return variantSum + variantPrice
+			}, 0)
+
+			// Multiply the total variant price by product quantity
+			const quantity = product.quantity || 1
+			return sum + productTotal * quantity
+		}, 0)
+	}
+)

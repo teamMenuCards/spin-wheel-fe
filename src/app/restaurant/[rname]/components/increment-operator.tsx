@@ -6,8 +6,8 @@ function IncrementOperator({
 	onClickMinus
 }: {
 	product: ProductType
-	onClickPlus: () => void
-	onClickMinus: () => void
+	onClickPlus: (e) => void
+	onClickMinus: (e) => void
 }) {
 	return (
 		<>

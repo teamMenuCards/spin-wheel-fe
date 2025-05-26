@@ -51,8 +51,6 @@ export const cartSlice = createSlice({
 				(product: ProductType) => product.id === action.payload
 			)
 
-			console.log("producthja--", product, product?.quantity)
-
 			if (product) {
 				product.quantity = (product.quantity || 0) + 1
 			}

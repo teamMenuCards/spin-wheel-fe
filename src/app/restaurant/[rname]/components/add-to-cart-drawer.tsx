@@ -51,8 +51,11 @@ const App = () => {
 	}
 
 	const findPrice = (products: ProductVariantType[]) => {
-		const found = findDetails({ products, productName: selectedProduct?.name })
-		return found.price
+		if (selectedProduct) {
+			const found = findDetails({ products, productName: selectedProduct.name })
+			return found && found.price
+		}
+		return 0
 	}
 
 	const getProductType = (isVeg: boolean) => {

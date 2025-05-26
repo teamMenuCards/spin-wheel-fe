@@ -103,14 +103,14 @@ function MenuItem({
 		dispatch(selectProduct(product))
 	}
 
-	const handleIncrement = (e) => {
+	const handleIncrement = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation()
 		if (updatedProduct) {
 			dispatch(increaseProductQuantity(updatedProduct.id))
 		}
 	}
 
-	const handleDecrement = (e) => {
+	const handleDecrement = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.stopPropagation()
 
 		if (

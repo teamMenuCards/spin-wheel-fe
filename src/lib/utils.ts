@@ -14,14 +14,13 @@ export function findDetails({
 	products: ProductVariantType[]
 	productName: string
 }) {
-	const found =
-		isSafeArray(products) &&
-		products?.find(
-			(item) =>
-				item.variant_name == "Regular" || item.variant_name == productName
-		)
-	if (found) {
-		return found
+	if (!isSafeArray(products)) {
+		return undefined
 	}
-	return 0
+
+	const found = products.find(
+		(item) => item.variant_name == "Regular" || item.variant_name == productName
+	)
+
+	return found
 }

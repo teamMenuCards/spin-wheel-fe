@@ -13,7 +13,7 @@ import { useFeatureList } from "@/hooks/useFeatureList"
 import { FEATURES } from "../../../types"
 import { useParams } from "next/navigation"
 import { RootState } from "@/store/store"
-import { ProductType } from "@/types"
+import { ProductType, ProductVariantType } from "@/types"
 
 function ProductCard({
 	product,
@@ -31,10 +31,13 @@ function ProductCard({
 	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
 
 	const dispatch = useDispatch()
-	const productDetails = findDetails({
-		products: product.variants,
-		productName: product.name
-	})
+
+	const productDetails: ProductVariantType | undefined =
+		product &&
+		findDetails({
+			products: product.variants as ProductVariantType[],
+			productName: product.name
+		})
 
 	const handleIncrement = (e: { stopPropagation: () => void }) => {
 		e.stopPropagation()

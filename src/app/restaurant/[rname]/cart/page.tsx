@@ -97,6 +97,10 @@ const CartPage = () => {
 							<div className="text-md font-semibold">Total</div>
 							<span className="text-md font-semibold">Rs.{total}</span>
 						</div>
+						<p className="text-sm font-semibold text-red-600 text-left mx-4">
+							Above prices are exclusive of GST(5%) and will be charged
+							additionally.
+						</p>
 					</>
 				) : (
 					<div className="text-lg font-semibold text-gray-800 text-center">

@@ -17,6 +17,7 @@ import IncrementOperator from "../../components/increment-operator"
 import { FEATURES } from "../../types"
 import { useParams } from "next/navigation"
 import { RootState } from "@/store/store"
+import { useFeatureList } from "@/hooks/useFeatureList"
 
 /* TODO: Fix type issues */
 function MenuItem({
@@ -24,19 +25,17 @@ function MenuItem({
 }: {
 	product: ProductType & { variants: ProductVariantType[] }
 }) {
-	const showAdd = true
 	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
 	const [openImg, setIsOpen] = useState(false)
 
-	const featureList: string[] = localStorage.getItem(rname)
-		? JSON.parse(localStorage.getItem(rname) || "[]")
-		: []
 	/* 
 		Only specific restarants will have Ordering feature. 
 		Not all of them will have. featureList is for habdling the same
 	*/
-	const hasOrderfeature = featureList.includes(FEATURES.RESTAURANT_ORDER_MODULE)
+
+	const { hasFeature } = useFeatureList(rname)
+	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 
 	const { products } = useSelector((state: RootState) => state.cart)
 	const { mode } = useSelector((state: RootState) => state.appState)
@@ -48,7 +47,7 @@ function MenuItem({
 		return item.id === product.id
 	})
 
-	const showAddBtn = hasOrderfeature && showAdd && mode === "DELIVERY"
+	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
 
 	const hasVariants = useMemo(
 		() => isSafeArray(product.variants) && product.variants.length > 1,

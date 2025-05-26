@@ -30,7 +30,7 @@ function DeliveryLandingPage({
 			const featureList = restaurantInfo?.detail?.feature_flags
 
 			const enabledFeatures = Object.keys(featureList).filter(
-				(item) => featureList[item]
+				(item) => !!featureList[item]
 			)
 
 			localStorage.setItem(rname, JSON.stringify(enabledFeatures))

@@ -13,6 +13,7 @@ import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
 import { useSnackbar } from "notistack"
 import { useParams, useRouter } from "next/navigation"
+import { findDetails } from "@/lib/utils"
 
 const App = () => {
 	const router = useRouter()
@@ -50,15 +51,8 @@ const App = () => {
 	}
 
 	const findPrice = (products: ProductVariantType[]) => {
-		const found = products?.find(
-			(item) =>
-				item.variant_name == "Regular" ||
-				item.variant_name == selectedProduct?.name
-		)
-		if (found) {
-			return found.price
-		}
-		return 0
+		const found = findDetails({ products, productName: selectedProduct?.name })
+		return found.price
 	}
 
 	const getProductType = (isVeg: boolean) => {

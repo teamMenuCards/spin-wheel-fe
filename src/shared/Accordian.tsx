@@ -5,9 +5,9 @@ import {
 	ChevronDown_Ic,
 	ChevronUp_Ic
 } from "@/app/restaurant/[rname]/menu/icons"
-import { Category } from "@/services/product/get-menu-list"
-import ChefRecommendation from "@/app/restaurant/[rname]/menu/components/ChefRecommendation"
 import { isSafeArray } from "@/utils/isSafeArray"
+import { Category } from "@/services/product/get-menu-list"
+import ChefRecommendation from "@/app/restaurant/[rname]/menu/components/BestSellers"
 
 interface AccordionProps {
 	sections?: Category[]
@@ -24,16 +24,7 @@ const Accordion: React.FC<AccordionProps> = ({
 	const featuredProducts = sections.flatMap((section) =>
 		section.products
 			.filter((product) => product.is_featured)
-			.map((product) => {
-				const variant = product.variants?.[0]
-				return {
-					name: product.name,
-					is_veg: variant.is_veg ?? false,
-					image_url: variant.image_url || "",
-					description: product.description || "",
-					price: variant.price || product.price || ""
-				}
-			})
+			.map((product) => product)
 	)
 
 	// Ensure all sections are open when sections data is available

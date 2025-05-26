@@ -22,15 +22,21 @@ function ProductCard({
 	product: ProductType
 	onImgClick: (img: string) => void
 }) {
+	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
-
 	const { hasFeature } = useFeatureList(rname)
 	const { mode } = useSelector((state: RootState) => state.appState)
+	const { products: cartProducts } = useSelector(
+		(state: RootState) => state.cart
+	)
+
+	// This product is from redux, it has quantity key
+	const updatedProduct = cartProducts.find((item) => {
+		return item.id === product.id
+	})
+
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
-
 	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
-
-	const dispatch = useDispatch()
 
 	const productDetails: ProductVariantType | undefined =
 		product &&
@@ -41,11 +47,17 @@ function ProductCard({
 
 	const handleIncrement = (e: { stopPropagation: () => void }) => {
 		e.stopPropagation()
-		dispatch(increaseProductQuantity(product.id))
+		if (updatedProduct) {
+			dispatch(increaseProductQuantity(updatedProduct.id))
+		}
 	}
 
 	const handleDecrement = () => {
-		if (product.quantity && product.quantity > 1) {
+		if (
+			updatedProduct &&
+			updatedProduct.quantity &&
+			updatedProduct.quantity > 1
+		) {
 			dispatch(decreaseProductQuantity(product.id))
 		} else dispatch(removeProduct(product.id))
 	}
@@ -110,30 +122,28 @@ function ProductCard({
 					<div>{isVeg ? getVegIcon() : getNonVegIcon()}</div>
 				</div>
 			</div>
-			{/* <button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
-				ADD+
-			</button> */}
 
-			{/* If product has quantity, show Increment operator else show ADD button */}
-
-			{product?.quantity ? (
-				<div className="left-1/2 -translate-x-1/2 bottom-[-12px] h-[30px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
-					<IncrementOperator
-						product={product}
-						onClickPlus={handleIncrement}
-						onClickMinus={handleDecrement}
-					/>
-				</div>
-			) : (
-				showAddBtn && (
-					<button
-						onClick={handleAdd}
-						className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
-					>
-						ADD+
-					</button>
-				)
-			)}
+			{/* If product in cart (updatedProduct) has quantity, show Increment operator else show ADD button */}
+			<div className="mt-4">
+				{updatedProduct?.quantity ? (
+					<div className="absolute left-1/2 -translate-x-1/2 bottom-[-12px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+						<IncrementOperator
+							product={updatedProduct}
+							onClickPlus={handleIncrement}
+							onClickMinus={handleDecrement}
+						/>
+					</div>
+				) : (
+					showAddBtn && (
+						<button
+							onClick={handleAdd}
+							className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+						>
+							ADD+
+						</button>
+					)
+				)}
+			</div>
 		</div>
 	)
 }

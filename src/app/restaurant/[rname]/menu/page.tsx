@@ -15,6 +15,8 @@ import Loading from "./loading"
 import dynamic from "next/dynamic"
 import { useDispatch } from "react-redux"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
+import { useFeatureList } from "@/hooks/useFeatureList"
+import { FEATURES } from "../types"
 
 const AddToCartDrawer = dynamic(
 	() => import("../components/add-to-cart-drawer")
@@ -23,6 +25,9 @@ const AddToCartDrawer = dynamic(
 export default function MenuPage() {
 	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
+
+	const { hasFeature } = useFeatureList(rname)
+	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 
 	const { currentData: menudata } = useGetMenuListByNameQuery(rname)
 	const {
@@ -105,7 +110,11 @@ export default function MenuPage() {
 
 	return (
 		<>
-			<NavBar showCart rname={rname} restaurantInfo={restaurantInfo} />
+			<NavBar
+				showCart={!!hasOrderFeature}
+				rname={rname}
+				restaurantInfo={restaurantInfo}
+			/>
 			<FloatingMenu categories={sortedCategories} />
 
 			{hasLoadedMenu && (

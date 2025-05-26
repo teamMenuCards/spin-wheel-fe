@@ -156,7 +156,7 @@ function MenuItem({
 
 							{/* If product has quantity, show Increment operator else show ADD button */}
 							{updatedProduct?.quantity ? (
-								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-12px] h-[30px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-12px] h-[30px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 									<IncrementOperator
 										product={updatedProduct}
 										onClickPlus={handleIncrement}

@@ -3,13 +3,6 @@ import ImageOverlay from "@/shared/ImageOverlay"
 import ProductCard from "./product-card"
 import { ProductType } from "@/types"
 
-// interface Dish {
-// 	name: string
-// 	is_veg: string | boolean
-// 	image_url: string
-// 	price: string | number
-// }
-
 interface ChefRecommendationProps {
 	recommendations: ProductType[]
 }

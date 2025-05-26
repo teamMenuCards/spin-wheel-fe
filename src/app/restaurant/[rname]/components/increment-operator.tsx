@@ -1,14 +1,16 @@
 import { ProductType } from "@/types"
 
+interface IncrementOperatorProps {
+	product: ProductType
+	onClickPlus: (e: React.MouseEvent<HTMLDivElement>) => void
+	onClickMinus: (e: React.MouseEvent<HTMLDivElement>) => void
+}
+
 function IncrementOperator({
 	product,
 	onClickPlus,
 	onClickMinus
-}: {
-	product: ProductType
-	onClickPlus: (e) => void
-	onClickMinus: (e) => void
-}) {
+}: IncrementOperatorProps) {
 	return (
 		<>
 			<div className="flex items-center justify-center text-white bg-lime-500 rounded-md  w-[100px]">

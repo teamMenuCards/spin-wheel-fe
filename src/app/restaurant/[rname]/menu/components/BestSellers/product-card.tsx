@@ -70,6 +70,10 @@ function ProductCard({
 		dispatch(selectProduct(product))
 	}
 
+	const imageUrl = productDetails && productDetails.image_url
+	const price = productDetails && productDetails.price
+	const isVeg = productDetails && productDetails.is_veg
+
 	return (
 		<div
 			className="relative p-3 rounded-xl flex flex-col cursor-pointer transition-all border border-gray-200 shadow-lg hover:shadow-xl bg-white hover:border-pink-300 flex-shrink-0"
@@ -81,7 +85,7 @@ function ProductCard({
 		>
 			{/* Image - Larger size */}
 			<div className="w-full h-[140px] rounded-xl overflow-hidden mb-2 flex items-center justify-center relative">
-				{productDetails.image_url && (
+				{imageUrl && (
 					<Image
 						fill
 						unoptimized
@@ -102,14 +106,8 @@ function ProductCard({
 				</div>
 
 				<div className="flex justify-between items-end">
-					<div className="text-gray-900 font-semibold text-sm">
-						₹{productDetails.price}
-					</div>
-					<div>
-						{productDetails.is_veg === true || productDetails.is_veg === "true"
-							? getVegIcon()
-							: getNonVegIcon()}
-					</div>
+					<div className="text-gray-900 font-semibold text-sm">₹{price}</div>
+					<div>{isVeg ? getVegIcon() : getNonVegIcon()}</div>
 				</div>
 			</div>
 			{/* <button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">

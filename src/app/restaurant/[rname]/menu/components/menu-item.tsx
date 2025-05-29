@@ -138,11 +138,12 @@ function MenuItem({
 
 	return (
 		<div className="mb-4">
-			<div className="flex flex-row-reverse">
-				<div className="relative w-[145px]">
+			<div className="flex flex-row-reverse items-start">
+				{/* Image Container with Button */}
+				<div className="relative w-[145px] flex flex-col items-center">
 					{!!prdImage ? (
 						<div
-							className="h-[145px] bg-lightSteelBlue rounded-lg overflow-hidden"
+							className="w-full aspect-square bg-lightSteelBlue rounded-lg overflow-hidden"
 							onClick={handleImgContainerClick}
 						>
 							<Image
@@ -153,23 +154,29 @@ function MenuItem({
 								alt="food_img"
 								className="object-cover rounded-lg max-w-full h-auto"
 							/>
+							{/* </div>
+					) : (
+						<div className="w-full aspect-square bg-lightSteelBlue rounded-lg"></div>
+					)} */}
 
-							{/* If product has quantity, show Increment operator else show ADD button */}
-							{updatedProduct?.quantity ? (
-								<div className="absolute left-1/2 -translate-x-1/2 bottom-[-12px] h-[30px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
-									<IncrementOperator
-										product={updatedProduct}
-										onClickPlus={handleIncrement}
-										onClickMinus={handleDecrement}
-									/>
-								</div>
-							) : (
-								showAddBtn && (
-									<button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
-										ADD+
-									</button>
-								)
-							)}
+							{/* ADD+ Button or IncrementOperator */}
+							<div className="mt-2">
+								{updatedProduct?.quantity ? (
+									<div className="h-[30px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+										<IncrementOperator
+											product={updatedProduct}
+											onClickPlus={handleIncrement}
+											onClickMinus={handleDecrement}
+										/>
+									</div>
+								) : (
+									showAddBtn && (
+										<button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+											ADD+
+										</button>
+									)
+								)}
+							</div>
 						</div>
 					) : (
 						<div className="h-[120px]">
@@ -184,6 +191,8 @@ function MenuItem({
 						</div>
 					)}
 				</div>
+
+				{/* Product Info */}
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>
 						{!hasVariants && (
@@ -207,11 +216,11 @@ function MenuItem({
 							</LineClampTypography>
 						)}
 
-						{/* Show variants with price else show only price */}
+						{/* Variants or Price */}
 						{hasVariants ? (
 							<>
-								{product.variants.map((item) => {
-									return !item.variant_name.includes(product.name) ? (
+								{product.variants.map((item) =>
+									!item.variant_name.includes(product.name) ? (
 										<div
 											className="flex text-secondary text-gray-500 text-sm font-semibold pt-1"
 											key={item.id}
@@ -225,7 +234,7 @@ function MenuItem({
 											</span>
 										</div>
 									) : null
-								})}
+								)}
 							</>
 						) : (
 							product?.variants &&
@@ -236,32 +245,30 @@ function MenuItem({
 							)
 						)}
 
-						<div className="flex">
+						{/* Rating Stars */}
+						<div className="flex mt-1">
 							{product.variants?.[0]?.average_rating &&
-								starsArray.map((_, index) => {
-									return (
-										<div key={index}>
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												fill="#ffb101"
-												viewBox="0 0 24 24"
-												width="18px"
-												height="18px"
-											>
-												<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-											</svg>
-										</div>
-									)
-								})}
+								starsArray.map((_, index) => (
+									<svg
+										key={index}
+										xmlns="http://www.w3.org/2000/svg"
+										fill="#ffb101"
+										viewBox="0 0 24 24"
+										width="18px"
+										height="18px"
+									>
+										<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+									</svg>
+								))}
 						</div>
 					</div>
 				</div>
 			</div>
 
 			{/* Open Full screen Image on Overlay */}
-			{openImg ? (
+			{openImg && (
 				<ImageOverlay imageUrl={prdImage} onClose={() => setIsOpen(false)} />
-			) : null}
+			)}
 		</div>
 	)
 }

@@ -132,6 +132,7 @@ const App = () => {
 	}
 
 	const hasProductImage = selectedProduct?.variants?.[0]?.image_url
+	console.log("hasProductImage--", hasProductImage)
 
 	return (
 		<>
@@ -142,12 +143,12 @@ const App = () => {
 				onClose={() => dispatch(closeCart())}
 				direction="bottom"
 				style={{
-					height: hasProductImage ? "400px" : "200px",
+					height: hasProductImage ? "500px" : "200px",
 					zIndex: 1410
 				}}
 			>
 				{hasProductImage ? (
-					<div className="border border-gray-300 rounded-md h-[400px] w-full relative">
+					<div className="border border-gray-300 rounded-md h-[350px] w-full relative">
 						(
 						<Image
 							src={hasProductImage}

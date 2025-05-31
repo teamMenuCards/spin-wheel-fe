@@ -1,15 +1,18 @@
 "use client"
-import React, { useRef, useEffect } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import DineInButtons from "../shared/DineInButtons"
 import DineInfoCard from "../shared/DineInfoCard"
-import { IOption } from "../types"
+import { FEATURES, IOption } from "../types"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
 import BackgroundImage from "../shared/BackgroundImg"
 import { isSafeArray } from "@/utils/isSafeArray"
 import { IDynamicLink } from "@/types"
+import Modal from "../shared/Modal"
+import PopupContent from "../shared/PopUpContent"
 import { useDispatch } from "react-redux"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { useFeatureList } from "@/hooks/useFeatureList"
 
 function DeliveryLandingPage({
 	rname,
@@ -18,6 +21,11 @@ function DeliveryLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
+	const { hasFeature } = useFeatureList(rname)
+	const showZomatoNudgePopup = hasFeature(
+		FEATURES.RESTAURANT_PRE_PLATFORM_ORDER_FLOW
+	)
+
 	const dispatch = useDispatch()
 
 	if (restaurantInfo) {
@@ -148,6 +156,7 @@ function DeliveryLandingPage({
 	}
 
 	const defualtBtns = restaurantInfo && getPath(rname, restaurantInfo)
+	const [activePopup, setActivePopup] = useState<string | null>(null)
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
@@ -164,7 +173,10 @@ function DeliveryLandingPage({
 				{deliveryLinks && isSafeArray(deliveryLinks) ? (
 					<DineInButtons dynamicOptions={deliveryLinks} />
 				) : defualtBtns ? (
-					<DineInButtons options={defualtBtns} />
+					<DineInButtons
+						options={defualtBtns}
+						setActivePopup={setActivePopup}
+					/>
 				) : null}
 
 				{reviews && (
@@ -172,6 +184,27 @@ function DeliveryLandingPage({
 						<ReviewsCarousel reviews={reviews} />
 					</div>
 				)}
+				{(activePopup?.includes("Order from Zomato") ||
+					activePopup?.includes("Order from Swiggy")) &&
+					showZomatoNudgePopup && (
+						<Modal onClose={() => setActivePopup(null)}>
+							<PopupContent
+								platformName={
+									activePopup === "Order from Zomato" ? "Zomato" : "Swiggy"
+								}
+								platformLink={
+									defualtBtns?.deliveryOptions.find(
+										(d) => d.value === activePopup
+									)?.path || "#"
+								}
+								directOrderLink={
+									defualtBtns?.deliveryOptions.find(
+										(d) => d.value === "Contact Us"
+									)?.path || "#"
+								}
+							/>
+						</Modal>
+					)}
 			</div>
 		</div>
 	)

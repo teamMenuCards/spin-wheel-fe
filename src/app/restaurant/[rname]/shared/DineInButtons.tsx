@@ -6,11 +6,13 @@ import InfoButton from "./InfoButton"
 const DineInButtons = ({
 	isDineIn = false,
 	options,
-	dynamicOptions
+	dynamicOptions,
+	setActivePopup
 }: {
 	isDineIn?: boolean
 	dynamicOptions?: IDynamicLink[]
 	options?: { deliveryOptions: IOption[]; dineInOptions: IOption[] }
+	setActivePopup?: (value: string | null) => void
 }) => {
 	const { dineInOptions = [], deliveryOptions = [] } = options || {}
 
@@ -56,9 +58,20 @@ const DineInButtons = ({
 					item.show ? (
 						<InfoButton
 							key={index}
-							href={item?.path ?? "/"}
+							href={
+								item.value === "Order from Zomato" ||
+								item.value === "Order from Swiggy"
+									? "#"
+									: item.path || "#"
+							}
 							icon={item.icon}
 							value={item.value}
+							onClick={
+								item.value === "Order from Zomato" ||
+								item.value === "Order from Swiggy"
+									? () => setActivePopup?.(item.value)
+									: undefined
+							}
 						/>
 					) : null
 				)}

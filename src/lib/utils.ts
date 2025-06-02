@@ -22,5 +22,6 @@ export function findDetails({
 		(item) => item.variant_name == "Regular" || item.variant_name == productName
 	)
 
-	return found
+	// TODO: Tried adding varaint with product name, but it is not getting updated. Informed BE
+	return found || products[0]
 }

@@ -48,3 +48,15 @@ html {
   padding-top: 0.6rem;
   padding-bottom: 0.6rem;
 }
+
+
+.recaptcha-container {
+  transform: scale(0.85); /* Adjust as needed */
+  transform-origin: 0 0;
+}
+.recaptcha-wrapper {
+  transform: scale(0.85);       /* Shrink to fit */
+  transform-origin: top left;   /* Anchor scale */
+  max-width: 100%;
+  overflow: hidden;
+}

@@ -64,8 +64,8 @@ export default function ContactPage() {
 
 	return (
 		<div className="bg-white text-emerald-900 px-6 py-10 md:px-16 md:py-16 rounded-3xl  space-y-8 max-w-5xl mx-auto">
-            <Navbar />
-			<div className="max-w-xl w-full">
+			<Navbar />
+			<div className="max-w-xl w-full m-auto">
 				<h2 className="text-lg font-semibold mb-1 text-center text-[#E53888]">
 					Contact Us
 				</h2>
@@ -160,10 +160,7 @@ export default function ContactPage() {
 							</h3>
 							{item.content.map((line, i) => (
 								<p key={i} className="text-gray-700 break-words">
-									<a
-										href={`mailto:${line}`}
-										className="text-black"
-									>
+									<a href={`mailto:${line}`} className="text-black">
 										{line}
 									</a>
 								</p>
@@ -171,9 +168,8 @@ export default function ContactPage() {
 						</div>
 					))}
 				</div>
-			
 			</div>
-             <Footer />
+			<Footer />
 		</div>
 	)
 }

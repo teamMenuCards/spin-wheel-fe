@@ -1,13 +1,7 @@
 import React from "react"
 import { FaInstagram } from "react-icons/fa"
 import Link from "next/link"
-
-const navLinks = [
-	{ label: "Home", href: "/" },
-	{ label: "About Us", href: "/about-us" },
-	{ label: "Contact Us", href: "/contact-us" },
-	{ label: "Privacy Policy", href: "/terms-and-conditions" }
-]
+import { navLinks } from "@/app/constants"
 
 const Footer = () => {
 	return (
@@ -33,7 +27,7 @@ const Footer = () => {
 
 					{/* Desktop Links */}
 
-					<div className="hidden md:flex space-x-6 text-black justify-center font-medium">
+					<div className="md:flex space-x-6 text-black justify-center font-medium">
 						{navLinks.map((link) => (
 							<Link
 								key={link.href}

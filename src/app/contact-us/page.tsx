@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import ReCAPTCHA from "react-google-recaptcha"
 
 import Navbar from "../about-us/components/NavBar"
 import Footer from "../about-us/components/Footer"
@@ -56,10 +55,6 @@ export default function ContactPage() {
 			setSubmitted(true)
 			// send data to backend here
 		}
-	}
-
-	function handleCaptchaChange() {
-		console.log()
 	}
 
 	return (
@@ -125,15 +120,6 @@ export default function ContactPage() {
 						{errors.message && (
 							<p className="text-red-500 text-sm">{errors.message}</p>
 						)}
-
-						{/* reCAPTCHA placeholder */}
-						<div className="recaptcha-wrapper">
-							<ReCAPTCHA
-								sitekey="6LcTxF8rAAAAAOsvNfvfhuoFicGJ554XVrOaRy7O"
-								onChange={handleCaptchaChange}
-							/>
-							,
-						</div>
 
 						<button
 							type="submit"

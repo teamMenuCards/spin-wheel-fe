@@ -18,16 +18,18 @@ export default function Navbar() {
 		<nav className="fixed top-0 left-0 w-full bg-white z-50 shadow-md px-4 py-3">
 			<div className="flex justify-between items-center max-w-5xl mx-auto">
 				{/*    <h1 className="text-2xl font-bold text-green-800">MenuCards</h1> */}
-				<Image
-					src="/menu-cards-logo.webp"
-					alt="Profile"
-					width={40}
-					height={30}
-					/* className="w-24 h-24 rounded-full border-4 border-blue-300 shadow-md" */
-				/>
+				<Link href={`/`}>
+					<Image
+						src="/menu-cards-logo.webp"
+						alt="Profile"
+						width={40}
+						height={30}
+						/* className="w-24 h-24 rounded-full border-4 border-blue-300 shadow-md" */
+					/>
+				</Link>
 
 				{/* Desktop Links */}
-		
+
 				<div className="hidden md:flex space-x-6 text-black font-medium">
 					{navLinks.map((link) => (
 						<Link

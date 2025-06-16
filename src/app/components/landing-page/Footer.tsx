@@ -26,7 +26,18 @@ const Footer: React.FC = () => {
 						))}
 				</div>
 
-				<u>© 2024 MenuCards</u>
+				<a
+					href={"/privacy-policy"}
+					color="white"
+					style={{
+						color: "black"
+					}}
+				>
+					<u>
+						© 2024 MenuCards. All rights reserved by Welnia Food Private Limited
+						Policies.
+					</u>
+				</a>
 			</div>
 			{/* </a> */}
 			<div style={{ color: "black" }}>

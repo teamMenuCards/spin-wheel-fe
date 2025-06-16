@@ -33,10 +33,7 @@ const Footer: React.FC = () => {
 						color: "black"
 					}}
 				>
-					<u>
-						© 2024 MenuCards. All rights reserved by Welnia Food Private Limited
-						Policies.
-					</u>
+					<u>Privacy Policy</u>
 				</a>
 			</div>
 			{/* </a> */}

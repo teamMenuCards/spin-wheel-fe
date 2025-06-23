@@ -5,11 +5,10 @@ import { FEATURES, IOption } from "../types"
 import InfoButton from "./InfoButton"
 import ReferralPopup from "./ReferralPopup"
 import { useParams } from "next/navigation"
-// import { FEATURES } from "../types"
 import dynamic from "next/dynamic"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
-const FeedbackPopup = dynamic(() => import("../feedback/page"))
+const FeedbackPopup = dynamic(() => import("../components/feedback"))
 
 type RestaurantConfig = {
 	showReferralPopup: boolean

@@ -15,6 +15,10 @@ type RestaurantConfig = {
 	showFeedbackPopup: boolean
 }
 
+const REVIEW_OPTIONS = new Set(["review us on google", "review us on zomato"])
+
+const normalize = (str: string) => str.trim().toLowerCase().replace(/\s+/g, " ")
+
 const DineInButtons = ({
 	isDineIn = false,
 	options,
@@ -56,17 +60,14 @@ const DineInButtons = ({
 	const handleClick =
 		(item: IOption | IDynamicLink) => (e: React.MouseEvent) => {
 			const itemValue = "value" in item ? item.value : item.name
+
+			const normalizedValue = normalize(itemValue)
+
 			const link = "path" in item ? item.path ?? "/" : item.url ?? "/"
 			setRedirectLink(link)
 
-			// item.value === "Order from Zomato" || item.value === "Order from Swiggy"
-			// 	? () => setActivePopup?.(item.value)
-			// 	: undefined
-
 			const openFeedbackPopup =
-				(itemValue === "Review Us On Google" ||
-					itemValue === "Review Us On Zomato") &&
-				hasReviewFeatureFlag
+				REVIEW_OPTIONS.has(normalizedValue) && hasReviewFeatureFlag
 
 			if (openFeedbackPopup) {
 				e.preventDefault()

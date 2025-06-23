@@ -3,11 +3,11 @@ import { DEFAULT_COVER_IMG } from "../constants"
 import Image from "next/image"
 
 function BackgroundImageComponent({
-	restaurantInfo,
-	imagesRef
-}: {
+	restaurantInfo
+}: // imagesRef
+{
 	restaurantInfo: RestaurantDetailResponse
-	imagesRef: React.RefObject<HTMLDivElement>
+	// imagesRef: React.RefObject<HTMLDivElement>
 }) {
 	return (
 		<>
@@ -36,7 +36,7 @@ function BackgroundImageComponent({
 			</div>
 
 			{/* "Photos" Button */}
-			<button
+			{/* <button
 				className="absolute top-36 right-3 bg-white text-sm text-black px-3 py-1 rounded-md shadow-md font-medium"
 				onClick={() => {
 					if (imagesRef && imagesRef?.current) {
@@ -47,7 +47,7 @@ function BackgroundImageComponent({
 				}}
 			>
 				Photos
-			</button>
+			</button> */}
 		</>
 	)
 }

@@ -54,7 +54,7 @@ function DeliveryLandingPage({
 		)
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
-	const imagesRef = useRef<HTMLDivElement>(null!)
+	// const imagesRef = useRef<HTMLDivElement>(null!)
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
 
@@ -164,7 +164,7 @@ function DeliveryLandingPage({
 			{restaurantInfo && (
 				<BackgroundImage
 					restaurantInfo={restaurantInfo}
-					imagesRef={imagesRef}
+					// imagesRef={imagesRef}
 				/>
 			)}
 

@@ -181,7 +181,7 @@ function DeliveryLandingPage({
 				) : defualtBtns ? (
 					<DineInButtons
 						options={defualtBtns}
-						setActivePopup={setActivePopup}
+						// setActivePopup={setActivePopup}
 					/>
 				) : null}
 

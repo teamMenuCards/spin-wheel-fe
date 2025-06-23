@@ -32,13 +32,13 @@ const InfoButton: React.FC<Props> = (props) => {
 				)}
 			>
 				<div
-					onClick={() => {
+					onClick={(e) => {
 						sendGTMEvent({
 							event: "buttonClicked",
 							value: `xyz-${props.value}`
 						})
 						if (props.onClick) {
-							props.onClick()
+							props.onClick(e)
 						}
 					}}
 					className={clsx(

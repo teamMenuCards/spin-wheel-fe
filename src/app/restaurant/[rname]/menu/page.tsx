@@ -69,20 +69,22 @@ export default function MenuPage() {
 	// 	return isWithinRange
 	// }
 
-	const validCategories = menudata?.categories.filter(() => {
-		// const isTimingsAvailable = item?.available_from && item?.available_to
+	const categoryList = menudata?.categories
+	const validCategories =
+		isSafeArray(categoryList) &&
+		categoryList.filter(() => {
+			// const isTimingsAvailable = item?.available_from && item?.available_to
 
-		// if (isTimingsAvailable) {
-		// 	return isCurrentTimeWithinRange(item?.available_from, item?.available_to)
-		// }
+			// if (isTimingsAvailable) {
+			// 	return isCurrentTimeWithinRange(item?.available_from, item?.available_to)
+			// }
 
-		return menudata?.categories
-	})
+			return menudata?.categories
+		})
 
-	const sortedCategories =
-		validCategories
-			?.slice()
-			.sort((a, b) => a.display_order - b.display_order) ?? []
+	const sortedCategories = (
+		Array.isArray(validCategories) ? validCategories.slice() : []
+	).sort((a, b) => a.display_order - b.display_order)
 
 	const isLoadingMenu = isFetchingMenu || menudata?.categories === undefined
 

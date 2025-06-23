@@ -54,6 +54,7 @@ function DeliveryLandingPage({
 		)
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
+	const imagesRef = useRef<HTMLDivElement>(null!)
 
 	const reviews = restaurantInfo?.detail?.details?.reviews_image_url_details
 
@@ -62,7 +63,7 @@ function DeliveryLandingPage({
 
 		const linksList: Record<string, string> = {}
 
-		const platformDetails = details.platform_details ?? []
+		const platformDetails = details?.platform_details ?? []
 
 		platformDetails.forEach((item) => {
 			linksList[item.platform_name] = item.platform_uri
@@ -160,7 +161,12 @@ function DeliveryLandingPage({
 
 	return (
 		<div className="w-screen min-h-screen relative overflow-hidden">
-			{restaurantInfo && <BackgroundImage restaurantInfo={restaurantInfo} />}
+			{restaurantInfo && (
+				<BackgroundImage
+					restaurantInfo={restaurantInfo}
+					imagesRef={imagesRef}
+				/>
+			)}
 
 			<div className="w-full bg-white relative mt-[180px] z-[3] min-h-[calc(100vh-180px)] max-w-100 border-20 border-gray-100 rounded-t-[20px] p-[60px_16px_16px]">
 				{restaurantInfo && (

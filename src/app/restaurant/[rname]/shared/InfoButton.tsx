@@ -9,7 +9,7 @@ interface Props {
 	value: string
 	href: string
 	premium?: boolean
-	onClick?: () => void
+	onClick?: (e: React.MouseEvent) => void
 }
 
 const Default_Icon = "/star.webp"
@@ -32,12 +32,14 @@ const InfoButton: React.FC<Props> = (props) => {
 				)}
 			>
 				<div
-					onClick={() =>{
+					onClick={() => {
 						sendGTMEvent({
 							event: "buttonClicked",
-							value: `xyz-${props.value}`,
-						});
-						 props.onClick?.();
+							value: `xyz-${props.value}`
+						})
+						if (props.onClick) {
+							props.onClick()
+						}
 					}}
 					className={clsx(
 						"flex items-center px-6 py-4 md:max-w-[500px] rounded-tl-lg rounded-tr-lg mx-auto cursor-pointer relative backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
@@ -70,13 +72,12 @@ const InfoButton: React.FC<Props> = (props) => {
 	const defaultBtn = () => (
 		<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
 			<div
-				onClick={() =>{
+				onClick={(e) => {
+					props.onClick?.(e)
 					sendGTMEvent({
 						event: "buttonClicked",
 						value: `xyz-${props.value}`
 					})
-					
-					props.onClick?.()
 				}}
 				className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
 			>

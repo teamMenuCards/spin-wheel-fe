@@ -147,9 +147,12 @@ function DineInLandingPage() {
 				)}
 
 				{diningLinks && isSafeArray(diningLinks) ? (
-					<DineInButtons dynamicOptions={diningLinks} />
+					<DineInButtons
+						dynamicOptions={diningLinks}
+						restaurantInfo={restaurantInfo}
+					/>
 				) : options ? (
-					<DineInButtons options={options} />
+					<DineInButtons options={options} restaurantInfo={restaurantInfo} />
 				) : null}
 			</div>
 		</div>

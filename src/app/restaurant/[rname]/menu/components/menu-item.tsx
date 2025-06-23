@@ -31,7 +31,7 @@ function MenuItem({
 
 	/* 
 		Only specific restarants will have Ordering feature. 
-		Not all of them will have. featureList is for habdling the same
+		Not all of them will have. featureList is for handling the same
 	*/
 
 	const { hasFeature } = useFeatureList(rname)

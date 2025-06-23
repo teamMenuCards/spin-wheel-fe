@@ -3,9 +3,11 @@ import { DEFAULT_COVER_IMG } from "../constants"
 import Image from "next/image"
 
 function BackgroundImageComponent({
-	restaurantInfo
+	restaurantInfo,
+	imagesRef
 }: {
 	restaurantInfo: RestaurantDetailResponse
+	imagesRef: React.RefObject<HTMLDivElement>
 }) {
 	return (
 		<>
@@ -32,6 +34,20 @@ function BackgroundImageComponent({
 					draggable={false}
 				/>
 			</div>
+
+			{/* "Photos" Button */}
+			<button
+				className="absolute top-36 right-3 bg-white text-sm text-black px-3 py-1 rounded-md shadow-md font-medium"
+				onClick={() => {
+					if (imagesRef && imagesRef?.current) {
+						imagesRef?.current?.scrollIntoView({
+							behavior: "smooth"
+						})
+					}
+				}}
+			>
+				Photos
+			</button>
 		</>
 	)
 }

@@ -71,7 +71,10 @@ const FeedbackPopup = ({
 		(reason === "Other" && comment.trim() === "") // other is selected but comment missing
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+		<div
+			className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center"
+			onClick={onClose}
+		>
 			<div className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full p-6 text-center shadow-xl border border-gray-200 relative">
 				<button
 					className="absolute top-2 right-3 text-gray-500"

@@ -75,7 +75,10 @@ const FeedbackPopup = ({
 			className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center"
 			onClick={onClose}
 		>
-			<div className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full p-6 text-center shadow-xl border border-gray-200 relative">
+			<div
+				onClick={(e) => e.stopPropagation()}
+				className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full p-6 text-center shadow-xl border border-gray-200 relative"
+			>
 				<button
 					className="absolute top-2 right-3 text-gray-500"
 					onClick={onClose}
@@ -104,25 +107,27 @@ const FeedbackPopup = ({
 						</p>
 
 						<div className="flex flex-wrap gap-2 mb-4 justify-center">
-							{["Yes! I will", "Not Sure"].map((option) => (
-								<button
-									key={option}
-									onClick={() => {
-										setRecommend(option)
-										setReason("")
-										setComment("")
-										setStep(2)
-										setCommentError("")
-									}}
-									className={`px-4 py-2 rounded-full border transition-all ${
-										recommend === option
-											? "bg-red-600 text-white"
-											: "bg-gray-100 text-gray-800 hover:bg-gray-200"
-									}`}
-								>
-									{option}
-								</button>
-							))}
+							{["Yes! I will", "Not Sure"].map((option) => {
+								return (
+									<button
+										key={option}
+										onClick={() => {
+											setRecommend(option)
+											setReason("")
+											setComment("")
+											setStep(2)
+											setCommentError("")
+										}}
+										className={`px-4 py-2 rounded-full border transition-all ${
+											recommend === option
+												? "bg-red-600 text-white"
+												: "bg-gray-100 text-gray-800 hover:bg-gray-200"
+										}`}
+									>
+										{option}
+									</button>
+								)
+							})}
 						</div>
 
 						{recommend && (

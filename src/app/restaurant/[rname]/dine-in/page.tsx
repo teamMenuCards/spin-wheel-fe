@@ -164,7 +164,7 @@ function DineInLandingPage() {
 						dynamicOptions={diningLinks}
 						restaurantInfo={restaurantInfo}
 					/>
-				) : options ? (
+				) : options && Object.keys(options).length > 0 ? (
 					<DineInButtons options={options} restaurantInfo={restaurantInfo} />
 				) : null}
 			</div>

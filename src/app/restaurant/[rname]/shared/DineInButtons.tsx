@@ -10,10 +10,10 @@ import { useFeatureList } from "@/hooks/useFeatureList"
 
 const FeedbackPopup = dynamic(() => import("../components/feedback"))
 
-type RestaurantConfig = {
-	showReferralPopup: boolean
-	showFeedbackPopup: boolean
-}
+// type RestaurantConfig = {
+// 	showReferralPopup: boolean
+// 	showFeedbackPopup: boolean
+// }
 
 const REVIEW_OPTIONS = new Set(["review us on google", "review us on zomato"])
 
@@ -23,10 +23,7 @@ const DineInButtons = ({
 	isDineIn = false,
 	options,
 	dynamicOptions,
-	restaurantInfo,
-
-	/* to control which popups to show:  feedback popup  or  referral popup */
-	restaurantConfig = { showReferralPopup: false, showFeedbackPopup: true }
+	restaurantInfo
 }: {
 	isDineIn?: boolean
 	dynamicOptions?: IDynamicLink[]
@@ -35,7 +32,6 @@ const DineInButtons = ({
 		deliveryOptions: IOption[]
 		dineInOptions: IOption[]
 	}
-	restaurantConfig?: RestaurantConfig
 }) => {
 	const { rname } = useParams<{ rname: string }>()
 
@@ -53,14 +49,6 @@ const DineInButtons = ({
 	// const [activePopup, setActivePopup] = useState<string | null>(null)
 	const [redirectLink, setRedirectLink] = useState<string | null>(null)
 
-	const featureList: string[] = localStorage.getItem(rname)
-		? JSON.parse(localStorage.getItem(rname) || "[]")
-		: []
-
-	const hasReviewFeatureFlag = featureList.includes(
-		FEATURES.RESTAURANT_REVIEW_MODULE
-	)
-
 	const handleClick =
 		(item: IOption | IDynamicLink) => (e: React.MouseEvent) => {
 			const itemValue = "value" in item ? item.value : item.name
@@ -71,17 +59,14 @@ const DineInButtons = ({
 			setRedirectLink(link)
 
 			const openFeedbackPopup =
-				REVIEW_OPTIONS.has(normalizedValue) && hasReviewFeatureFlag
+				REVIEW_OPTIONS.has(normalizedValue) && hasReviewFeature
 
 			if (openFeedbackPopup) {
 				e.preventDefault()
-
-				if (restaurantConfig.showFeedbackPopup) {
-					setRedirectLink(link)
-					setActiveFeedback(true) // 👈 OPEN MODAL
-				} else {
-					window.location.href = link
-				}
+				setRedirectLink(link)
+				setActiveFeedback(true)
+			} else {
+				window.location.href = link
 			}
 		}
 

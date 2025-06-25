@@ -25,6 +25,19 @@ function DineInLandingPage() {
 
 	const dashboardLinks = restaurantInfo?.dashboardLinks || []
 
+	/*  Find Enabled features  */
+	useEffect(() => {
+		if (restaurantInfo?.detail?.feature_flags) {
+			const featureList = restaurantInfo.detail.feature_flags
+
+			const enabledFeatures = Object.keys(featureList).filter(
+				(item) => !!featureList[item]
+			)
+
+			localStorage.setItem(rname, JSON.stringify(enabledFeatures))
+		}
+	}, [dispatch, restaurantInfo, rname])
+
 	const diningLinks =
 		isSafeArray(dashboardLinks) &&
 		dashboardLinks?.filter((link: IDynamicLink) => link.link_type === "DINING")

@@ -3,10 +3,10 @@ import { useState } from "react"
 import { IDynamicLink } from "@/types"
 import { FEATURES, IOption } from "../types"
 import InfoButton from "./InfoButton"
-import ReferralPopup from "./ReferralPopup"
 import { useParams } from "next/navigation"
 import dynamic from "next/dynamic"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { useFeatureList } from "@/hooks/useFeatureList"
 
 const FeedbackPopup = dynamic(() => import("../components/feedback"))
 
@@ -37,6 +37,12 @@ const DineInButtons = ({
 	}
 	restaurantConfig?: RestaurantConfig
 }) => {
+	const { rname } = useParams<{ rname: string }>()
+
+	const { hasFeature } = useFeatureList(rname)
+
+	const hasReviewFeature = hasFeature(FEATURES.RESTAURANT_REVIEW_MODULE)
+
 	const [activeFeedback, setActiveFeedback] = useState(false)
 
 	const { dineInOptions = [], deliveryOptions = [] } = options || {}
@@ -44,10 +50,8 @@ const DineInButtons = ({
 	const links = (dynamicOptions ?? []).sort(
 		(a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)
 	)
-	const [activePopup, setActivePopup] = useState<string | null>(null)
+	// const [activePopup, setActivePopup] = useState<string | null>(null)
 	const [redirectLink, setRedirectLink] = useState<string | null>(null)
-
-	const { rname } = useParams<{ rname: string }>()
 
 	const featureList: string[] = localStorage.getItem(rname)
 		? JSON.parse(localStorage.getItem(rname) || "[]")
@@ -81,13 +85,13 @@ const DineInButtons = ({
 			}
 		}
 
-	const handleReferralSubmit = (selectedOptions: string) => {
-		console.log("Referral selected:", selectedOptions)
-		setActivePopup(null)
-		if (redirectLink) {
-			window.location.href = redirectLink
-		}
-	}
+	// const handleReferralSubmit = (selectedOptions: string) => {
+	// 	console.log("Referral selected:", selectedOptions)
+	// 	setActivePopup(null)
+	// 	if (redirectLink) {
+	// 		window.location.href = redirectLink
+	// 	}
+	// }
 
 	return (
 		<div className="relative flex flex-col items-center w-full max-w-[400px] mt-8 mx-auto px-4">
@@ -109,7 +113,7 @@ const DineInButtons = ({
 					) : null
 				})}
 
-			{activeFeedback && (
+			{activeFeedback && hasReviewFeature && (
 				<FeedbackPopup
 					rname={rname}
 					redirect={redirectLink || "/"}
@@ -132,12 +136,12 @@ const DineInButtons = ({
 					) : null
 				)}
 
-			{activePopup && restaurantConfig.showReferralPopup && (
+			{/* {activePopup && restaurantConfig.showReferralPopup && (
 				<ReferralPopup
 					onClose={() => setActivePopup(null)}
 					onSubmit={handleReferralSubmit}
 				/>
-			)}
+			)} */}
 
 			{/*  DEFAULT DELIVERY option buttons */}
 			{!isDineIn &&

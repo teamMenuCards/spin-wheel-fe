@@ -10,7 +10,7 @@ const ThankYouPage = ({
 	rname,
 	reason,
 	comment = "No subreason",
-	restaurantInfo,
+	// restaurantInfo,
 	redirect
 }: {
 	rname: string
@@ -26,8 +26,8 @@ const ThankYouPage = ({
 	const [phoneError, setPhoneError] = useState("")
 	const [submitted, setSubmitted] = useState(false)
 
-	const whatsappNumber =
-		restaurantInfo?.detail.details.wa_api_details?.wa_number
+	// const whatsappNumber =
+	// 	restaurantInfo?.detail.details.wa_api_details?.wa_number
 
 	// 👇 Validation functions
 	const validateName = (name: string) => {
@@ -58,8 +58,8 @@ const ThankYouPage = ({
 		const basePayload: IPayload = {
 			apiKey: process.env.NEXT_PUBLIC_SERRI_API_KEY,
 			campaignName: "negative_review_without_comment",
-			destination: String(whatsappNumber),
-			// destination: "917738540352",
+			// destination: String(whatsappNumber),
+			destination: "9757024944",
 			userName: rname,
 			templateParams: [rname, name, phone, reason],
 			source: "new-landing-page form",
@@ -84,6 +84,7 @@ const ThankYouPage = ({
 			payload = basePayload
 		}
 
+		console.log("payload---", payload)
 		try {
 			const res = await submitRestaurantFeedback(payload)
 			console.log("Feedback submitted successfully", res)

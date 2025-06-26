@@ -10,7 +10,6 @@ const ThankYouPage = ({
 	rname,
 	reason,
 	comment = "No subreason",
-	onChange,
 	restaurantInfo,
 	redirect
 }: {
@@ -19,7 +18,6 @@ const ThankYouPage = ({
 	comment?: string
 	redirect?: string
 	restaurantInfo: RestaurantDetailResponse | undefined
-	onChange: (val: string, value: string) => void
 }) => {
 	let payload = {} as IPayload
 	const [name, setName] = useState("")
@@ -100,10 +98,10 @@ const ThankYouPage = ({
 	//
 
 	return (
-		<div className="flex items-center justify-center bg-gray-50">
-			<div className="bg-white w-full max-w-sm px-2 text-center relative">
+		<div className="flex items-center justify-center bg-gray-50  flex-col">
+			<div className="bg-white w-full max-w-sm  text-center relative p-6 pb-0">
 				{submitted ? (
-					<>
+					<div className="pb-6">
 						<h2 className="text-xl text-black font-semibold mb-5">
 							Thanks for your feedback
 						</h2>
@@ -120,7 +118,7 @@ const ThankYouPage = ({
 							Do visit us again{" "}
 							{/* <span className="inline-block animate-bounce">🤝</span> */}
 						</p>
-					</>
+					</div>
 				) : (
 					<>
 						<h2 className="text-xl font-bold text-gray-800">
@@ -131,59 +129,67 @@ const ThankYouPage = ({
 							Can we get in touch to make things right?
 						</p>
 
-						<input
-							type="text"
-							placeholder="eg. Anika Sharma"
-							value={name}
-							onChange={(e) => {
-								const val = e.target.value
-								setName(val)
-								onChange("name", val)
-								setNameError(validateName(val))
-							}}
-							className="w-full mb-1 mt-4 px-4 py-2 border border-gray-300 rounded text-sm text-black"
-						/>
-						{nameError && (
-							<p className="text-xs text-red-600 text-left mb-2">{nameError}</p>
-						)}
+						<div className="h-[75px]">
+							<input
+								type="text"
+								placeholder="eg. Anika Sharma"
+								value={name}
+								onChange={(e) => {
+									const val = e.target.value
+									setName(val)
+									setNameError(validateName(val))
+								}}
+								className="w-full mb-1 mt-4 px-4 py-2 border border-gray-300 rounded text-sm text-black"
+							/>
+							{nameError && (
+								<p className="text-xs text-red-600 text-left mb-2">
+									{nameError}
+								</p>
+							)}
+						</div>
 
-						<input
-							type="text"
-							placeholder="10-digit mobile"
-							value={phone}
-							onChange={(e) => {
-								const val = e.target.value
-								setPhone(val)
-								onChange("phone", val)
-								setPhoneError(validatePhone(val))
-							}}
-							className="w-full mb-1 px-4 py-2 border border-gray-300 rounded text-sm text-black"
-						/>
-						{phoneError && (
-							<p className="text-xs text-red-600 text-left mb-2">
-								{phoneError}
-							</p>
-						)}
+						<div className="h-[75px]">
+							<input
+								type="text"
+								placeholder="10-digit mobile"
+								value={phone}
+								onChange={(e) => {
+									const val = e.target.value
+									setPhone(val)
+									setPhoneError(validatePhone(val))
+								}}
+								className="w-full mb-1 px-4 py-2 border border-gray-300 rounded text-sm text-black"
+							/>
+							{phoneError && (
+								<p className="text-xs text-red-600 text-left mb-2">
+									{phoneError}
+								</p>
+							)}
+						</div>
 
-						<p className="text-xs text-gray-500 mt-4 mb-4">
+						<p className="text-xs text-gray-500 mt-2 mb-2">
 							We&apos;ll only use these details to address today&apos;s issue —
 							never for spam.
 						</p>
-
-						<button
-							onClick={handleSubmit}
-							disabled={!isFormValid}
-							className={`w-full py-2 rounded font-semibold text-sm text-white transition ${
-								isFormValid
-									? "bg-red-600 hover:bg-red-700"
-									: "bg-red-300 cursor-not-allowed"
-							}`}
-						>
-							Submit
-						</button>
 					</>
 				)}
 			</div>
+
+			{!submitted && (
+				<div className="sticky bottom-0 p-2 bg-white w-full">
+					<button
+						onClick={handleSubmit}
+						disabled={!isFormValid}
+						className={`w-full py-2 rounded font-semibold text-sm text-white transition ${
+							isFormValid
+								? "bg-red-600 hover:bg-red-700"
+								: "bg-red-300 cursor-not-allowed"
+						}`}
+					>
+						Submit
+					</button>
+				</div>
+			)}
 		</div>
 	)
 }

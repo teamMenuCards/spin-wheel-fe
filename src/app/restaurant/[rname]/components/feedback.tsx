@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import ThankYouPage from "./ThankyouPage"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
@@ -20,16 +20,10 @@ const FeedbackPopup = ({
 	const [recommend, setRecommend] = useState("")
 	const [reason, setReason] = useState("")
 	const [showThankYou, setShowThankYou] = useState(false)
-	const [formData, setFormData] = useState({
-		name: "",
-		phone: ""
-	})
 	const [comment, setComment] = useState("")
 	const [commentError, setCommentError] = useState("")
 
-	console.log(formData)
-
-	const isPositive = recommend === "Yes! I will"
+	const isNegative = recommend === "Not Sure"
 
 	const negativeReasons = [
 		"Food was expensive",
@@ -40,8 +34,6 @@ const FeedbackPopup = ({
 		"Other"
 	]
 
-	const reasons = isPositive ? [] : negativeReasons
-
 	useEffect(() => {
 		if (reason === "Other" && otherRef.current) {
 			otherRef.current.scrollIntoView({ behavior: "smooth", block: "start" })
@@ -49,35 +41,25 @@ const FeedbackPopup = ({
 	}, [reason])
 
 	const handleSubmit = () => {
-		// Validate comment if "Other" is selected
-		if (!isPositive && reason === "Other" && comment.trim().length === 0) {
+		if (reason === "Other" && comment.trim().length === 0) {
 			setCommentError("Please provide additional feedback.")
 			return
 		}
-
-		if (isPositive) {
-			window.location.href = redirect
-		} else {
-			setShowThankYou(true)
-		}
-	}
-
-	const handleUserData = (field: string, value: string) => {
-		setFormData((prev) => ({ ...prev, [field]: value }))
+		setShowThankYou(true)
 	}
 
 	const disableSubmit =
-		(!isPositive && reason === "") || // no reason selected
-		(reason === "Other" && comment.trim() === "") // other is selected but comment missing
+		recommend === "Not Sure" &&
+		(reason === "" || (reason === "Other" && comment.trim() === ""))
 
 	return (
 		<div
-			className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center"
+			className="fixed inset-0 bg-black bg-opacity-40  overflow-scroll z-50 flex justify-center items-center"
 			onClick={onClose}
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
-				className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full text-center shadow-xl border border-gray-200 relative"
+				className="bg-white m-8  max-h-[500px] rounded-xl overflow-scroll  max-w-md w-full shadow-xl border border-gray-200 relative"
 			>
 				<button
 					className="absolute top-2 right-3 text-gray-500"
@@ -93,11 +75,10 @@ const FeedbackPopup = ({
 						redirect={redirect}
 						comment={comment}
 						restaurantInfo={restaurantInfo}
-						onChange={handleUserData}
 					/>
 				) : (
 					<>
-						<div className="p-6 pb-0">
+						<div className="px-6 pt-6 pb-4 text-center">
 							<h2 className="text-lg font-bold text-gray-900 mb-1">
 								Feedback Section
 							</h2>
@@ -108,95 +89,95 @@ const FeedbackPopup = ({
 							</p>
 
 							<div className="flex flex-wrap gap-2 mb-4 justify-center">
-								{["Yes! I will", "Not Sure"].map((option) => {
-									return (
-										<button
-											key={option}
-											onClick={() => {
-												setRecommend(option)
-												setReason("")
-												setComment("")
-												setStep(2)
-												setCommentError("")
-											}}
-											className={`px-4 py-1 rounded-full border transition-all ${
-												recommend === option
-													? "bg-red-600 text-white"
-													: "bg-gray-100 text-gray-800 hover:bg-gray-200"
-											}`}
-										>
-											{option}
-										</button>
-									)
-								})}
+								{["Yes! I will", "Not Sure"].map((option) => (
+									<button
+										key={option}
+										onClick={() => {
+											setRecommend(option)
+											setReason("")
+											setComment("")
+											setStep(2)
+											setCommentError("")
+
+											if (option === "Yes! I will") {
+												window.location.href = redirect
+											}
+										}}
+										className={`px-4 py-1 rounded-full border transition-all ${
+											recommend === option
+												? "bg-red-600 text-white"
+												: "bg-gray-100 text-gray-800 hover:bg-gray-200"
+										}`}
+									>
+										{option}
+									</button>
+								))}
 							</div>
 
-							{recommend && (
+							{isNegative && (
 								<>
-									{!isPositive && (
-										<>
-											<p className="mb-2 text-gray-700">
-												That is sad. Can you choose the reason?
-											</p>
+									<p className="mb-2 text-gray-700">
+										That is sad. Can you choose the reason?
+									</p>
 
-											<div className="flex flex-wrap gap-2 mb-4 justify-center">
-												{reasons.map((item) => (
-													<button
-														key={item}
-														onClick={() => {
-															setReason(item)
-															if (item !== "Other") setComment("")
-															setCommentError("")
-														}}
-														className={`px-4 py-1 rounded-full border transition-all ${
-															reason === item
-																? "bg-red-600 text-white"
-																: "bg-gray-100 text-gray-800 hover:bg-gray-200"
-														}`}
-													>
-														{item}
-													</button>
-												))}
-											</div>
+									<div className="flex flex-wrap gap-2 mb-4 justify-center">
+										{negativeReasons.map((item) => (
+											<button
+												key={item}
+												onClick={() => {
+													setReason(item)
+													if (item !== "Other") setComment("")
+													setCommentError("")
+												}}
+												className={`px-4 py-1 rounded-full border transition-all ${
+													reason === item
+														? "bg-red-600 text-white"
+														: "bg-gray-100 text-gray-800 hover:bg-gray-200"
+												}`}
+											>
+												{item}
+											</button>
+										))}
+									</div>
 
-											{reason === "Other" && (
-												<div className="mb-4 w-full text-left" ref={otherRef}>
-													<textarea
-														className="w-full border rounded p-2 text-sm text-gray-800"
-														rows={3}
-														placeholder="Please let us know what went wrong..."
-														value={comment}
-														onChange={(e) => {
-															setComment(e.target.value)
-															setCommentError("")
-														}}
-													/>
-													{commentError && (
-														<p className="text-xs text-red-600 mt-1">
-															{commentError}
-														</p>
-													)}
-												</div>
+									{reason === "Other" && (
+										<div className="mb-4 w-full text-left" ref={otherRef}>
+											<textarea
+												className="w-full border rounded p-2 text-sm text-gray-800"
+												rows={3}
+												placeholder="Please let us know what went wrong..."
+												value={comment}
+												onChange={(e) => {
+													setComment(e.target.value)
+													setCommentError("")
+												}}
+											/>
+											{commentError && (
+												<p className="text-xs text-red-600 mt-1">
+													{commentError}
+												</p>
 											)}
-										</>
+										</div>
 									)}
 								</>
 							)}
 						</div>
 
-						<div className="sticky bottom-0 p-2 bg-white">
-							<button
-								className={`w-full px-4 py-2 rounded font-semibold sticky ${
-									disableSubmit
-										? "bg-gray-300 text-gray-500 cursor-not-allowed"
-										: "bg-red-600 text-white hover:bg-red-700"
-								}`}
-								onClick={handleSubmit}
-								disabled={disableSubmit}
-							>
-								Submit →
-							</button>
-						</div>
+						{isNegative && (
+							<div className="sticky bottom-0 p-2 bg-white">
+								<button
+									className={`w-full px-4 py-2 rounded font-semibold ${
+										disableSubmit
+											? "bg-gray-300 text-gray-500 cursor-not-allowed"
+											: "bg-red-600 text-white hover:bg-red-700"
+									}`}
+									onClick={handleSubmit}
+									disabled={disableSubmit}
+								>
+									Submit →
+								</button>
+							</div>
+						)}
 					</>
 				)}
 			</div>

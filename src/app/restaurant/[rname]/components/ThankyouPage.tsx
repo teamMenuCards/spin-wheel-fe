@@ -73,11 +73,12 @@ const ThankYouPage = ({
 		if (comment) {
 			payload = {
 				...basePayload,
+				campaignName: "negative_review_2",
 				templateParams: [rname, name, phone, reason, comment],
 				paramsFallbackValue: {
 					SubReason: comment ?? "No subreason"
 				},
-				buttons: [] // Ensure buttons is an empty array
+				buttons: []
 			} as IPayload
 		} else {
 			payload = basePayload

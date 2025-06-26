@@ -77,7 +77,7 @@ const FeedbackPopup = ({
 		>
 			<div
 				onClick={(e) => e.stopPropagation()}
-				className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full p-6 text-center shadow-xl border border-gray-200 relative"
+				className="bg-white m-8 max-h-[500px] overflow-scroll rounded-xl max-w-md w-full text-center shadow-xl border border-gray-200 relative"
 			>
 				<button
 					className="absolute top-2 right-3 text-gray-500"
@@ -97,102 +97,106 @@ const FeedbackPopup = ({
 					/>
 				) : (
 					<>
-						<h2 className="text-lg font-bold text-gray-900 mb-1">
-							Feedback Section
-						</h2>
-						<p className="text-sm text-gray-500 mb-4">Step {step} / 2</p>
+						<div className="p-6 pb-0">
+							<h2 className="text-lg font-bold text-gray-900 mb-1">
+								Feedback Section
+							</h2>
+							<p className="text-sm text-gray-500 mb-4">Step {step} / 2</p>
 
-						<p className="text-sm text-gray-800 mb-4">
-							Will you visit us again or recommend us to your close friends?
-						</p>
+							<p className="text-sm text-gray-800 mb-4">
+								Will you visit us again or recommend us to your close friends?
+							</p>
 
-						<div className="flex flex-wrap gap-2 mb-4 justify-center">
-							{["Yes! I will", "Not Sure"].map((option) => {
-								return (
-									<button
-										key={option}
-										onClick={() => {
-											setRecommend(option)
-											setReason("")
-											setComment("")
-											setStep(2)
-											setCommentError("")
-										}}
-										className={`px-4 py-2 rounded-full border transition-all ${
-											recommend === option
-												? "bg-red-600 text-white"
-												: "bg-gray-100 text-gray-800 hover:bg-gray-200"
-										}`}
-									>
-										{option}
-									</button>
-								)
-							})}
+							<div className="flex flex-wrap gap-2 mb-4 justify-center">
+								{["Yes! I will", "Not Sure"].map((option) => {
+									return (
+										<button
+											key={option}
+											onClick={() => {
+												setRecommend(option)
+												setReason("")
+												setComment("")
+												setStep(2)
+												setCommentError("")
+											}}
+											className={`px-4 py-1 rounded-full border transition-all ${
+												recommend === option
+													? "bg-red-600 text-white"
+													: "bg-gray-100 text-gray-800 hover:bg-gray-200"
+											}`}
+										>
+											{option}
+										</button>
+									)
+								})}
+							</div>
+
+							{recommend && (
+								<>
+									{!isPositive && (
+										<>
+											<p className="mb-2 text-gray-700">
+												That is sad. Can you choose the reason?
+											</p>
+
+											<div className="flex flex-wrap gap-2 mb-4 justify-center">
+												{reasons.map((item) => (
+													<button
+														key={item}
+														onClick={() => {
+															setReason(item)
+															if (item !== "Other") setComment("")
+															setCommentError("")
+														}}
+														className={`px-4 py-1 rounded-full border transition-all ${
+															reason === item
+																? "bg-red-600 text-white"
+																: "bg-gray-100 text-gray-800 hover:bg-gray-200"
+														}`}
+													>
+														{item}
+													</button>
+												))}
+											</div>
+
+											{reason === "Other" && (
+												<div className="mb-4 w-full text-left" ref={otherRef}>
+													<textarea
+														className="w-full border rounded p-2 text-sm text-gray-800"
+														rows={3}
+														placeholder="Please let us know what went wrong..."
+														value={comment}
+														onChange={(e) => {
+															setComment(e.target.value)
+															setCommentError("")
+														}}
+													/>
+													{commentError && (
+														<p className="text-xs text-red-600 mt-1">
+															{commentError}
+														</p>
+													)}
+												</div>
+											)}
+										</>
+									)}
+								</>
+							)}
 						</div>
 
-						{recommend && (
-							<>
-								{!isPositive && (
-									<>
-										<p className="mb-2 text-gray-700">
-											That is sad. Can you choose the reason?
-										</p>
-
-										<div className="flex flex-wrap gap-2 mb-4 justify-center">
-											{reasons.map((item) => (
-												<button
-													key={item}
-													onClick={() => {
-														setReason(item)
-														if (item !== "Other") setComment("")
-														setCommentError("")
-													}}
-													className={`px-4 py-2 rounded-full border transition-all ${
-														reason === item
-															? "bg-red-600 text-white"
-															: "bg-gray-100 text-gray-800 hover:bg-gray-200"
-													}`}
-												>
-													{item}
-												</button>
-											))}
-										</div>
-
-										{reason === "Other" && (
-											<div className="mb-4 w-full text-left" ref={otherRef}>
-												<textarea
-													className="w-full border rounded p-2 text-sm text-gray-800"
-													rows={3}
-													placeholder="Please let us know what went wrong..."
-													value={comment}
-													onChange={(e) => {
-														setComment(e.target.value)
-														setCommentError("")
-													}}
-												/>
-												{commentError && (
-													<p className="text-xs text-red-600 mt-1">
-														{commentError}
-													</p>
-												)}
-											</div>
-										)}
-									</>
-								)}
-							</>
-						)}
-
-						<button
-							className={`w-full px-4 py-2 rounded font-semibold ${
-								disableSubmit
-									? "bg-gray-300 text-gray-500 cursor-not-allowed"
-									: "bg-red-600 text-white hover:bg-red-700"
-							}`}
-							onClick={handleSubmit}
-							disabled={disableSubmit}
-						>
-							Submit →
-						</button>
+						<div className="sticky bottom-0 p-2 bg-white">
+							<button
+								className={`w-full px-4 py-2 rounded font-semibold sticky ${
+									disableSubmit
+										? "bg-gray-300 text-gray-500 cursor-not-allowed"
+										: "bg-red-600 text-white hover:bg-red-700"
+								}`}
+								onClick={handleSubmit}
+								disabled={disableSubmit}
+							>
+								Submit →
+							</button>
+						</div>
 					</>
 				)}
 			</div>

@@ -1,12 +1,12 @@
 "use client"
 import { useState } from "react"
 import { IDynamicLink } from "@/types"
-import { FEATURES, IOption } from "../types"
+import { IOption } from "../types"
 import InfoButton from "./InfoButton"
 import { useParams } from "next/navigation"
 import dynamic from "next/dynamic"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
-import { useFeatureList } from "@/hooks/useFeatureList"
+// import { useFeatureList } from "@/hooks/useFeatureList"
 
 const FeedbackPopup = dynamic(() => import("../components/feedback"))
 
@@ -23,7 +23,8 @@ const DineInButtons = ({
 	isDineIn = false,
 	options,
 	dynamicOptions,
-	restaurantInfo
+	restaurantInfo,
+	hasReviewFeature
 }: {
 	isDineIn?: boolean
 	dynamicOptions?: IDynamicLink[]
@@ -32,12 +33,9 @@ const DineInButtons = ({
 		deliveryOptions: IOption[]
 		dineInOptions: IOption[]
 	}
+	hasReviewFeature?: boolean
 }) => {
 	const { rname } = useParams<{ rname: string }>()
-
-	const { hasFeature } = useFeatureList(rname)
-
-	const hasReviewFeature = hasFeature(FEATURES.RESTAURANT_REVIEW_MODULE)
 
 	const [activeFeedback, setActiveFeedback] = useState(false)
 

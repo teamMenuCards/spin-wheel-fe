@@ -90,11 +90,17 @@ function ContactOwner({
 
 	return (
 		<div className="flex flex-col h-[90vh]">
-			<NavBar showCart={false} rname={rname} restaurantInfo={restaurantInfo} />
+			<NavBar
+				link={`/restaurant/${rname}/dine-in`}
+				showCart={false}
+				rname={rname}
+				restaurantInfo={restaurantInfo}
+			/>
 
 			<div className="flex-1 p-4">
+				<p className="text-center font-semibold">Contact owner</p>
 				{/* Name input */}
-				<div className="h-[75px]">
+				<div className="h-[77px]">
 					<input
 						type="text"
 						placeholder="eg. Anika Sharma"
@@ -112,7 +118,7 @@ function ContactOwner({
 				</div>
 
 				{/* Phone input */}
-				<div className="h-[75px]">
+				<div className="h-[77px]">
 					<input
 						type="text"
 						placeholder="10-digit mobile"
@@ -131,7 +137,7 @@ function ContactOwner({
 
 				<p className="my-3 text-gray-700">Can you choose the reason?</p>
 
-				<div className="flex flex-wrap gap-2 mb-4 justify-center">
+				<div className="flex flex-wrap gap-2 mb-4 justify-left">
 					{reasonList.map((item) => (
 						<button
 							key={item}

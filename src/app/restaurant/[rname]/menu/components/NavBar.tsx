@@ -11,6 +11,7 @@ import { RootState } from "@/store/store"
 interface NavBarProps {
 	rname: string
 	showCart?: boolean
+	link?: string
 	showLogo?: boolean
 	restaurantInfo?: {
 		name: string
@@ -24,6 +25,7 @@ const NavBar = ({
 	rname,
 	showCart = false,
 	showLogo = true,
+	link = "",
 	restaurantInfo
 }: NavBarProps) => {
 	const router = useRouter()
@@ -46,7 +48,7 @@ const NavBar = ({
 							<ChevronLeft_Ic className="w-5 h-5 stroke-3" />
 						</div>
 
-						<Link href={`/restaurant/${rname}`}>
+						<Link href={link || `/restaurant/${rname}`}>
 							<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">
 								{restaurantInfo?.name}
 							</div>

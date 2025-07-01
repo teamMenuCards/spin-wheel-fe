@@ -27,7 +27,9 @@ export default async function Page({
 
 	return (
 		<div>
-			<DineinLandingPage rname={rname} restaurantInfo={restaurantDetails} />
+			{restaurantDetails && (
+				<DineinLandingPage rname={rname} restaurantInfo={restaurantDetails} />
+			)}
 			{/* changes for ScrollButton */}
 			<ScrollButton />
 			<Footer />

@@ -89,7 +89,7 @@ function ContactOwner({
 		(reason === "Other" && comment.trim() === "")
 
 	return (
-		<div className="flex flex-col min-h-[95vh]">
+		<div className="flex flex-col h-[90vh]">
 			<NavBar showCart={false} rname={rname} restaurantInfo={restaurantInfo} />
 
 			<div className="flex-1 p-4">
@@ -104,7 +104,7 @@ function ContactOwner({
 							setName(val)
 							setNameError(validateName(val))
 						}}
-						className="w-full mb-1 mt-4 px-4 py-2 border border-gray-300 rounded text-sm text-black"
+						className="w-full mb-1 mt-4 px-4 py-2 border border-gray-300 rounded text-base text-black"
 					/>
 					{nameError && (
 						<p className="text-xs text-red-600 text-left mb-2">{nameError}</p>
@@ -122,7 +122,7 @@ function ContactOwner({
 							setPhone(val)
 							setPhoneError(validatePhone(val))
 						}}
-						className="w-full mb-1 px-4 py-2 border border-gray-300 rounded text-sm text-black"
+						className="w-full mb-1 px-4 py-2 border border-gray-300 rounded text-base text-black"
 					/>
 					{phoneError && (
 						<p className="text-xs text-red-600 text-left mb-2">{phoneError}</p>
@@ -155,7 +155,7 @@ function ContactOwner({
 				{reason === "Other" && (
 					<div className="mb-4 w-full text-left" ref={otherRef}>
 						<textarea
-							className="w-full border rounded p-2 text-sm text-gray-800"
+							className="w-full border rounded p-2 text-base text-gray-800"
 							rows={3}
 							placeholder="Please share the reason..."
 							value={comment}

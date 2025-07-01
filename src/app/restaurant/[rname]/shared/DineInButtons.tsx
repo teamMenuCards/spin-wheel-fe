@@ -15,7 +15,7 @@ const FeedbackPopup = dynamic(() => import("../components/feedback"))
 // 	showFeedbackPopup: boolean
 // }
 
-const REVIEW_OPTIONS = new Set(["review us on google", "review us on zomato"])
+// const REVIEW_OPTIONS = new Set(["review us on google", "review us on zomato"])
 
 const normalize = (str: string) => str.trim().toLowerCase().replace(/\s+/g, " ")
 
@@ -47,17 +47,21 @@ const DineInButtons = ({
 	// const [activePopup, setActivePopup] = useState<string | null>(null)
 	const [redirectLink, setRedirectLink] = useState<string | null>(null)
 
+	const REVIEW_KEYWORDS = ["review us", "google", "zomato"]
+
 	const handleClick =
 		(item: IOption | IDynamicLink) => (e: React.MouseEvent) => {
 			const itemValue = "value" in item ? item.value : item.name
-
-			const normalizedValue = normalize(itemValue)
+			const normalizedValue = normalize(itemValue) // Assuming normalize makes it lowercase and trims
 
 			const link = "path" in item ? item.path ?? "/" : item.url ?? "/"
 			setRedirectLink(link)
 
 			const openFeedbackPopup =
-				REVIEW_OPTIONS.has(normalizedValue) && hasReviewFeature
+				hasReviewFeature &&
+				REVIEW_KEYWORDS.some((keyword) =>
+					normalizedValue.includes(normalize(keyword))
+				)
 
 			if (openFeedbackPopup) {
 				e.preventDefault()

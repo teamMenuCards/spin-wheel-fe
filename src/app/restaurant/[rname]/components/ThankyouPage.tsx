@@ -11,13 +11,13 @@ const ThankYouPage = ({
 	rname,
 	reason,
 	comment = "No subreason",
-	restaurantInfo,
-	redirect
-}: {
+	restaurantInfo
+}: // redirect
+{
 	rname: string
 	reason: string
 	comment?: string
-	redirect?: string
+	// redirect?: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) => {
 	let payload = {} as IPayload
@@ -92,16 +92,8 @@ const ThankYouPage = ({
 							Thanks for your feedback
 						</h2>
 
-						<a
-							href={redirect}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-sm text-blue-600 underline hover:text-blue-800 transition"
-						>
-							Go to Google reviews
-						</a>
 						<p className="text-sm mt-4 font-medium text-gray-800">
-							Do visit us again{" "}
+							Do visit us again!
 							{/* <span className="inline-block animate-bounce">🤝</span> */}
 						</p>
 					</div>

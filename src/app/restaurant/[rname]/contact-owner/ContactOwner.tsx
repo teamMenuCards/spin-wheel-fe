@@ -98,7 +98,7 @@ function ContactOwner({
 			/>
 
 			<div className="flex-1 p-4">
-				<p className="text-center font-semibold">Contact owner</p>
+				<p className="text-center font-semibold text-black">Contact owner</p>
 				{/* Name input */}
 				<div className="h-[77px]">
 					<input

@@ -16,6 +16,7 @@ const reasonList = [
 	"Job enquiry",
 	"Special request",
 	"Billing / Refund"
+	// "Other"
 ]
 
 function ContactOwner({
@@ -88,10 +89,10 @@ function ContactOwner({
 		(reason === "Other" && comment.trim() === "")
 
 	return (
-		<div className="flex flex-col calc(100vh-20px)">
+		<div className="flex flex-col min-h-[95vh]">
 			<NavBar showCart={false} rname={rname} restaurantInfo={restaurantInfo} />
 
-			<div className="flex flex-col flex-grow p-4 overflow-y-auto">
+			<div className="flex-1 p-4">
 				{/* Name input */}
 				<div className="h-[75px]">
 					<input
@@ -170,8 +171,8 @@ function ContactOwner({
 				)}
 			</div>
 
-			{/* Submit Button */}
-			<div className="sticky bottom-0 p-2 bg-white border-t">
+			{/* Bottom aligned Submit button */}
+			<div className="p-4 border-t bg-white">
 				<button
 					className={`w-full px-4 py-2 rounded font-semibold ${
 						disableSubmit || isSubmitting

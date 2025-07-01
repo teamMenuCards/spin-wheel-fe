@@ -5,6 +5,7 @@ import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-d
 import { submitRestaurantFeedback } from "@/services/submitFeedback"
 import { useState } from "react"
 import { IPayload } from "./types"
+import { validateName, validatePhone } from "@/lib/utils"
 
 const ThankYouPage = ({
 	rname,
@@ -28,22 +29,6 @@ const ThankYouPage = ({
 
 	const whatsappNumber =
 		restaurantInfo?.detail.details.wa_api_details?.wa_number
-
-	// 👇 Validation functions
-	const validateName = (name: string) => {
-		if (!name.trim()) return "Please enter your name."
-		if (name.trim().length < 2) return "Name must be at least 2 characters."
-		if (!/^[A-Za-z\s]+$/.test(name.trim()))
-			return "Only letters and spaces allowed."
-		return ""
-	}
-
-	const validatePhone = (phone: string) => {
-		if (!phone.trim()) return "Please enter your phone number."
-		if (!/^\d{10}$/.test(phone))
-			return "Phone number must be exactly 10 digits."
-		return ""
-	}
 
 	const handleSubmit = async () => {
 		/* Final submit of feedback */

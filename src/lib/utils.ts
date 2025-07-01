@@ -25,3 +25,18 @@ export function findDetails({
 	// TODO: Tried adding varaint with product name, but it is not getting updated. Informed BE
 	return found || products[0]
 }
+
+// 👇 Validation functions
+export const validateName = (name: string) => {
+	if (!name.trim()) return "Please enter your name."
+	if (name.trim().length < 2) return "Name must be at least 2 characters."
+	if (!/^[A-Za-z\s]+$/.test(name.trim()))
+		return "Only letters and spaces allowed."
+	return ""
+}
+
+export const validatePhone = (phone: string) => {
+	if (!phone.trim()) return "Please enter your phone number."
+	if (!/^\d{10}$/.test(phone)) return "Phone number must be exactly 10 digits."
+	return ""
+}

@@ -72,7 +72,7 @@ const FeedbackPopup = ({
 					<ThankYouPage
 						rname={rname}
 						reason={reason}
-						redirect={redirect}
+						// redirect={redirect}
 						comment={comment}
 						restaurantInfo={restaurantInfo}
 					/>

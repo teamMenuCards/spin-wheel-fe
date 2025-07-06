@@ -11,14 +11,15 @@ import {
 import { isSafeArray } from "@/utils/isSafeArray"
 import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
+import { HiArrowCircleRight } from "react-icons/hi"
 import { useSnackbar } from "notistack"
 
-import { useParams, useRouter } from "next/navigation"
+// import { useParams, useRouter } from "next/navigation"
 import { findDetails } from "@/lib/utils"
 
 const App = () => {
-	const router = useRouter()
-	const { rname } = useParams<{ rname: string }>()
+	// const router = useRouter()
+	// const { rname } = useParams<{ rname: string }>()
 	const { enqueueSnackbar } = useSnackbar()
 
 	const { isOpen, selectedProduct, products } = useSelector(
@@ -76,9 +77,9 @@ const App = () => {
 		const count = products.length
 
 		if (count == 1) {
-			return `1 item added to the cart`
+			return `1 item added`
 		} else {
-			return `${count} items added to the cart`
+			return `${count} items added`
 		}
 	}
 
@@ -86,17 +87,18 @@ const App = () => {
 		/* Show snackbar whenever cart size updates */
 		if (products.length)
 			setTimeout(() => {
-				console.log(getSnackbarMssg())
-
 				enqueueSnackbar(
-					<div className="w-screen p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
-						<div>{getSnackbarMssg()}</div>
-						<div
+					<div className="w-screen bottom-[-20px] p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
+						<div className="flex justify-center items-center">
+							{getSnackbarMssg()}
+							<HiArrowCircleRight className="ml-1" />
+						</div>
+						{/* <div
 							className="text-md mt-2 text-white font-bold text-right pr-2 mr-2"
 							onClick={() => router.push(`/restaurant/${rname}/cart`)}
 						>
 							VIEW CART
-						</div>
+						</div> */}
 					</div>,
 					{
 						variant: undefined,

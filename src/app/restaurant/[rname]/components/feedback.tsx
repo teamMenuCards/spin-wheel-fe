@@ -30,7 +30,7 @@ const FeedbackPopup = ({
 		"Service was not up to the mark",
 		"Food wasn’t tasty",
 		"Slow service",
-		"Ambiance was ok",
+		"Ambience was ok",
 		"Other"
 	]
 

@@ -101,6 +101,7 @@ const App = () => {
 					{
 						variant: undefined,
 						autoHideDuration: null,
+						// @ts-expect-error - update snackbar lirary
 						ContentProps: {
 							style: {
 								background: "transparent",

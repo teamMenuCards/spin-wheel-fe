@@ -14,12 +14,12 @@ import { ProductVariantType } from "@/types"
 import { HiArrowCircleRight } from "react-icons/hi"
 import { useSnackbar } from "notistack"
 
-// import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { findDetails } from "@/lib/utils"
 
 const App = () => {
-	// const router = useRouter()
-	// const { rname } = useParams<{ rname: string }>()
+	const router = useRouter()
+	const { rname } = useParams<{ rname: string }>()
 	const { enqueueSnackbar } = useSnackbar()
 
 	const { isOpen, selectedProduct, products } = useSelector(
@@ -89,7 +89,10 @@ const App = () => {
 			setTimeout(() => {
 				enqueueSnackbar(
 					<div className="w-screen bottom-[-20px] p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
-						<div className="flex justify-center items-center">
+						<div
+							className="flex justify-center items-center"
+							onClick={() => router.push(`/restaurant/${rname}/cart`)}
+						>
 							{getSnackbarMssg()}
 							<HiArrowCircleRight className="ml-1" />
 						</div>

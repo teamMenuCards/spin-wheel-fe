@@ -18,6 +18,7 @@ import { FEATURES } from "../../types"
 import { useParams } from "next/navigation"
 import { RootState } from "@/store/store"
 import { useFeatureList } from "@/hooks/useFeatureList"
+import React from "react"
 
 /* TODO: Fix type issues */
 function MenuItem({
@@ -28,6 +29,7 @@ function MenuItem({
 	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
 	const [openImg, setIsOpen] = useState(false)
+	const [justAdded, setJustAdded] = useState(false)
 
 	/* 
 		Only specific restarants will have Ordering feature. 
@@ -43,9 +45,10 @@ function MenuItem({
 	const rating: number = Number(product.variants?.[0]?.average_rating) || 4
 	const starsArray: number[] = Array.from({ length: rating })
 
-	const updatedProduct = products.find((item) => {
-		return item.id === product.id
-	})
+	const updatedProduct = useMemo(
+		() => products.find((item) => item.id === product.id),
+		[products, product.id]
+	)
 
 	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
 
@@ -100,6 +103,8 @@ function MenuItem({
 	const handleAdd = () => {
 		dispatch(openCart())
 		dispatch(selectProduct(product))
+		setJustAdded(true) // Optimistically show IncrementOperator
+		setTimeout(() => setJustAdded(false), 500) // Clear after Redux updates
 	}
 
 	const handleIncrement = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -161,17 +166,26 @@ function MenuItem({
 
 							{/* ADD+ Button or IncrementOperator */}
 							<div className="mt-2">
-								{updatedProduct?.quantity ? (
-									<div className="h-[30px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+								{(updatedProduct?.quantity ?? 0) > 0 || justAdded ? (
+									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 										<IncrementOperator
-											product={updatedProduct}
+											product={{
+												...product,
+												quantity: updatedProduct?.quantity ?? 1
+											}}
 											onClickPlus={handleIncrement}
 											onClickMinus={handleDecrement}
 										/>
 									</div>
 								) : (
 									showAddBtn && (
-										<button className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+										<button
+											className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+											onClick={(e) => {
+												e.stopPropagation()
+												handleAdd()
+											}}
+										>
 											ADD+
 										</button>
 									)

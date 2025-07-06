@@ -159,10 +159,6 @@ function MenuItem({
 								alt="food_img"
 								className="object-cover rounded-lg max-w-full h-auto"
 							/>
-							{/* </div>
-					) : (
-						<div className="w-full aspect-square bg-lightSteelBlue rounded-lg"></div>
-					)} */}
 
 							{/* ADD+ Button or IncrementOperator */}
 							<div className="mt-2">

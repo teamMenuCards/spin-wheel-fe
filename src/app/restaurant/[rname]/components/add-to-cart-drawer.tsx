@@ -88,7 +88,7 @@ const App = () => {
 		if (products.length)
 			setTimeout(() => {
 				enqueueSnackbar(
-					<div className="w-screen bottom-[-20px] p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
+					<div className="w-screen lg:max-w-md bottom-[-20px] p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
 						<div
 							className="flex justify-center items-center"
 							onClick={() => router.push(`/restaurant/${rname}/cart`)}

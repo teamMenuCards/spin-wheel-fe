@@ -91,7 +91,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 		<>
 			<button
 				className={`fixed ${
-					show ? "bottom-[4.5rem]" : "bottom-4"
+					show ? "bottom-[3rem]" : "bottom-4"
 				}  right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50`}
 				onClick={() => setOpen(!open)}
 			>

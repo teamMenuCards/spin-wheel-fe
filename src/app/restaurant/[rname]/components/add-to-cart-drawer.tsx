@@ -11,7 +11,9 @@ import {
 import { isSafeArray } from "@/utils/isSafeArray"
 import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
+import { HiArrowCircleRight } from "react-icons/hi"
 import { useSnackbar } from "notistack"
+
 import { useParams, useRouter } from "next/navigation"
 import { findDetails } from "@/lib/utils"
 
@@ -75,45 +77,53 @@ const App = () => {
 		const count = products.length
 
 		if (count == 1) {
-			return `1 item added to the cart`
+			return `1 item added`
 		} else {
-			return `${count} items added to the cart`
+			return `${count} items added`
 		}
 	}
 
 	useEffect(() => {
 		/* Show snackbar whenever cart size updates */
 		if (products.length)
-			enqueueSnackbar(`${getSnackbarMssg()}`, {
-				variant: "success",
-				autoHideDuration: null,
-
-				style: {
-					backgroundColor: "#84cc15",
-					fontWeight: "bold",
-					fontSize: "16px",
-					position: "fixed",
-					bottom: "40px"
-				},
-
-				action: () => (
-					<button
-						onClick={() => {
-							router.push(`/restaurant/${rname}/cart`) // Replace with your redirect path
-						}}
-						style={{
-							color: "#fff",
-							fontWeight: "bold",
-							marginLeft: "10px",
-							background: "transparent",
-							border: "none",
-							cursor: "pointer"
-						}}
-					>
-						View Cart
-					</button>
+			setTimeout(() => {
+				enqueueSnackbar(
+					<div className="w-screen lg:max-w-md bottom-[-20px] p-4 fixed text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 flex flex-col animate-slideUp">
+						<div
+							className="flex justify-center items-center"
+							onClick={() => router.push(`/restaurant/${rname}/cart`)}
+						>
+							{getSnackbarMssg()}
+							<HiArrowCircleRight className="ml-1" />
+						</div>
+						{/* <div
+							className="text-md mt-2 text-white font-bold text-right pr-2 mr-2"
+							onClick={() => router.push(`/restaurant/${rname}/cart`)}
+						>
+							VIEW CART
+						</div> */}
+					</div>,
+					{
+						variant: undefined,
+						autoHideDuration: null,
+						// @ts-expect-error - update snackbar lirary
+						ContentProps: {
+							style: {
+								background: "transparent",
+								boxShadow: "none",
+								padding: 0,
+								margin: 0,
+								width: "100vw" // full viewport width
+							}
+						},
+						anchorOrigin: {
+							vertical: "bottom",
+							horizontal: "center"
+						},
+						action: null
+					}
 				)
-			})
+			}, 500)
 	}, [products.length])
 
 	const handleAddToCart = () => {

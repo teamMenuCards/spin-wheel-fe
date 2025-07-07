@@ -25,8 +25,6 @@ export default async function Page({
 		method: "GET"
 	})
 
-	console.log("currentData--", JSON.stringify(restaurantDetails))
-
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={restaurantDetails} />

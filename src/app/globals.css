@@ -54,9 +54,31 @@ html {
   transform: scale(0.85); /* Adjust as needed */
   transform-origin: 0 0;
 }
+
 .recaptcha-wrapper {
   transform: scale(0.85);       /* Shrink to fit */
   transform-origin: top left;   /* Anchor scale */
   max-width: 100%;
   overflow: hidden;
+}
+
+/* Hide notistack */
+.notistack-MuiContent-default {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+
+/*  */
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
 }

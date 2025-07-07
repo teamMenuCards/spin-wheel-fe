@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react"
 import { Dialog } from "@headlessui/react"
 import { XMarkIcon } from "@heroicons/react/24/solid"
 import { Category } from "@/services/product/get-menu-list"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store/store"
 
 interface FloatingMenuProps {
 	categories: Category[]
@@ -15,10 +17,23 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 	const menuRef = useRef<HTMLDivElement>(null)
 	const [scrollTarget, setScrollTarget] = useState<string | null>(null)
 	const [selectedCategory, setSelectedcategory] = useState(currentCategory)
+	const [show, setShow] = useState(false)
+	const { products } = useSelector((state: RootState) => state.cart)
 
 	useEffect(() => {
 		setSelectedcategory(currentCategory)
 	}, [currentCategory])
+
+	/* Adjusting the position for snackbar msg which used for added items  */
+
+	useEffect(() => {
+		if (products.length) {
+			const delayTimer = setTimeout(() => {
+				setShow(true)
+			}, 500)
+			return () => clearTimeout(delayTimer)
+		}
+	}, [products.length])
 
 	const handleClick = (categoryId: string) => {
 		setOpen(false) // Close the menu first
@@ -75,7 +90,9 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 	return (
 		<>
 			<button
-				className="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50"
+				className={`fixed ${
+					show ? "bottom-[3rem]" : "bottom-4"
+				}  right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50`}
 				onClick={() => setOpen(!open)}
 			>
 				{open ? (

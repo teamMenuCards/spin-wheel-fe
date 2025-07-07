@@ -188,6 +188,20 @@ function MenuItem({
 								)}
 							</div>
 						</div>
+					) : // when item has Image URL but no image
+					(updatedProduct?.quantity ?? 0) > 0 || justAdded ? (
+						<div className="h-[120px]">
+							<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+								<IncrementOperator
+									product={{
+										...product,
+										quantity: updatedProduct?.quantity ?? 1
+									}}
+									onClickPlus={handleIncrement}
+									onClickMinus={handleDecrement}
+								/>
+							</div>
+						</div>
 					) : (
 						<div className="h-[120px]">
 							{showAddBtn && (

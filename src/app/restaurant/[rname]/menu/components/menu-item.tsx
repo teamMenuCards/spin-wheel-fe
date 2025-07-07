@@ -163,7 +163,8 @@ function MenuItem({
 							{/* ADD+ Button or IncrementOperator */}
 							<div className="mt-2">
 								{(updatedProduct?.quantity ?? 0) > 0 || justAdded ? (
-									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+									// <div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 										<IncrementOperator
 											product={{
 												...product,
@@ -176,7 +177,8 @@ function MenuItem({
 								) : (
 									showAddBtn && (
 										<button
-											className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+											className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+											// className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
 											onClick={(e) => {
 												e.stopPropagation()
 												handleAdd()

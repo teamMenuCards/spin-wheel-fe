@@ -145,7 +145,7 @@ function MenuItem({
 		<div className="mb-4">
 			<div className="flex flex-row-reverse items-start">
 				{/* Image Container with Button */}
-				<div className="relative w-[145px] flex flex-col items-center">
+				<div className="relative w-[145px] h-[130px] flex flex-col items-center">
 					{!!prdImage ? (
 						<div
 							className="w-full aspect-square bg-lightSteelBlue rounded-lg overflow-hidden"

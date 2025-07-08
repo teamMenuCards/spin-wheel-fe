@@ -39,8 +39,10 @@ function ContactOwner({
 	const [commentError, setCommentError] = useState("")
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
-	const whatsappNumber =
-		restaurantInfo?.detail.details.wa_api_details?.wa_number
+	// const whatsappNumber =
+	// 	restaurantInfo?.detail.details.wa_api_details?.wa_number
+
+	const { phone_no } = restaurantInfo?.detail
 
 	const handleSubmit = async () => {
 		if (isSubmitting) return
@@ -49,7 +51,7 @@ function ContactOwner({
 		const payload: IPayload = {
 			apiKey: process.env.NEXT_PUBLIC_SERRI_API_KEY,
 			campaignName: "reach_owner",
-			destination: String(whatsappNumber),
+			destination: String(phone_no),
 			userName: rname,
 			templateParams: [name, phone, reason],
 			source: "new-landing-page form",

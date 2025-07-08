@@ -16,7 +16,6 @@ const RestaurantInfoCard = ({
 }) => {
 	const {
 		address,
-		phone_no,
 		logo,
 		details: {
 			meta_details: metaData = {} as IMetaData,
@@ -24,6 +23,9 @@ const RestaurantInfoCard = ({
 		} = {},
 		order_count_display = 500
 	} = restaurantInfo?.detail || {}
+
+	const whatsappNumber =
+		restaurantInfo?.detail.details.wa_api_details?.wa_number
 
 	const DEFAULT_logo = "https://dummyimage.com/100x100/000/fff"
 
@@ -87,13 +89,13 @@ const RestaurantInfoCard = ({
 
 								<div className="flex items-center gap-2">
 									<a
-										href={`tel:${phone_no}`}
+										href={`tel:${whatsappNumber}`}
 										className="text-black underline flex items-center gap-1"
 									>
 										<div className="w-4">
 											<Phone_Ic className="w-3 h-3" />
 										</div>
-										<span className="text-sm">{phone_no}</span>
+										<span className="text-sm">{whatsappNumber}</span>
 									</a>
 								</div>
 

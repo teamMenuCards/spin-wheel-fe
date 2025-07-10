@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { useSnackbar } from "notistack"
 import NavBar from "../menu/components/NavBar"
 import { validateName, validatePhone } from "@/lib/utils"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IPayload } from "../components/types"
 import { submitRestaurantFeedback } from "@/services/submitFeedback"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
 
 const reasonList = [
 	"Compliment",
@@ -28,7 +28,7 @@ function ContactOwner({
 }) {
 	const otherRef = useRef<HTMLDivElement | null>(null)
 	const router = useRouter()
-	const { enqueueSnackbar } = useSnackbar()
+	const { showSnackbar } = useSnackbar()
 
 	const [name, setName] = useState("")
 	const [phone, setPhone] = useState("")
@@ -64,15 +64,11 @@ function ContactOwner({
 
 		try {
 			await submitRestaurantFeedback(payload)
-			enqueueSnackbar("Your message has been sent!", {
-				variant: "success"
-			})
+			showSnackbar(<div>Your message has been sent!</div>, 3000)
 			router.push(`/restaurant/${rname}/dine-in`)
 		} catch (err) {
 			console.error("Feedback submission failed", err)
-			enqueueSnackbar("Failed to send message. Try again later.", {
-				variant: "error"
-			})
+			showSnackbar(<div>Failed to send message. Try again later!</div>, 3000)
 		} finally {
 			setIsSubmitting(false)
 		}

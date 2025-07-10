@@ -8,8 +8,11 @@ import Footer from "@/shared/Footer"
 import ScrollButton from "./shared/ScrollButton"
 
 /* 
-		By defult the delivery page is the landing page
-		"http://menu-cards.com/restaurant/<name>/dine-in" is the Dining Landing page 
+		"http://menu-cards.com/restaurant/<name>/
+		By defult the Delivery page is the landing page
+
+		"http://menu-cards.com/restaurant/<name>/dine-in" 
+		Above is the Dining page 
 
 */
 

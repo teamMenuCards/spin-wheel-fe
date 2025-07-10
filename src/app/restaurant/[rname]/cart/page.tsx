@@ -9,13 +9,15 @@ import ProductCard from "../components/product-card"
 import { RootState } from "@/store/store"
 import { VariantsEntity } from "@/types/menu.type"
 import { ProductType } from "@/types"
-import { useSnackbar } from "notistack"
 import { selectCartTotal } from "@/store/features/cart.slice"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
 
 const CartPage = () => {
 	const { rname } = useParams<{ rname: string }>()
-	const { closeSnackbar } = useSnackbar()
+	const { hideSnackbar } = useSnackbar()
+
 	const { restaurantData } = useSelector((state: RootState) => state.restaurant)
+
 	const { products } = useSelector((state: RootState) => state.cart)
 	const total = useSelector(selectCartTotal)
 
@@ -23,8 +25,8 @@ const CartPage = () => {
 		restaurantData?.detail.details.wa_api_details?.wa_number
 
 	useEffect(() => {
-		closeSnackbar()
-	}, [closeSnackbar])
+		hideSnackbar()
+	}, [hideSnackbar])
 
 	const getPrice = ({
 		name,

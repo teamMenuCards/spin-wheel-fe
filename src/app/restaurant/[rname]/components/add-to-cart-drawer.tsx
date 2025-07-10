@@ -12,7 +12,7 @@ import { isSafeArray } from "@/utils/isSafeArray"
 import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
 import { HiArrowCircleRight } from "react-icons/hi"
-import { useSnackbar } from "notistack"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
 
 import { useParams, useRouter } from "next/navigation"
 import { findDetails } from "@/lib/utils"
@@ -20,7 +20,7 @@ import { findDetails } from "@/lib/utils"
 const App = () => {
 	const router = useRouter()
 	const { rname } = useParams<{ rname: string }>()
-	const { enqueueSnackbar } = useSnackbar()
+	const { showSnackbar } = useSnackbar()
 
 	const { isOpen, selectedProduct, products } = useSelector(
 		(state: RootState) => state.cart
@@ -87,36 +87,19 @@ const App = () => {
 		/* Show snackbar whenever cart size updates */
 		if (products.length)
 			setTimeout(() => {
-				enqueueSnackbar(
+				showSnackbar(
 					<div
-						className="w-screen fixed bottom-[-20px] left-0 z-[9999] text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 animate-slideUp"
+						className="w-screen fixed bottom-0 left-0 z-[9999] text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 animate-slideUp"
 						onClick={() => router.push(`/restaurant/${rname}/cart`)}
 					>
-						<div className="flex justify-center items-center">
+						<div className="flex justify-between items-center">
 							{getSnackbarMssg()}
-							<HiArrowCircleRight className="ml-1" />
+							<div className="flex items-center">
+								<button>View Cart</button>
+								<HiArrowCircleRight className="ml-1" />
+							</div>
 						</div>
-					</div>,
-					{
-						variant: undefined,
-						autoHideDuration: null,
-						// @ts-expect-error - update snackbar lirary
-
-						ContentProps: {
-							style: {
-								background: "transparent",
-								boxShadow: "none",
-								padding: 0,
-								margin: 0,
-								width: "100vw"
-							}
-						},
-						anchorOrigin: {
-							vertical: "bottom",
-							horizontal: "center"
-						},
-						action: null
-					}
+					</div>
 				)
 			}, 500)
 	}, [products.length])

@@ -62,15 +62,6 @@ html {
   overflow: hidden;
 }
 
-/* Hide notistack */
-.notistack-MuiContent-default {
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-
-
-/*  */
 
 @keyframes slideUp {
 	from {

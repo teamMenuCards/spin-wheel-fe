@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { useFeatureList } from "@/hooks/useFeatureList"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
 
 function DeliveryLandingPage({
 	rname,
@@ -21,16 +22,21 @@ function DeliveryLandingPage({
 	rname: string
 	restaurantInfo: RestaurantDetailResponse | undefined
 }) {
+	const dispatch = useDispatch()
 	const { hasFeature } = useFeatureList(rname)
+	const { hideSnackbar } = useSnackbar()
+
 	const showZomatoNudgePopup = hasFeature(
 		FEATURES.RESTAURANT_PRE_PLATFORM_ORDER_FLOW
 	)
 
-	const dispatch = useDispatch()
-
 	if (restaurantInfo) {
 		dispatch(setRestaurantDetails(restaurantInfo))
 	}
+
+	useEffect(() => {
+		hideSnackbar()
+	}, [hideSnackbar])
 
 	useEffect(() => {
 		/*  Find Enabled features  */

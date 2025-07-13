@@ -25,12 +25,16 @@ export type MenuListResponseType = {
 export const getMenuListAPI = createApi({
 	reducerPath: "get-menu-list",
 	baseQuery: axiosBaseQuery(),
+	// Cache data for 1 day (24 hours * 60 minutes * 60 seconds)
+	tagTypes: ['MenuList'],
 	endpoints: (builder) => ({
 		getMenuListByName: builder.query<MenuListResponseType, string>({
 			query: (name) => ({
 				url: parseDynamicURL(apiRoutes.menuItemtList, { name }),
 				method: "GET"
 			}),
+			keepUnusedDataFor: 24 * 60 * 60,
+			providesTags: (result, error, name) => [{ type: 'MenuList', id: name }],
 			transformResponse: (response: MenuListResponseType) => {
 				const sortedCategories = response.categories?.map((category) => {
 					const productsWithSortedVariants = category.products?.map(

@@ -1,9 +1,6 @@
-import React from "react"
 import DeliveryLandingPage from "./components/DeliveryLandingPage"
 
-import { axiosServerQuery } from "@/services/http-server"
-import { apiRoutes } from "@/services/api-routes"
-import { parseDynamicURL } from "@/services/utils"
+import { getRestaurantDetails } from "@/lib/api-cache"
 import Footer from "@/shared/Footer"
 import ScrollButton from "./shared/ScrollButton"
 
@@ -23,15 +20,11 @@ export default async function Page({
 }) {
 	const { rname } = await params
 
-	const { data: restaurantDetails } = await axiosServerQuery({
-		url: parseDynamicURL(apiRoutes.restaurantDetail, { name: rname }),
-		method: "GET"
-	})
+	const restaurantDetails = await getRestaurantDetails(rname)
 
 	return (
 		<div>
 			<DeliveryLandingPage rname={rname} restaurantInfo={restaurantDetails} />
-			{/* changes for ScrollButton */}
 			<ScrollButton />
 			<Footer />
 		</div>

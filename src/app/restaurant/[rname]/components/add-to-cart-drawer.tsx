@@ -1,36 +1,52 @@
-import { useDispatch, useSelector } from "react-redux"
-import React, { useEffect, useMemo } from "react"
-import Image from "next/image"
-import Drawer from "react-modern-drawer"
-import "react-modern-drawer/dist/index.css"
+"use client"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
 import {
 	addProduct,
 	closeCart,
 	increaseProductQuantity
 } from "@/store/features/cart.slice"
-import { isSafeArray } from "@/utils/isSafeArray"
 import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
+import { isSafeArray } from "@/utils/isSafeArray"
+import NextImage from "next/image"
+import { useEffect, useMemo, useState } from "react"
 import { HiArrowCircleRight } from "react-icons/hi"
-import { useSnackbar } from "@/app/providers/SnackbarProvider"
+import Drawer from "react-modern-drawer"
+import "react-modern-drawer/dist/index.css"
+import { useDispatch, useSelector } from "react-redux"
 
-import { useParams, useRouter } from "next/navigation"
 import { findDetails } from "@/lib/utils"
+import { useParams, useRouter } from "next/navigation"
 
 const App = () => {
 	const router = useRouter()
 	const { rname } = useParams<{ rname: string }>()
 	const { showSnackbar } = useSnackbar()
+	const [preloadedImage, setPreloadedImage] = useState<string | null>(null)
 
 	const { isOpen, selectedProduct, products } = useSelector(
 		(state: RootState) => state.cart
 	)
 
+	// Preload the image when the selectedProduct changes
+	useEffect(() => {
+		if (!selectedProduct) return
+
+		const imageUrl = selectedProduct.variants?.[0]?.image_url
+		if (!imageUrl) return
+
+		const img = new window.Image()
+		img.src = imageUrl
+		img.onload = () => {
+			setPreloadedImage(imageUrl)
+		}
+	}, [selectedProduct])
+
 	const dispatch = useDispatch()
 
 	const getVegIcon = () => {
 		return (
-			<Image
+			<NextImage
 				src="/ic_veg.webp"
 				alt="veg/nonveg icon"
 				width={15}
@@ -42,7 +58,7 @@ const App = () => {
 
 	const getNonVegIcon = () => {
 		return (
-			<Image
+			<NextImage
 				src="/ic_nonveg.webp"
 				alt="veg/nonveg icon"
 				width={15}
@@ -73,7 +89,7 @@ const App = () => {
 		)
 	}, [selectedProduct])
 
-	const getSnackbarMssg = () => {
+	const getSnackbarMssg = useMemo(() => {
 		const count = products.length
 
 		if (count == 1) {
@@ -81,7 +97,7 @@ const App = () => {
 		} else {
 			return `${count} items added`
 		}
-	}
+	}, [products.length])
 
 	useEffect(() => {
 		/* Show snackbar whenever cart size updates */
@@ -93,7 +109,7 @@ const App = () => {
 						onClick={() => router.push(`/restaurant/${rname}/cart`)}
 					>
 						<div className="flex justify-between items-center">
-							{getSnackbarMssg()}
+							{getSnackbarMssg}
 							<div className="flex items-center">
 								<button>View Cart</button>
 								<HiArrowCircleRight className="ml-1" />
@@ -102,7 +118,7 @@ const App = () => {
 					</div>
 				)
 			}, 500)
-	}, [products.length])
+	}, [getSnackbarMssg, products.length, rname, router, showSnackbar])
 
 	const handleAddToCart = () => {
 		if (selectedProduct) {
@@ -138,14 +154,17 @@ const App = () => {
 			>
 				{hasProductImage ? (
 					<div className="border border-gray-300 rounded-md h-[350px] w-full relative">
-						(
-						<Image
-							src={hasProductImage}
-							alt="Product Image"
-							layout="fill"
-							objectFit="cover"
-						/>
-						)
+						{preloadedImage ? (
+							<NextImage
+								src={preloadedImage}
+								alt="Product Image"
+								fill
+								className="object-cover rounded-md"
+								priority
+							/>
+						) : (
+							<div className="h-full w-full bg-gray-200 animate-pulse rounded-md" />
+						)}
 					</div>
 				) : null}
 

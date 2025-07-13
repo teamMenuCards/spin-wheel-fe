@@ -20,9 +20,12 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 	const [show, setShow] = useState(false)
 	const { products } = useSelector((state: RootState) => state.cart)
 
+	// Only update selectedCategory if it's different
 	useEffect(() => {
-		setSelectedcategory(currentCategory)
-	}, [currentCategory])
+		if (currentCategory && currentCategory !== selectedCategory) {
+			setSelectedcategory(currentCategory)
+		}
+	}, [currentCategory, selectedCategory])
 
 	/* Adjusting the position for snackbar msg which used for added items  */
 
@@ -91,7 +94,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 		<>
 			<button
 				className={`fixed ${
-					show ? "bottom-[3rem]" : "bottom-4"
+					show ? "bottom-[3.2rem]" : "bottom-4"
 				}  right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50`}
 				onClick={() => setOpen(!open)}
 			>

@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
 import {
 	ChevronDown_Ic,
@@ -18,7 +18,10 @@ const Accordion: React.FC<AccordionProps> = ({
 	sections = [],
 	onSectionSelection
 }) => {
-	const [openIndexes, setOpenIndexes] = useState<number[]>([])
+	// Initialize with all sections open to match server-side rendering
+	const [openIndexes, setOpenIndexes] = useState<number[]>(() => 
+		sections.map((_, index) => index)
+	)
 
 	// Extract featured products from all sections
 	const featuredProducts = sections.flatMap((section) =>
@@ -26,13 +29,6 @@ const Accordion: React.FC<AccordionProps> = ({
 			.filter((product) => product.is_featured)
 			.map((product) => product)
 	)
-
-	// Ensure all sections are open when sections data is available
-	useEffect(() => {
-		if (sections.length) {
-			setOpenIndexes(sections.map((_, index) => index))
-		}
-	}, [sections])
 
 	const onClickSection = (index: number, section: Category) => {
 		setOpenIndexes((prevIndexes) =>

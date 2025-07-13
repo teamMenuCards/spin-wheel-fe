@@ -5,9 +5,9 @@ import MenuClientWrapper from "./components/menu-client-wrapper"
 export async function generateMetadata({
 	params
 }: {
-	params: { rname: string }
-}) {
-	const { rname } = params
+	params: Promise<{ rname: string }>})
+ {
+	const { rname } = await params
 	const restaurantInfo = await getRestaurantDetails(rname)
 
 	return {

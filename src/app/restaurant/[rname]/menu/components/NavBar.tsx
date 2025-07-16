@@ -39,6 +39,7 @@ const NavBar = ({
 
 	const itemCount = products.length
 
+
 	return (
 		<>
 			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
@@ -48,7 +49,7 @@ const NavBar = ({
 							<ChevronLeft_Ic className="w-5 h-5 stroke-3" />
 						</div>
 
-						<Link href={link || `/restaurant/${rname}`}>
+						<Link href={link ?? `/restaurant/${rname}`}>
 							<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">
 								{restaurantInfo?.name}
 							</div>

@@ -1,5 +1,6 @@
-import { useDispatch, useSelector } from "react-redux"
-import IncrementOperator from "../../../components/increment-operator"
+import { useFeatureList } from "@/hooks/useFeatureList"
+import { findDetails } from "@/lib/utils"
+import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 import {
 	decreaseProductQuantity,
 	increaseProductQuantity,
@@ -7,13 +8,13 @@ import {
 	removeProduct,
 	selectProduct
 } from "@/store/features/cart.slice"
-import Image from "next/image"
-import { findDetails } from "@/lib/utils"
-import { useFeatureList } from "@/hooks/useFeatureList"
-import { FEATURES } from "../../../types"
-import { useParams } from "next/navigation"
 import { RootState } from "@/store/store"
 import { ProductType, ProductVariantType } from "@/types"
+import Image from "next/image"
+import { useParams } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import IncrementOperator from "../../../components/increment-operator"
+import { FEATURES } from "../../../types"
 
 function ProductCard({
 	product,
@@ -36,7 +37,8 @@ function ProductCard({
 	})
 
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
-	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
+	const showAddBtn = hasOrderFeature && mode === CLIENT_APP_MODE.DINE_IN
+
 
 	const productDetails: ProductVariantType | undefined =
 		product &&

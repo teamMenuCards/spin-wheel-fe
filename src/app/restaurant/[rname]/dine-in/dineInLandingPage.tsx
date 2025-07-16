@@ -1,17 +1,16 @@
 "use client"
-import React, { useEffect, useRef } from "react"
-import DineInfoCard from "../shared/DineInfoCard"
+import { useRef } from "react"
 import DineInButtons from "../shared/DineInButtons"
+import DineInfoCard from "../shared/DineInfoCard"
 
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
-import { FEATURES, IOption } from "../types"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
-import { useAppSelector } from "@/store/hooks"
+import { IDynamicLink } from "@/types"
+import { isSafeArray } from "@/utils/isSafeArray"
 import { useDispatch } from "react-redux"
 import BackgroundImage from "../shared/BackgroundImg"
-import { isSafeArray } from "@/utils/isSafeArray"
-import { IDynamicLink } from "@/types"
+import { FEATURES, IOption } from "../types"
 
 function DineInLandingPage({
 	rname,
@@ -22,7 +21,16 @@ function DineInLandingPage({
 }) {
 	const dispatch = useDispatch()
 	const DINE_IN = CLIENT_APP_MODE.DINE_IN
-	const mode = useAppSelector((state) => state.appState.mode)
+	const modeSetRef = useRef(false)
+
+	// Set mode immediately on component mount (only once)
+	if (!modeSetRef.current) {
+		console.log("DineInLandingPage - Setting mode to DINE_IN")
+		dispatch(setMode(DINE_IN))
+		// Also persist to localStorage
+		localStorage.setItem('appMode', DINE_IN)
+		modeSetRef.current = true
+	}
 
 	// const [featuresLoaded, setFeaturesLoaded] = useState(false)
 
@@ -49,17 +57,6 @@ function DineInLandingPage({
 	const diningLinks =
 		isSafeArray(dashboardLinks) &&
 		dashboardLinks?.filter((link: IDynamicLink) => link.link_type === "DINING")
-
-	// Type guard to validate `DINE_IN`
-	const validMode = Object.values(CLIENT_APP_MODE).find(
-		(m): m is CLIENT_APP_MODE => m === DINE_IN
-	)
-
-	useEffect(() => {
-		if (validMode && mode !== validMode) {
-			dispatch(setMode(validMode))
-		}
-	}, [validMode, dispatch, mode])
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 

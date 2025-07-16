@@ -14,6 +14,7 @@ import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { useFeatureList } from "@/hooks/useFeatureList"
 import { useSnackbar } from "@/app/providers/SnackbarProvider"
+import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 
 function DeliveryLandingPage({
 	rname,
@@ -39,6 +40,8 @@ function DeliveryLandingPage({
 	}, [hideSnackbar])
 
 	useEffect(() => {
+		localStorage.setItem('appMode', CLIENT_APP_MODE.DELIVERY)
+
 		/*  Find Enabled features  */
 		if (restaurantInfo?.detail?.feature_flags) {
 			const featureList = restaurantInfo?.detail?.feature_flags

@@ -1,24 +1,24 @@
 "use client"
-import { useMemo, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import Image from "next/image"
-import LineClampTypography from "@/shared/LineClampTypography"
-import { ProductType, ProductVariantType } from "@/types"
+import { useFeatureList } from "@/hooks/useFeatureList"
 import ImageOverlay from "@/shared/ImageOverlay"
-import { isSafeArray } from "@/utils/isSafeArray"
+import { CLIENT_APP_MODE } from "@/store/features/app.slice"
+import LineClampTypography from "@/shared/LineClampTypography"
 import {
-	openCart,
-	selectProduct,
-	increaseProductQuantity,
 	decreaseProductQuantity,
-	removeProduct
+	increaseProductQuantity,
+	openCart,
+	removeProduct,
+	selectProduct
 } from "@/store/features/cart.slice"
+import { RootState } from "@/store/store"
+import { ProductType, ProductVariantType } from "@/types"
+import { isSafeArray } from "@/utils/isSafeArray"
+import Image from "next/image"
+import { useParams } from "next/navigation"
+import React, { useMemo, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import IncrementOperator from "../../components/increment-operator"
 import { FEATURES } from "../../types"
-import { useParams } from "next/navigation"
-import { RootState } from "@/store/store"
-import { useFeatureList } from "@/hooks/useFeatureList"
-import React from "react"
 
 /* TODO: Fix type issues */
 function MenuItem({
@@ -37,10 +37,12 @@ function MenuItem({
 	*/
 
 	const { hasFeature } = useFeatureList(rname)
+	const { mode } = useSelector((state: RootState) => state.appState)
+	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
+
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 
 	const { products } = useSelector((state: RootState) => state.cart)
-	const { mode } = useSelector((state: RootState) => state.appState)
 
 	const rating: number = Number(product.variants?.[0]?.average_rating) || 4
 	const starsArray: number[] = Array.from({ length: rating })
@@ -50,8 +52,9 @@ function MenuItem({
 		[products, product.id]
 	)
 
-	const showAddBtn = hasOrderFeature && mode === "DELIVERY"
+	const showAddBtn = hasOrderFeature && isDineInMode
 
+	
 	const hasVariants = useMemo(
 		() => isSafeArray(product.variants) && product.variants.length > 1,
 		[product.variants]

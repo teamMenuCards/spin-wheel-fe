@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import { Dialog } from "@headlessui/react"
-import { XMarkIcon } from "@heroicons/react/24/solid"
+import { HiXMark } from "react-icons/hi2"
 import { Category } from "@/services/product/get-menu-list"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
@@ -99,7 +99,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 				onClick={() => setOpen(!open)}
 			>
 				{open ? (
-					<XMarkIcon className="w-5 h-5" />
+					<HiXMark className="w-5 h-5" />
 				) : (
 					<span className="text-sm">MENU</span>
 				)}
@@ -120,7 +120,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 							onClick={toggleMenu}
 							className="right-2 rounded-full p-1 hover:bg-gray-800 transition bg-white "
 						>
-							<XMarkIcon className="w-4 h-4 text-black bold" />
+							<HiXMark  className="w-4 h-4 text-black bold" />
 						</button>
 					</div>
 

@@ -5,6 +5,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import { Geist, Geist_Mono, Montserrat } from "next/font/google"
 
 import { RootProvider } from "./providers/RootProvider"
+import ErrorBoundary from "../components/shared/ErrorBoundary"
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -67,7 +68,9 @@ export default function RootLayout({
 						style={{ display: "none", visibility: "hidden" }}
 					></iframe>
 				</noscript>
-				<RootProvider>{children}</RootProvider>
+				<ErrorBoundary>
+					<RootProvider>{children}</RootProvider>
+				</ErrorBoundary>
 			</body>
 		</html>
 	)

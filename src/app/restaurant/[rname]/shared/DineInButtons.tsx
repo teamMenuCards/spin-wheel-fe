@@ -4,11 +4,10 @@ import { IDynamicLink } from "@/types"
 import { IOption } from "../types"
 import InfoButton from "./InfoButton"
 import { useParams } from "next/navigation"
-import dynamic from "next/dynamic"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import FeedbackPopup from "../components/feedback"
 // import { useFeatureList } from "@/hooks/useFeatureList"
 
-const FeedbackPopup = dynamic(() => import("../components/feedback"))
 
 // type RestaurantConfig = {
 // 	showReferralPopup: boolean

@@ -16,7 +16,6 @@
 
 html {
   @apply font-metropolis;
-  color: var(--foreground);
   opacity: 1 !important;
   background: var(--background);
   font-family: 'Metropolis', sans-serif !important;

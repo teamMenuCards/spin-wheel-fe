@@ -11,6 +11,7 @@ import { isSafeArray } from "@/utils/isSafeArray"
 import { useDispatch } from "react-redux"
 import BackgroundImage from "../shared/BackgroundImg"
 import { FEATURES, IOption } from "../types"
+import { localStorage } from "@/lib/local-storage"
 
 function DineInLandingPage({
 	rname,

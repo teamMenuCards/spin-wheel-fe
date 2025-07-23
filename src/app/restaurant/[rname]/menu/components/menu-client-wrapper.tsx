@@ -8,18 +8,10 @@ import { Category } from "@/services/product/get-menu-list"
 import NavBar from "./NavBar"
 import FloatingMenu from "./floating-menu"
 import Accordion from "@/shared/Accordian"
-import dynamic from "next/dynamic"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { RootState } from "@/store/store"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
-
-const AddToCartDrawer = dynamic(
-	() => import("../../components/add-to-cart-drawer"),
-	{
-		ssr: false,
-		loading: () => null
-	}
-)
+import AddToCartDrawer from "../../components/add-to-cart-drawer"
 
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse

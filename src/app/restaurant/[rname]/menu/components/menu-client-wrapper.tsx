@@ -12,6 +12,7 @@ import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-d
 import { RootState } from "@/store/store"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import AddToCartDrawer from "../../components/add-to-cart-drawer"
+import SearchBar from "./SearchBar"
 
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse
@@ -20,8 +21,8 @@ interface MenuClientWrapperProps {
 	children?: React.ReactNode
 }
 
-export default function MenuClientWrapper({ 
-	restaurantInfo, 
+export default function MenuClientWrapper({
+	restaurantInfo,
 	rname,
 	sortedCategories,
 	children
@@ -31,12 +32,15 @@ export default function MenuClientWrapper({
 	const { hasFeature } = useFeatureList(rname)
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
-	
+
 	// Check localStorage for persisted mode
 	useEffect(() => {
-		const persistedMode = localStorage.getItem('appMode')
+		const persistedMode = localStorage.getItem("appMode")
 		if (persistedMode && persistedMode !== mode) {
-			console.log("MenuClientWrapper - Restoring mode from localStorage:", persistedMode)
+			console.log(
+				"MenuClientWrapper - Restoring mode from localStorage:",
+				persistedMode
+			)
 			dispatch(setMode(persistedMode as CLIENT_APP_MODE))
 		}
 	}, [dispatch, mode])
@@ -51,7 +55,6 @@ export default function MenuClientWrapper({
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
 	}
-
 
 	const getLink = useMemo(() => {
 		if (isDineInMode) {
@@ -68,6 +71,8 @@ export default function MenuClientWrapper({
 				showCart={!!hasOrderFeature}
 				restaurantInfo={restaurantInfo}
 			/>
+			<SearchBar restaurantInfo={restaurantInfo?.name} rName={rname} />
+
 			<FloatingMenu categories={sortedCategories} />
 
 			{sortedCategories.length > 0 ? (
@@ -83,4 +88,4 @@ export default function MenuClientWrapper({
 			)}
 		</>
 	)
-} 
+}

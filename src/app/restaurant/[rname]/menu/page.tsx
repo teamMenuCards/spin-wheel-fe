@@ -16,6 +16,13 @@ export async function generateMetadata({
 	}
 }
 
+export const revalidate = 36000
+
+export async function generateStaticParams() {
+	return []
+}
+
+
 // Server Component - fetches data at build time
 export default async function MenuPage({
 	params

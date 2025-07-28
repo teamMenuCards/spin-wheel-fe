@@ -9,9 +9,15 @@ import ScrollButton from "./shared/ScrollButton"
 		By defult the Delivery page is the landing page
 
 		"http://menu-cards.com/restaurant/<name>/dine-in" 
-		Above is the Dining page 
+		Above is the Dining page which is accessed via QR code on restaurant table
 
 */
+
+export const revalidate = 36000
+
+export async function generateStaticParams() {
+	return []
+}
 
 export default async function Page({
 	params

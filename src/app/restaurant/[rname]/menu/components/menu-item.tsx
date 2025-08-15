@@ -38,7 +38,7 @@ function MenuItem({
 
 	const { hasFeature } = useFeatureList(rname)
 	const { mode } = useSelector((state: RootState) => state.appState)
-	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
+	const isDeliveryMode = mode === CLIENT_APP_MODE.DELIVERY
 
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 
@@ -52,7 +52,7 @@ function MenuItem({
 		[products, product.id]
 	)
 
-	const showAddBtn = hasOrderFeature && isDineInMode
+	const showAddBtn = hasOrderFeature && isDeliveryMode
 
 	
 	const hasVariants = useMemo(

@@ -37,7 +37,8 @@ function ProductCard({
 	})
 
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
-	const showAddBtn = hasOrderFeature && mode === CLIENT_APP_MODE.DINE_IN
+	const isDeliveryMode = mode === CLIENT_APP_MODE.DELIVERY
+	const showAddBtn = hasOrderFeature && isDeliveryMode
 
 
 	const productDetails: ProductVariantType | undefined =

@@ -25,7 +25,10 @@ const CartPage = () => {
 		restaurantData?.detail.details.wa_api_details?.wa_number
 
 	useEffect(() => {
-		hideSnackbar()
+		if (products?.length){
+			hideSnackbar()
+
+		}
 	}, [hideSnackbar])
 
 	const getPrice = ({
@@ -112,7 +115,7 @@ const CartPage = () => {
 			</div>
 
 			{/* Confirm Button */}
-			<div className="p-4">
+			<div className="sticky bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200 shadow-lg">
 				<button
 					className="w-full bg-lime-500 text-md font-semibold text-white py-2 rounded-xl shadow-md hover:bg-green-600"
 					onClick={handleConfirm}

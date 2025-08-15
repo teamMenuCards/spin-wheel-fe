@@ -1,10 +1,10 @@
 "use client"
-import { useState, useEffect, useRef } from "react"
-import { Dialog } from "@headlessui/react"
-import { HiXMark } from "react-icons/hi2"
 import { Category } from "@/services/product/get-menu-list"
-import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
+import { Dialog } from "@headlessui/react"
+import { useEffect, useRef, useState } from "react"
+import { HiXMark } from "react-icons/hi2"
+import { useSelector } from "react-redux"
 
 interface FloatingMenuProps {
 	categories: Category[]
@@ -94,7 +94,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 		<>
 			<button
 				className={`fixed ${
-					show ? "bottom-[3.2rem]" : "bottom-4"
+					show ? "bottom-[3.5rem]" : "bottom-2"
 				}  right-4 bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition z-50`}
 				onClick={() => setOpen(!open)}
 			>
@@ -120,7 +120,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 							onClick={toggleMenu}
 							className="right-2 rounded-full p-1 hover:bg-gray-800 transition bg-white "
 						>
-							<HiXMark  className="w-4 h-4 text-black bold" />
+							<HiXMark className="w-4 h-4 text-black bold" />
 						</button>
 					</div>
 

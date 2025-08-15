@@ -1,7 +1,8 @@
 // components/SearchBar.tsx
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { FiSearch } from "react-icons/fi"
-import { useRouter } from "next/navigation"
 
 export interface SearchBarProps {
 	restaurantInfo?: string
@@ -11,11 +12,16 @@ export interface SearchBarProps {
 export default function SearchBar({ restaurantInfo, rName }: SearchBarProps) {
 	const router = useRouter()
 	const [query, setQuery] = useState("")
+	const { isVisible } = useSnackbar()
 
 	return (
-		<div className="fixed bottom-0 z-50 left-0 mx-auto max-w-md w-auto right-0 mr-1 p-2 bg-white flex items-center justify-between">
+		<div
+			className={`fixed bottom-0 z-50 left-0 mx-auto max-w-md w-auto right-0 mr-1 p-2 bg-white flex items-center justify-between transition-all duration-300 ${
+				isVisible ? "bottom-[3rem]" : "bottom-0"
+			}`}
+		>
 			<div
-				className="mb-2 flex items-center left-4 right-4 bg-gray-100 rounded px-2 py-2"
+				className="flex items-center left-4 right-4 bg-gray-100 rounded px-2 py-2"
 				onClick={() => router.push(`/restaurant/${rName}/search`)}
 			>
 				<FiSearch className="text-gray-300 mr-2 text-2xl" />

@@ -1,16 +1,16 @@
 "use client"
+import { useParams } from "next/navigation"
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
-import { useParams } from "next/navigation"
 
-import NavBar from "../menu/components/NavBar"
+import { useSnackbar } from "@/app/providers/SnackbarProvider"
+import { selectCartTotal } from "@/store/features/cart.slice"
+import { RootState } from "@/store/store"
+import { ProductType } from "@/types"
+import { VariantsEntity } from "@/types/menu.type"
 import { isSafeArray } from "@/utils/isSafeArray"
 import ProductCard from "../components/product-card"
-import { RootState } from "@/store/store"
-import { VariantsEntity } from "@/types/menu.type"
-import { ProductType } from "@/types"
-import { selectCartTotal } from "@/store/features/cart.slice"
-import { useSnackbar } from "@/app/providers/SnackbarProvider"
+import NavBar from "../menu/components/NavBar"
 
 const CartPage = () => {
 	const { rname } = useParams<{ rname: string }>()
@@ -25,10 +25,8 @@ const CartPage = () => {
 		restaurantData?.detail.details.wa_api_details?.wa_number
 
 	useEffect(() => {
-		if (products?.length){
-			hideSnackbar()
-
-		}
+		// Hide snackbar when on cart page
+		hideSnackbar()
 	}, [hideSnackbar])
 
 	const getPrice = ({

@@ -1,17 +1,18 @@
 "use client"
 
-import React, {
+import {
 	createContext,
-	useContext,
-	useState,
 	ReactNode,
-	useCallback
+	useCallback,
+	useContext,
+	useState
 } from "react"
 import { createPortal } from "react-dom"
 
 type SnackbarContextType = {
 	showSnackbar: (content: ReactNode, duration?: number) => void
 	hideSnackbar: () => void
+	isVisible: boolean
 }
 
 const SnackbarContext = createContext<SnackbarContextType | undefined>(
@@ -37,7 +38,9 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	return (
-		<SnackbarContext.Provider value={{ showSnackbar, hideSnackbar }}>
+		<SnackbarContext.Provider
+			value={{ showSnackbar, hideSnackbar, isVisible: visible }}
+		>
 			{children}
 			{typeof window !== "undefined" &&
 				createPortal(

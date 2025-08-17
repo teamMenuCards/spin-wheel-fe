@@ -2,7 +2,7 @@
 import { useFeatureList } from "@/hooks/useFeatureList"
 import { Category } from "@/services/product/get-menu-list"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
-import MenuCategoryAccordian from "@/shared/Accordian"
+import MenuAccordion from "@/shared/Accordian"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RootState } from "@/store/store"
@@ -13,7 +13,6 @@ import { FEATURES } from "../../types"
 import NavBar from "./NavBar"
 import SearchBar from "./SearchBar"
 import FloatingMenu from "./floating-menu"
-import { MenuCategory } from "@/types/menu-server.types"
 
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse
@@ -79,7 +78,7 @@ export default function MenuClientWrapper({
 			<div className="pb-10">
 				{sortedCategories.length > 0 ? (
 					<>
-						<MenuCategoryAccordian
+						<MenuAccordion
 							sections={sortedCategories}
 							onSectionSelection={handleCategorySelection}
 						/>

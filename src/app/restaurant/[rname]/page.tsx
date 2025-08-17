@@ -3,6 +3,7 @@ import DeliveryLandingPage from "./components/DeliveryLandingPage"
 import { getRestaurantDetails } from "@/lib/api-cache"
 import Footer from "@/shared/Footer"
 import ScrollButton from "./shared/ScrollButton"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
 /* 
 		"http://menu-cards.com/restaurant/<name>/
@@ -28,9 +29,22 @@ export default async function Page({
 
 	const restaurantDetails = await getRestaurantDetails(rname)
 
+	// Handle null restaurant details
+	if (!restaurantDetails) {
+		return (
+			<div>
+				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+					Restaurant not found!
+				</div>
+				<ScrollButton />
+				<Footer />
+			</div>
+		)
+	}
+
 	return (
 		<div>
-			<DeliveryLandingPage rname={rname} restaurantInfo={restaurantDetails} />
+			<DeliveryLandingPage rname={rname} restaurantInfo={restaurantDetails as RestaurantDetailResponse} />
 			<ScrollButton />
 			<Footer />
 		</div>

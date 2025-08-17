@@ -1,6 +1,7 @@
 import { getMenuList, getRestaurantDetails } from "@/lib/api-cache"
 import MenuClientWrapper from "./components/menu-client-wrapper"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { Category } from "@/services/product/get-menu-list"
 
 // This function runs at build time for each static path
 export async function generateMetadata({
@@ -50,7 +51,7 @@ export default async function MenuPage({
 			<MenuClientWrapper
 				restaurantInfo={restaurantInfo as RestaurantDetailResponse}
 				rname={rname}
-				sortedCategories={sortedCategories}
+				sortedCategories={sortedCategories as unknown as Category[]}
 			>
 				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
 					Menu Coming Soon!
@@ -63,7 +64,7 @@ export default async function MenuPage({
 		<MenuClientWrapper
 			restaurantInfo={restaurantInfo as RestaurantDetailResponse}
 			rname={rname}
-			sortedCategories={sortedCategories}
+			sortedCategories={sortedCategories as unknown as Category[]}
 		/>
 	)
 }

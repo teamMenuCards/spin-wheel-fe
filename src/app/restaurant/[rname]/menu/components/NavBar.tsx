@@ -4,7 +4,6 @@ import { DEFAULT_LOGO_IMG } from "../../constants"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronLeft_Ic } from "@/app/restaurant/[rname]/menu/icons"
-import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 

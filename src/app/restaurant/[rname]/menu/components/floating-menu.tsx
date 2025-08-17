@@ -4,10 +4,10 @@ import { Dialog } from "@headlessui/react"
 import { useEffect, useRef, useState } from "react"
 import { HiXMark } from "react-icons/hi2"
 import { useSelector } from "react-redux"
-import { MenuCategory } from "@/types/menu-server.types"
+import { Category } from "@/services/product/get-menu-list"
 
 interface FloatingMenuProps {
-	categories: MenuCategory[]
+	categories: Category[]
 }
 
 const FloatingMenu = ({ categories }: FloatingMenuProps) => {

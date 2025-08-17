@@ -9,7 +9,7 @@ import { RootState } from "@/store/store"
 import { ProductVariantType } from "@/types"
 import { isSafeArray } from "@/utils/isSafeArray"
 import NextImage from "next/image"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, useRef } from "react"
 import { HiArrowCircleRight } from "react-icons/hi"
 import Drawer from "react-modern-drawer"
 import "react-modern-drawer/dist/index.css"
@@ -21,8 +21,9 @@ import { useParams, useRouter } from "next/navigation"
 const App = () => {
 	const router = useRouter()
 	const { rname } = useParams<{ rname: string }>()
-	const { showSnackbar } = useSnackbar()
+	const { showSnackbar, hideSnackbar } = useSnackbar()
 	const [preloadedImage, setPreloadedImage] = useState<string | null>(null)
+	const snackbarTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
 	const { isOpen, selectedProduct, products } = useSelector(
 		(state: RootState) => state.cart
@@ -101,8 +102,16 @@ const App = () => {
 
 	useEffect(() => {
 		/* Show snackbar whenever cart size updates */
-		if (products.length)
-			setTimeout(() => {
+		if (products.length) {
+			// Clear any existing timeout
+			if (snackbarTimeoutRef.current) {
+				clearTimeout(snackbarTimeoutRef.current)
+			}
+			
+			// Hide any existing snackbar first
+			hideSnackbar()
+			
+			const timeout = setTimeout(() => {
 				showSnackbar(
 					<div
 						className="w-screen fixed bottom-0 left-0 z-[9999] text-white font-semibold text-[16px] bg-lime-500 px-4 py-3 animate-slideUp"
@@ -118,7 +127,17 @@ const App = () => {
 					</div>
 				)
 			}, 500)
-	}, [getSnackbarMssg, products.length, rname, router, showSnackbar])
+			
+			snackbarTimeoutRef.current = timeout
+		}
+		
+		// Cleanup function
+		return () => {
+			if (snackbarTimeoutRef.current) {
+				clearTimeout(snackbarTimeoutRef.current)
+			}
+		}
+	}, [getSnackbarMssg, products.length, rname, router, showSnackbar, hideSnackbar])
 
 	const handleAddToCart = () => {
 		if (selectedProduct) {

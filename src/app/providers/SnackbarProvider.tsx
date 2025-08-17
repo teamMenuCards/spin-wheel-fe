@@ -5,7 +5,8 @@ import {
 	ReactNode,
 	useCallback,
 	useContext,
-	useState
+	useState,
+	useEffect
 } from "react"
 import { createPortal } from "react-dom"
 
@@ -22,20 +23,42 @@ const SnackbarContext = createContext<SnackbarContextType | undefined>(
 export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 	const [content, setContent] = useState<ReactNode | null>(null)
 	const [visible, setVisible] = useState(false)
+	const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
 
 	const hideSnackbar = useCallback(() => {
+		// Clear any existing timeout
+		if (timeoutId) {
+			clearTimeout(timeoutId)
+			setTimeoutId(null)
+		}
+		
 		setVisible(false)
 		setTimeout(() => setContent(null), 300) // delay for exit animation
-	}, [])
+	}, [timeoutId])
 
-	const showSnackbar = (newContent: ReactNode, duration?: number) => {
+	const showSnackbar = useCallback((newContent: ReactNode, duration?: number) => {
+		// Clear any existing timeout first
+		if (timeoutId) {
+			clearTimeout(timeoutId)
+		}
+		
 		setContent(newContent)
 		setVisible(true)
 
 		if (duration && duration > 0) {
-			setTimeout(hideSnackbar, duration)
+			const newTimeoutId = setTimeout(hideSnackbar, duration)
+			setTimeoutId(newTimeoutId)
 		}
-	}
+	}, [hideSnackbar, timeoutId])
+
+	// Cleanup on unmount
+	useEffect(() => {
+		return () => {
+			if (timeoutId) {
+				clearTimeout(timeoutId)
+			}
+		}
+	}, [timeoutId])
 
 	return (
 		<SnackbarContext.Provider

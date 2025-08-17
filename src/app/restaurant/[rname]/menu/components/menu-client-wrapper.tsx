@@ -75,7 +75,7 @@ export default function MenuClientWrapper({
 
 			<FloatingMenu categories={sortedCategories as unknown as Category[]} />
 
-			<div className="pb-10">
+			<div className="pb-[3rem] mb-[3rem]">
 				{sortedCategories.length > 0 ? (
 					<>
 						<MenuAccordion

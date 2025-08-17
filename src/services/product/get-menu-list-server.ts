@@ -10,12 +10,11 @@ import {
 
 // Simple in-memory cache for menu list data
 const menuListCache = new Map()
-
 export interface MenuListResponse {
 	categories: MenuCategory[]
 }
 
-// Server-side function to get menu list with caching
+// Server-side function to get menu list
 export async function getMenuListServer(
 	rname: string
 ): Promise<MenuCategory[]> {
@@ -72,7 +71,6 @@ export async function getMenuListServer(
 		const finalSortedCategories = sortedCategories.sort(
 			(a: MenuCategory, b: MenuCategory) => a.display_order - b.display_order
 		)
-
 		// Cache the result
 		menuListCache.set(rname, finalSortedCategories)
 

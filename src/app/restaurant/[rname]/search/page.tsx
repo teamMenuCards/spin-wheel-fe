@@ -1,11 +1,16 @@
 "use client"
-import { useRouter, useParams } from "next/navigation"
-import { useState, useEffect, useMemo } from "react"
-import { FiChevronDown, FiSearch, FiX } from "react-icons/fi"
 import { getMenuList } from "@/lib/api-cache"
-import { MenuCategory, MenuProduct, MenuVariant } from "@/types/menu-server.types"
-import MenuItem from "../menu/components/menu-item"
 import { ProductType, ProductVariantType } from "@/types"
+import {
+	MenuCategory,
+	MenuProduct,
+	MenuVariant
+} from "@/types/menu-server.types"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
+import { FiChevronDown, FiSearch, FiX } from "react-icons/fi"
+import AddToCartDrawer from "../components/add-to-cart-drawer"
+import MenuItem from "../menu/components/menu-item"
 
 interface SearchResult {
 	product: MenuProduct
@@ -37,7 +42,10 @@ export default function SearchPage() {
 	const [hasSearched, setHasSearched] = useState(false)
 
 	// Debounce function
-	const debounce = <T extends unknown[]>(func: (...args: T) => void, delay: number) => {
+	const debounce = <T extends unknown[]>(
+		func: (...args: T) => void,
+		delay: number
+	) => {
 		let timeoutId: NodeJS.Timeout
 		return (...args: T) => {
 			clearTimeout(timeoutId)
@@ -72,7 +80,6 @@ export default function SearchPage() {
 	const debouncedSearch = useMemo(
 		() =>
 			debounce((searchQuery: string) => {
-				
 				if (!searchQuery.trim()) {
 					// Show all products when query is blank
 					const allProducts: SearchResult[] = []
@@ -97,20 +104,20 @@ export default function SearchPage() {
 				setIsLoading(true)
 				setHasSearched(false)
 				console.log("Setting loading to true")
-				
+
 				const searchTerm = searchQuery.toLowerCase().trim()
 
 				// Use a longer delay to ensure loading state is visible
 				setTimeout(() => {
 					console.log("Starting search for:", searchTerm)
 					console.log("Menu data available:", menuData.length > 0)
-					
+
 					// If menu data is not loaded yet, keep showing loading
 					if (!isMenuLoaded || menuData.length === 0) {
 						console.log("Menu not loaded yet, keeping loading state")
 						return
 					}
-					
+
 					// Search through all products and variants
 					const searchResults: SearchResult[] = []
 					menuData.forEach((category) => {
@@ -122,8 +129,9 @@ export default function SearchPage() {
 
 							// Search in variants
 							product.variants?.forEach((variant) => {
-								const variantMatches =
-									variant.variant_name.toLowerCase().includes(searchTerm)
+								const variantMatches = variant.variant_name
+									.toLowerCase()
+									.includes(searchTerm)
 
 								if (productMatches || variantMatches) {
 									searchResults.push({
@@ -136,8 +144,12 @@ export default function SearchPage() {
 						})
 					})
 
-					console.log("Search completed, found:", searchResults.length, "results")
-					
+					console.log(
+						"Search completed, found:",
+						searchResults.length,
+						"results"
+					)
+
 					// Set results and loading state in the same tick
 					setResults(searchResults)
 					setIsLoading(false)
@@ -162,7 +174,9 @@ export default function SearchPage() {
 	}
 
 	// Convert MenuProduct to ProductType for MenuItem component
-	const convertToProductType = (menuProduct: MenuProduct): ProductType & { variants: ProductVariantType[] } => {
+	const convertToProductType = (
+		menuProduct: MenuProduct
+	): ProductType & { variants: ProductVariantType[] } => {
 		// default values
 		return {
 			id: menuProduct.id,
@@ -170,31 +184,33 @@ export default function SearchPage() {
 			description: menuProduct.description || "",
 			active: menuProduct.active,
 			display_order: menuProduct.display_order,
-			is_featured: false, 
-			price: "0", 
-			createdAt: "", 
-			updatedAt: "", 
-			variants: menuProduct.variants.map(variant => ({
+			is_featured: false,
+			price: "0",
+			createdAt: "",
+			updatedAt: "",
+			variants: menuProduct.variants.map((variant) => ({
 				id: variant.id,
 				variant_name: variant.variant_name,
 				price: variant.price,
 				display_order: variant.display_order,
 				is_veg: variant.is_veg,
 				image_url: variant.image_url || "",
-				average_rating: variant.average_rating ? parseFloat(variant.average_rating) : null,
-				variant_details: {}, 
-				contains_egg: false, 
-				active: true, 
-				discounted_price: null, 
-				preparation_time_minutes: null, 
-				allergens: "", 
-				rating_count: 0, 
-				dietary_info: null, 
-				calories: null, 
-				spiciness: null, 
-				ingredients: null, 
-				createdAt: "", 
-				updatedAt: "" 
+				average_rating: variant.average_rating
+					? parseFloat(variant.average_rating)
+					: null,
+				variant_details: {},
+				contains_egg: false,
+				active: true,
+				discounted_price: null,
+				preparation_time_minutes: null,
+				allergens: "",
+				rating_count: 0,
+				dietary_info: null,
+				calories: null,
+				spiciness: null,
+				ingredients: null,
+				createdAt: "",
+				updatedAt: ""
 			}))
 		}
 	}
@@ -232,7 +248,7 @@ export default function SearchPage() {
 			</div>
 
 			{/* Search Results */}
-			<div className="px-4 pt-4">
+			<div className="px-4 pt-4 pb-[4rem]">
 				{isLoading && (
 					<div className="space-y-6">
 						{Array.from({ length: 3 }).map((_, index) => (
@@ -241,11 +257,17 @@ export default function SearchPage() {
 					</div>
 				)}
 
-				{!isLoading && query && results.length === 0 && isMenuLoaded && hasSearched && (
-					<div className="text-center py-8">
-						<p className="text-gray-500">No results found for &quot;{query}&quot;</p>
-					</div>
-				)}
+				{!isLoading &&
+					query &&
+					results.length === 0 &&
+					isMenuLoaded &&
+					hasSearched && (
+						<div className="text-center py-8">
+							<p className="text-gray-500">
+								No results found for &quot;{query}&quot;
+							</p>
+						</div>
+					)}
 
 				{!isLoading && results.length > 0 && (
 					<div>
@@ -255,9 +277,9 @@ export default function SearchPage() {
 							</p>
 						)}
 						<div className="space-y-4">
-							{results.map((result, index) => (
+							{results.map((result) => (
 								<MenuItem
-									key={`${result.product.id}-${result.variant.id}-${index}`}
+									key={`${result.product.id}-${result.variant.id}`}
 									product={convertToProductType(result.product)}
 								/>
 							))}
@@ -272,6 +294,9 @@ export default function SearchPage() {
 					</div>
 				)} */}
 			</div>
+
+			{/* Add to Cart Drawer */}
+			<AddToCartDrawer />
 		</div>
 	)
 }

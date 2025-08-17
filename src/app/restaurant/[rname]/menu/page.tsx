@@ -1,5 +1,6 @@
 import { getMenuList, getRestaurantDetails } from "@/lib/api-cache"
 import MenuClientWrapper from "./components/menu-client-wrapper"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 
 // This function runs at build time for each static path
 export async function generateMetadata({
@@ -16,7 +17,7 @@ export async function generateMetadata({
 	}
 }
 
-export const revalidate = 36000
+export const revalidate = 36000 // 10 hour caching
 
 export async function generateStaticParams() {
 	return []
@@ -35,10 +36,19 @@ export default async function MenuPage({
 	const sortedCategories = await getMenuList(rname)
 	const restaurantInfo = await getRestaurantDetails(rname)
 
+	// Handle null restaurant info
+	if (!restaurantInfo) {
+		return (
+			<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+				Restaurant not found!
+			</div>
+		)
+	}
+
 	if (!sortedCategories.length) {
 		return (
 			<MenuClientWrapper
-				restaurantInfo={restaurantInfo}
+				restaurantInfo={restaurantInfo as RestaurantDetailResponse}
 				rname={rname}
 				sortedCategories={sortedCategories}
 			>
@@ -51,7 +61,7 @@ export default async function MenuPage({
 
 	return (
 		<MenuClientWrapper
-			restaurantInfo={restaurantInfo}
+			restaurantInfo={restaurantInfo as RestaurantDetailResponse}
 			rname={rname}
 			sortedCategories={sortedCategories}
 		/>

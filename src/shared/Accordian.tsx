@@ -1,13 +1,13 @@
 "use client"
-import { useState } from "react"
+import ChefRecommendation from "@/app/restaurant/[rname]/menu/components/BestSellers"
 import MenuItem from "@/app/restaurant/[rname]/menu/components/menu-item"
 import {
 	ChevronDown_Ic,
 	ChevronUp_Ic
 } from "@/app/restaurant/[rname]/menu/icons"
-import { isSafeArray } from "@/utils/isSafeArray"
 import { Category } from "@/services/product/get-menu-list"
-import ChefRecommendation from "@/app/restaurant/[rname]/menu/components/BestSellers"
+import { isSafeArray } from "@/utils/isSafeArray"
+import { useState } from "react"
 
 interface AccordionProps {
 	sections?: Category[]
@@ -19,7 +19,7 @@ const Accordion: React.FC<AccordionProps> = ({
 	onSectionSelection
 }) => {
 	// Initialize with all sections open to match server-side rendering
-	const [openIndexes, setOpenIndexes] = useState<number[]>(() => 
+	const [openIndexes, setOpenIndexes] = useState<number[]>(() =>
 		sections.map((_, index) => index)
 	)
 

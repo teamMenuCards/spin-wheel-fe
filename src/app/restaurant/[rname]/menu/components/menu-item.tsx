@@ -1,8 +1,8 @@
 "use client"
 import { useFeatureList } from "@/hooks/useFeatureList"
 import ImageOverlay from "@/shared/ImageOverlay"
-import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 import LineClampTypography from "@/shared/LineClampTypography"
+import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 import {
 	decreaseProductQuantity,
 	increaseProductQuantity,
@@ -29,7 +29,6 @@ function MenuItem({
 	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
 	const [openImg, setIsOpen] = useState(false)
-	const [justAdded, setJustAdded] = useState(false)
 
 	/* 
 		Only specific restarants will have Ordering feature. 
@@ -54,7 +53,6 @@ function MenuItem({
 
 	const showAddBtn = hasOrderFeature && isDeliveryMode
 
-	
 	const hasVariants = useMemo(
 		() => isSafeArray(product.variants) && product.variants.length > 1,
 		[product.variants]
@@ -106,8 +104,6 @@ function MenuItem({
 	const handleAdd = () => {
 		dispatch(openCart())
 		dispatch(selectProduct(product))
-		setJustAdded(true) // Optimistically show IncrementOperator
-		setTimeout(() => setJustAdded(false), 500) // Clear after Redux updates
 	}
 
 	const handleIncrement = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -165,7 +161,7 @@ function MenuItem({
 
 							{/* ADD+ Button or IncrementOperator */}
 							<div className="mt-2">
-								{(updatedProduct?.quantity ?? 0) > 0 || justAdded ? (
+								{(updatedProduct?.quantity ?? 0) > 0 ? (
 									// <div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 										<IncrementOperator
@@ -194,7 +190,7 @@ function MenuItem({
 							</div>
 						</div>
 					) : // when item has Image URL but no image
-					(updatedProduct?.quantity ?? 0) > 0 || justAdded ? (
+					(updatedProduct?.quantity ?? 0) > 0 ? (
 						<div className="h-[120px]">
 							<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 								<IncrementOperator

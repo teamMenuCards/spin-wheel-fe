@@ -1,23 +1,24 @@
 "use client"
-import { useDispatch, useSelector } from "react-redux"
-import { setRestaurantDetails } from "@/store/features/restaurant.slice"
-import { useEffect, useMemo } from "react"
 import { useFeatureList } from "@/hooks/useFeatureList"
-import { FEATURES } from "../../types"
 import { Category } from "@/services/product/get-menu-list"
-import NavBar from "./NavBar"
-import FloatingMenu from "./floating-menu"
-import Accordion from "@/shared/Accordian"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
-import { RootState } from "@/store/store"
+import MenuCategoryAccordian from "@/shared/Accordian"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
+import { setRestaurantDetails } from "@/store/features/restaurant.slice"
+import { RootState } from "@/store/store"
+import { useEffect, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import AddToCartDrawer from "../../components/add-to-cart-drawer"
+import { FEATURES } from "../../types"
+import NavBar from "./NavBar"
 import SearchBar from "./SearchBar"
+import FloatingMenu from "./floating-menu"
+import { MenuCategory } from "@/types/menu-server.types"
 
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse
 	rname: string
-	sortedCategories: Category[]
+	sortedCategories: MenuCategory[]
 	children?: React.ReactNode
 }
 
@@ -75,17 +76,19 @@ export default function MenuClientWrapper({
 
 			<FloatingMenu categories={sortedCategories} />
 
-			{sortedCategories.length > 0 ? (
-				<>
-					<Accordion
-						sections={sortedCategories}
-						onSectionSelection={handleCategorySelection}
-					/>
-					<AddToCartDrawer />
-				</>
-			) : (
-				children
-			)}
+			<div className="pb-10">
+				{sortedCategories.length > 0 ? (
+					<>
+						<MenuCategoryAccordian
+							sections={sortedCategories}
+							onSectionSelection={handleCategorySelection}
+						/>
+						<AddToCartDrawer />
+					</>
+				) : (
+					children
+				)}
+			</div>
 		</>
 	)
 }

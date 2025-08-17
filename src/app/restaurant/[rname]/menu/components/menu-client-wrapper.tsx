@@ -73,7 +73,7 @@ export default function MenuClientWrapper({
 			/>
 			<SearchBar restaurantInfo={restaurantInfo?.name} rName={rname} />
 
-			<FloatingMenu categories={sortedCategories} />
+			<FloatingMenu categories={sortedCategories as unknown as Category[]} />
 
 			<div className="pb-10">
 				{sortedCategories.length > 0 ? (

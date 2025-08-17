@@ -17,7 +17,7 @@ import FloatingMenu from "./floating-menu"
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse
 	rname: string
-	sortedCategories: MenuCategory[]
+	sortedCategories: Category[]
 	children?: React.ReactNode
 }
 

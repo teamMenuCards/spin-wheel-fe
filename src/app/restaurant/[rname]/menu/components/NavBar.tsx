@@ -28,7 +28,6 @@ const NavBar = ({
 	link = "",
 	restaurantInfo
 }: NavBarProps) => {
-	const router = useRouter()
 	const { products } = useSelector((state: RootState) => state.cart)
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const logoImg = `url(${restaurantInfo?.detail.logo || DEFAULT_LOGO_IMG})`
@@ -45,9 +44,10 @@ const NavBar = ({
 			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
 				<div className="max-w-7xl mx-auto flex items-center justify-between text-black">
 					<div className="flex items-center">
-						<div onClick={() => router.back()}>
+						<Link href={link ?? `/restaurant/${rname}`}>
 							<ChevronLeft_Ic className="w-5 h-5 stroke-3" />
-						</div>
+						</Link>
+							
 
 						<Link href={link ?? `/restaurant/${rname}`}>
 							<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">

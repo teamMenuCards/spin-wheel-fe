@@ -25,9 +25,10 @@ const CartPage = () => {
 		restaurantData?.detail.details.wa_api_details?.wa_number
 
 	useEffect(() => {
+	
 		// Hide snackbar when on cart page
 		hideSnackbar()
-	}, [hideSnackbar])
+	}, [hideSnackbar, rname, restaurantData, products])
 
 	const getPrice = ({
 		name,
@@ -76,6 +77,7 @@ const CartPage = () => {
 			{/* Navbar */}
 			{restaurantData && (
 				<NavBar
+					link={`/restaurant/${rname}/menu`}
 					rname={rname}
 					restaurantInfo={restaurantData}
 					showLogo={false}

@@ -18,7 +18,7 @@ export async function generateMetadata({
 	}
 }
 
-export const revalidate = 36000 // 10 hour caching
+export const revalidate = 36000 // 10 hours caching
 
 export async function generateStaticParams() {
 	return []

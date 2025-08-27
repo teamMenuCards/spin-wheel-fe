@@ -108,7 +108,7 @@ function MenuItem({
 				{allergensList.map((allergen, index) => (
 					<span
 						key={index}
-						className="px-1 py text-[8px] bg-red-50 text-red-600 rounded-full border border-red-300"
+						className="px-1 py text-[9px] bg-red-50 text-red-600 rounded-full border border-red-300"
 					>
 						{allergen.trim()}
 					</span>

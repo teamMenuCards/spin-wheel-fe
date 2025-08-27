@@ -1,10 +1,10 @@
 "use client"
+import { Category } from "@/services/product/get-menu-list"
 import { RootState } from "@/store/store"
 import { Dialog } from "@headlessui/react"
 import { useEffect, useRef, useState } from "react"
 import { HiXMark } from "react-icons/hi2"
 import { useSelector } from "react-redux"
-import { Category } from "@/services/product/get-menu-list"
 
 interface FloatingMenuProps {
 	categories: Category[]
@@ -112,7 +112,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 			>
 				<div
 					ref={menuRef}
-					className="bg-black text-white w-72 max-h-96 overflow-y-auto rounded-lg shadow-lg px-2"
+					className="bg-black text-white w-72 max-h-96 overflow-y-auto rounded-lg shadow-lg px-2 mb-8"
 				>
 					{/* Close Button */}
 					<div className="w-full sticky top-0  flex justify-end p-2 ">

@@ -10,7 +10,7 @@ import {
 } from "@/app/restaurant/[rname]/menu/icons"
 import { Category } from "@/services/product/get-menu-list"
 import { isSafeArray } from "@/utils/isSafeArray"
-import { useState } from "react"
+import { useState, useMemo, useCallback } from "react"
 
 interface AccordionProps {
 	sections?: Category[]
@@ -29,58 +29,75 @@ const Accordion: React.FC<AccordionProps> = ({
 	// Filter state
 	const [activeFilter, setActiveFilter] = useState<FilterType>("all")
 
-	// Extract featured products from all sections
-	const featuredProducts = sections.flatMap((section) =>
-		section.products
-			.filter((product) => product.is_featured)
-			.map((product) => product)
+	// Memoized featured products extraction
+	const featuredProducts = useMemo(() => 
+		sections.flatMap((section) =>
+			section.products
+				.filter((product) => product.is_featured)
+				.map((product) => product)
+		), [sections]
 	)
 
-	// Filter products based on active filter
-	const filterProducts = (products: Category["products"]) => {
+	// Memoized filter function
+	const filterProducts = useCallback((products: Category["products"]) => {
 		if (activeFilter === "all") return products
 
 		return products.filter((product) => {
 			const isVeg = product.variants?.[0]?.is_veg
 			return activeFilter === "veg" ? isVeg : !isVeg
 		})
-	}
+	}, [activeFilter])
 
-	// Filter sections that have products matching the current filter
-	const filteredSections = sections.filter((section) => {
-		const filteredProducts = filterProducts(section.products)
-		return filteredProducts.length > 0
-	})
+	// Memoized pure veg restaurant check
+	const isPureVegRestaurant = useMemo(() => 
+		sections.every((section) =>
+			section.products.every((product) => product.variants?.[0]?.is_veg)
+		), [sections]
+	)
 
-	const onClickSection = (index: number, section: Category) => {
+	// Memoized filtered sections
+	const filteredSections = useMemo(() => 
+		sections.filter((section) => {
+			const filteredProducts = filterProducts(section.products)
+			return filteredProducts.length > 0
+		}), [sections, filterProducts]
+	)
+
+	// Memoized filtered featured products
+	const filteredFeaturedProducts = useMemo(() => 
+		filterProducts(featuredProducts), [featuredProducts, filterProducts]
+	)
+
+	const onClickSection = useCallback((index: number, section: Category) => {
 		setOpenIndexes((prevIndexes) =>
 			prevIndexes.includes(index)
 				? prevIndexes.filter((i) => i !== index)
 				: [...prevIndexes, index]
 		)
 		onSectionSelection(section)
-	}
+	}, [onSectionSelection])
 
-	const handleFilterChange = (filter: FilterType) => {
+	const handleFilterChange = useCallback((filter: FilterType) => {
 		setActiveFilter(filter)
-		// Open all sections when filter changes to show filtered results
 		// Use the original sections array to get all possible indexes
 		setOpenIndexes(sections.map((_, index) => index))
-	}
+	}, [sections])
 
 	return (
 		<div className="w-full max-w-md mx-auto">
 			{/* Filter Component */}
-			<MenuFilters
-				onFilterChange={handleFilterChange}
-				activeFilter={activeFilter}
-			/>
+			{!isPureVegRestaurant && (
+				<MenuFilters
+					onFilterChange={handleFilterChange}
+					activeFilter={activeFilter}
+				/>
+			)}
 
 			<div className="space-y-2">
 				{/* Chef recommendation - only show if has featured products matching filter */}
-				{isSafeArray(featuredProducts) && (
+				{isSafeArray(filteredFeaturedProducts) && (
 					<ChefRecommendation
-						recommendations={filterProducts(featuredProducts)}
+						recommendations={filteredFeaturedProducts}
 					/>
 				)}
 

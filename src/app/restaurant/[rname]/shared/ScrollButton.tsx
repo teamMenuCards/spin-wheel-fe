@@ -5,7 +5,7 @@ import {
 	ChevronUp_Ic
 } from "@/app/restaurant/[rname]/menu/icons"
 import React, { useCallback } from "react"
-import { useScrollContext } from "../context/scroll-context"
+import { useScrollContext } from "@/app/providers/ScrollbarProvider"
 
 const ScrollButton: React.FC = () => {
 	const { isAtBottom } = useScrollContext()

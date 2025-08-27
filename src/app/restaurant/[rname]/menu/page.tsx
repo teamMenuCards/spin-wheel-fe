@@ -1,14 +1,14 @@
 import { getMenuList, getRestaurantDetails } from "@/lib/api-cache"
-import MenuClientWrapper from "./components/menu-client-wrapper"
-import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { Category } from "@/services/product/get-menu-list"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import MenuClientWrapper from "./components/menu-client-wrapper"
 
 // This function runs at build time for each static path
 export async function generateMetadata({
 	params
 }: {
-	params: Promise<{ rname: string }>})
- {
+	params: Promise<{ rname: string }>
+}) {
 	const { rname } = await params
 	const restaurantInfo = await getRestaurantDetails(rname)
 
@@ -23,7 +23,6 @@ export const revalidate = 36000 // 10 hour caching
 export async function generateStaticParams() {
 	return []
 }
-
 
 // Server Component - fetches data at build time
 export default async function MenuPage({

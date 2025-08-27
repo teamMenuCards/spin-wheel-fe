@@ -3,7 +3,6 @@ import DeliveryLandingPage from "./components/DeliveryLandingPage"
 import { getRestaurantDetails } from "@/lib/api-cache"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import Footer from "@/shared/Footer"
-import { ScrollProvider } from "./context/scroll-context"
 import ScrollProgressBar from "./components/scroll-progress-bar"
 import ScrollButton from "./shared/ScrollButton"
 
@@ -31,6 +30,7 @@ export default async function Page({
 
 	const restaurantDetails = await getRestaurantDetails(rname)
 
+
 	// Handle null restaurant details
 	if (!restaurantDetails) {
 		return (
@@ -45,16 +45,14 @@ export default async function Page({
 	}
 
 	return (
-		<ScrollProvider>
-			<div>
-				<ScrollProgressBar />
-				<DeliveryLandingPage
-					rname={rname}
-					restaurantInfo={restaurantDetails as RestaurantDetailResponse}
-				/>
-				<ScrollButton />
-				<Footer />
-			</div>
-		</ScrollProvider>
+		<div>
+			<ScrollProgressBar />
+			<DeliveryLandingPage
+				rname={rname}
+				restaurantInfo={restaurantDetails as RestaurantDetailResponse}
+			/>
+			<ScrollButton />
+			<Footer />
+		</div>
 	)
 }

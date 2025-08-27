@@ -1,11 +1,14 @@
 "use client"
 
 import { ReactNode } from "react"
-import StoreProvider from "./StoreProvider"
+import { ScrollProvider } from './ScrollbarProvider'
 import { SnackbarProvider } from "./SnackbarProvider"
+import StoreProvider from "./StoreProvider"
 
 export const RootProvider = ({ children }: { children: ReactNode }) => (
-	<StoreProvider>
-		<SnackbarProvider>{children}</SnackbarProvider>
-	</StoreProvider>
+	<ScrollProvider>
+		<StoreProvider>
+			<SnackbarProvider>{children}</SnackbarProvider>
+		</StoreProvider>
+	</ScrollProvider>
 )

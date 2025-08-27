@@ -9,6 +9,7 @@ import { RootState } from "@/store/store"
 import { useEffect, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import AddToCartDrawer from "../../components/add-to-cart-drawer"
+import ScrollProgressBar from "../../components/scroll-progress-bar"
 import { FEATURES } from "../../types"
 import NavBar from "./NavBar"
 import SearchBar from "./SearchBar"
@@ -65,6 +66,7 @@ export default function MenuClientWrapper({
 
 	return (
 		<>
+			<ScrollProgressBar />
 			<NavBar
 				rname={rname}
 				link={getLink}

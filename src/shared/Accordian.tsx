@@ -10,7 +10,7 @@ import {
 } from "@/app/restaurant/[rname]/menu/icons"
 import { Category } from "@/services/product/get-menu-list"
 import { isSafeArray } from "@/utils/isSafeArray"
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 interface AccordionProps {
 	sections?: Category[]
@@ -29,59 +29,150 @@ const Accordion: React.FC<AccordionProps> = ({
 	// Filter state
 	const [activeFilter, setActiveFilter] = useState<FilterType>("all")
 
-	// Extract featured products from all sections
-	const featuredProducts = sections.flatMap((section) =>
-		section.products
-			.filter((product) => product.is_featured)
-			.map((product) => product)
+	// Extract all available allergens from menu items
+	const availableAllergens = useMemo(() => {
+		const allergenSet = new Set<string>()
+
+		sections.forEach((section) => {
+			section.products.forEach((product) => {
+				const allergens = product.variants?.[0]?.allergens
+				if (allergens && allergens.trim() !== "" && allergens !== "null") {
+					const allergenList = allergens.split(",").map((a) => a.trim())
+					allergenList.forEach((allergen) => {
+						if (allergen) allergenSet.add(allergen)
+					})
+				}
+			})
+		})
+
+		return Array.from(allergenSet)
+	}, [sections])
+
+	// Memoized featured products extraction
+	const featuredProducts = useMemo(
+		() =>
+			sections.flatMap((section) =>
+				section.products
+					.filter((product) => product.is_featured)
+					.map((product) => product)
+			),
+		[sections]
 	)
 
-	// Filter products based on active filter
-	const filterProducts = (products: Category["products"]) => {
-		if (activeFilter === "all") return products
+	// Memoized filter function
+	const filterProducts = useCallback(
+		(products: Category["products"]) => {
+			if (activeFilter === "all") return products
 
-		return products.filter((product) => {
-			const isVeg = product.variants?.[0]?.is_veg
-			return activeFilter === "veg" ? isVeg : !isVeg
-		})
-	}
+			return products.filter((product) => {
+				const isVeg = product.variants?.[0]?.is_veg
 
-	// Filter sections that have products matching the current filter
-	const filteredSections = sections.filter((section) => {
-		const filteredProducts = filterProducts(section.products)
-		return filteredProducts.length > 0
-	})
+				if (activeFilter === "veg") return isVeg
+				if (activeFilter === "non-veg") return !isVeg
 
-	const onClickSection = (index: number, section: Category) => {
-		setOpenIndexes((prevIndexes) =>
-			prevIndexes.includes(index)
-				? prevIndexes.filter((i) => i !== index)
-				: [...prevIndexes, index]
-		)
-		onSectionSelection(section)
-	}
+				// Check if activeFilter is allergen-free
+				if (activeFilter === "allergen-free") {
+					// Show products that have NO allergens
+					const allergens = product.variants?.[0]?.allergens
+					return !allergens || allergens.trim() === "" || allergens === "null"
+				}
 
-	const handleFilterChange = (filter: FilterType) => {
-		setActiveFilter(filter)
-		// Open all sections when filter changes to show filtered results
-		// Use the original sections array to get all possible indexes
-		setOpenIndexes(sections.map((_, index) => index))
-	}
+				// Check if activeFilter is an allergen name
+				if (availableAllergens.includes(activeFilter)) {
+					// Show products that DO contain this specific allergen
+					const allergens = product.variants?.[0]?.allergens
+					if (!allergens || allergens.trim() === "" || allergens === "null") {
+						return false // No allergens, so don't show
+					}
+					const productAllergens = allergens.split(",").map((a) => a.trim())
+					return productAllergens.includes(activeFilter)
+				}
+
+				return true
+			})
+		},
+		[activeFilter, availableAllergens]
+	)
+
+	// Memoized pure veg restaurant check
+	const isPureVegRestaurant = useMemo(
+		() =>
+			sections.every((section) =>
+				section.products.every((product) => product.variants?.[0]?.is_veg)
+			),
+		[sections]
+	)
+
+	// Memoized filtered sections
+	const filteredSections = useMemo(
+		() =>
+			sections.filter((section) => {
+				const filteredProducts = filterProducts(section.products)
+				return filteredProducts.length > 0
+			}),
+		[sections, filterProducts]
+	)
+
+	// Memoized filtered featured products
+	const filteredFeaturedProducts = useMemo(
+		() => filterProducts(featuredProducts),
+		[featuredProducts, filterProducts]
+	)
+
+	// Memoized section click handler
+	const onClickSection = useCallback(
+		(index: number, section: Category) => {
+			setOpenIndexes((prevIndexes) =>
+				prevIndexes.includes(index)
+					? prevIndexes.filter((i) => i !== index)
+					: [...prevIndexes, index]
+			)
+			onSectionSelection(section)
+		},
+		[onSectionSelection]
+	)
+
+	// Memoized filter change handler
+	const handleFilterChange = useCallback(
+		(filter: FilterType) => {
+			setActiveFilter(filter)
+			// Use the original sections array to get all possible indexes
+			setOpenIndexes(sections.map((_, index) => index))
+		},
+		[sections]
+	)
+
+	// Memoized sorted products for each section
+	const getSortedProducts = useCallback(
+		(products: Category["products"]) => {
+			return filterProducts([...products]).sort(
+				(a, b) => a.display_order - b.display_order
+			)
+		},
+		[filterProducts]
+	)
+
+	// Memoized render function for menu items
+	const renderMenuItem = useCallback((item: Category["products"][0]) => {
+		return item?.active ? <MenuItem product={item} key={item.id} /> : null
+	}, [])
 
 	return (
 		<div className="w-full max-w-md mx-auto">
 			{/* Filter Component */}
-			<MenuFilters
-				onFilterChange={handleFilterChange}
-				activeFilter={activeFilter}
-			/>
+			{(!isPureVegRestaurant || availableAllergens.length > 0) && (
+				<MenuFilters
+					onFilterChange={handleFilterChange}
+					activeFilter={activeFilter}
+					availableAllergens={availableAllergens}
+					isPureVegRestaurant={isPureVegRestaurant}
+				/>
+			)}
 
 			<div className="space-y-2">
 				{/* Chef recommendation - only show if has featured products matching filter */}
-				{isSafeArray(featuredProducts) && (
-					<ChefRecommendation
-						recommendations={filterProducts(featuredProducts)}
-					/>
+				{isSafeArray(filteredFeaturedProducts) && (
+					<ChefRecommendation recommendations={filteredFeaturedProducts} />
 				)}
 
 				{/* Menu list */}
@@ -112,13 +203,7 @@ const Accordion: React.FC<AccordionProps> = ({
 								{openIndexes.includes(index) && (
 									<div className="py-2 px-4 bg-gray-50 text-gray-700">
 										<ul className="list-disc pl-5 space-y-1">
-											{filterProducts([...section.products])
-												.sort((a, b) => a.display_order - b.display_order)
-												.map((item) =>
-													item?.active ? (
-														<MenuItem product={item} key={item.id} />
-													) : null
-												)}
+											{getSortedProducts(section.products).map(renderMenuItem)}
 										</ul>
 									</div>
 								)}

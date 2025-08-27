@@ -249,6 +249,9 @@ function MenuItem({
 							</div>
 						)}
 
+						{/* Allergen information for items with variants */}
+						{hasVariants && getAllergenChips()}
+
 						{/* Product Name */}
 						{product.name && (
 							<p className="text-secondary text-sm font-bold mt-1">

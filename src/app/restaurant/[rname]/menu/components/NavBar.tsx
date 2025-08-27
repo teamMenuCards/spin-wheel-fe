@@ -1,11 +1,11 @@
-import { useState } from "react"
-import FullPageDrawerComponent from "./contact-us-drawer"
-import { DEFAULT_LOGO_IMG } from "../../constants"
-import Link from "next/link"
-import Image from "next/image"
 import { ChevronLeft_Ic } from "@/app/restaurant/[rname]/menu/icons"
-import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
+import Image from "next/image"
+import Link from "next/link"
+import { useState } from "react"
+import { useSelector } from "react-redux"
+import { DEFAULT_LOGO_IMG } from "../../constants"
+import FullPageDrawerComponent from "./contact-us-drawer"
 
 interface NavBarProps {
 	rname: string
@@ -37,16 +37,14 @@ const NavBar = ({
 
 	const itemCount = products.length
 
-
 	return (
 		<>
-			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-2">
+			<nav className="sticky top-0 z-40 w-full bg-white shadow-md px-4 py-1 pb-2">
 				<div className="max-w-7xl mx-auto flex items-center justify-between text-black">
 					<div className="flex items-center">
 						<Link href={link ?? `/restaurant/${rname}`}>
 							<ChevronLeft_Ic className="w-5 h-5 stroke-3" />
 						</Link>
-							
 
 						<Link href={link ?? `/restaurant/${rname}`}>
 							<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">
@@ -81,7 +79,6 @@ const NavBar = ({
 						)}
 
 						{showLogo && restaurantInfo?.name && (
-							// <Link href={`/restaurant/${rname}`}>
 							<div
 								className="w-12 rounded-full cursor-pointer ml-4 aspect-[1]"
 								style={{
@@ -91,7 +88,6 @@ const NavBar = ({
 									backgroundPosition: "center"
 								}}
 							/>
-							// </Link>
 						)}
 					</div>
 				</div>

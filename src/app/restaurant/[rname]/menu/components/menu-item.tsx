@@ -96,6 +96,27 @@ function MenuItem({
 	const getProductType = () =>
 		product.variants?.[0]?.is_veg ? getVegIcon() : getNonVegIcon()
 
+	const getAllergenChips = () => {
+		const allergensList = product.variants?.[0]?.allergens?.split(",") || []
+
+		if (!allergensList.length || allergensList[0] === "") {
+			return null
+		}
+
+		return (
+			<div className="flex flex-wrap gap-1 items-start">
+				{allergensList.map((allergen, index) => (
+					<span
+						key={index}
+						className="px-1 py text-[8px] bg-red-50 text-red-600 rounded-full border border-red-300"
+					>
+						{allergen.trim()}
+					</span>
+				))}
+			</div>
+		)
+	}
+
 	const prdImage =
 		product.variants?.[0]?.image_url ||
 		findPrdImage(product.variants, product.name) ||
@@ -220,8 +241,12 @@ function MenuItem({
 				{/* Product Info */}
 				<div className="flex flex-col flex-1 justify-between pr-2">
 					<div>
+						{/* veg/ nonveg icon and allergens in one line */}
 						{!hasVariants && (
-							<div className="flex items-center">{getProductType()}</div>
+							<div className="flex items-start gap-2">
+								{getProductType()}
+								{getAllergenChips()}
+							</div>
 						)}
 
 						{/* Product Name */}
@@ -269,6 +294,8 @@ function MenuItem({
 								</p>
 							)
 						)}
+
+						{/* {getAllergenChips()} */}
 
 						{/* Rating Stars */}
 						<div className="flex mt-1">

@@ -37,13 +37,9 @@ export default function MenuClientWrapper({
 
 	// Check localStorage for persisted mode
 	useEffect(() => {
-		const persistedMode = localStorage.getItem("appMode")
-		if (persistedMode && persistedMode !== mode) {
-			console.log(
-				"MenuClientWrapper - Restoring mode from localStorage:",
-				persistedMode
-			)
-			dispatch(setMode(persistedMode as CLIENT_APP_MODE))
+		const currentAppMode = localStorage.getItem("appMode")
+		if (currentAppMode && currentAppMode !== mode) {
+			dispatch(setMode(currentAppMode as CLIENT_APP_MODE))
 		}
 	}, [dispatch, mode])
 
@@ -58,7 +54,7 @@ export default function MenuClientWrapper({
 	useEffect(() => {
 		const triggerScrollRecalculation = () => {
 			// Dispatch a custom event to trigger scroll recalculation
-			window.dispatchEvent(new CustomEvent('menuContentChanged'))
+			window.dispatchEvent(new CustomEvent("menuContentChanged"))
 		}
 
 		// Trigger after a short delay to ensure DOM is updated
@@ -71,7 +67,7 @@ export default function MenuClientWrapper({
 		console.log(category)
 		// Trigger scroll recalculation when accordion sections change
 		setTimeout(() => {
-			window.dispatchEvent(new CustomEvent('menuContentChanged'))
+			window.dispatchEvent(new CustomEvent("menuContentChanged"))
 		}, 100)
 	}
 

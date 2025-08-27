@@ -1,6 +1,6 @@
 "use client"
 
-import { useScrollContext } from "@/app/providers/ScrollbarProvider"
+import { useScrollContext } from "@/app/providers/ProgressbarProvider"
 import Image from "next/image"
 
 export default function ScrollProgressBar() {

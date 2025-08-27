@@ -48,14 +48,33 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 		windowHeight: 0,
 		fullHeight: 0
 	})
+	const mutationObserverRef = useRef<MutationObserver | null>(null)
 
 	// Cache DOM measurements to avoid repeated queries
 	const updateMeasurements = useCallback(() => {
+		// Get the most accurate height by checking multiple sources
+		const docHeight = document.documentElement.scrollHeight
+		const bodyHeight = document.body.scrollHeight
+		const clientHeight = document.documentElement.clientHeight
+		
+		// Use the maximum of all height sources to ensure accuracy
+		const fullHeight = Math.max(docHeight, bodyHeight, clientHeight)
+		
 		measurementsRef.current = {
 			windowHeight: window.innerHeight,
-			fullHeight: document.documentElement.scrollHeight
+			fullHeight: fullHeight
 		}
+		
+		
 	}, [])
+
+	// Force recalculation of measurements and progress
+	const forceRecalculation = useCallback(() => {
+		updateMeasurements()
+		requestAnimationFrame(() => {
+			handleScroll()
+		})
+	}, [updateMeasurements])
 
 	// Optimized scroll handler with throttling
 	const handleScroll = useCallback(() => {
@@ -88,6 +107,41 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 		}, 16), // ~60fps
 		[handleScroll]
 	)
+
+	// Setup MutationObserver to watch for DOM changes
+	useEffect(() => {
+		if (typeof window !== 'undefined' && window.MutationObserver) {
+			mutationObserverRef.current = new MutationObserver((mutations) => {
+				// Check if any mutations affect the document height
+				const hasHeightChanges = mutations.some(mutation => {
+					return (
+						mutation.type === 'childList' ||
+						mutation.type === 'attributes' ||
+						mutation.type === 'characterData'
+					)
+				})
+
+				if (hasHeightChanges) {
+					// Debounce the recalculation to avoid excessive updates
+					setTimeout(forceRecalculation, 100)
+				}
+			})
+
+			// Start observing the document body for changes
+			mutationObserverRef.current.observe(document.body, {
+				childList: true,
+				subtree: true,
+				attributes: true,
+				attributeFilter: ['style', 'class']
+			})
+		}
+
+		return () => {
+			if (mutationObserverRef.current) {
+				mutationObserverRef.current.disconnect()
+			}
+		}
+	}, [forceRecalculation])
 
 	// Reset scroll state when pathname changes (navigation)
 	useEffect(() => {
@@ -123,17 +177,25 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 			requestAnimationFrame(handleScroll)
 		}
 
+		// Handle menu content changes
+		const handleMenuContentChange = () => {
+			// Force recalculation when menu content changes
+			setTimeout(forceRecalculation, 50)
+		}
+
 		// Add event listeners
 		window.addEventListener("scroll", throttledHandleScroll, { passive: true })
 		window.addEventListener("resize", handleResize, { passive: true })
+		window.addEventListener("menuContentChanged", handleMenuContentChange)
 
 		// Cleanup function
 		return () => {
 			clearTimeout(timer)
 			window.removeEventListener("scroll", throttledHandleScroll)
 			window.removeEventListener("resize", handleResize)
+			window.removeEventListener("menuContentChanged", handleMenuContentChange)
 		}
-	}, [throttledHandleScroll, updateMeasurements, handleScroll])
+	}, [throttledHandleScroll, updateMeasurements, handleScroll, forceRecalculation])
 
 	return (
 		<ScrollContext.Provider value={{ scrollProgress, isAtBottom }}>

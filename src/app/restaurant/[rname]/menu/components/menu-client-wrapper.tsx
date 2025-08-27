@@ -6,7 +6,7 @@ import MenuAccordion from "@/shared/Accordian"
 import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RootState } from "@/store/store"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import AddToCartDrawer from "../../components/add-to-cart-drawer"
 import ScrollProgressBar from "../../components/scroll-progress-bar"
@@ -33,6 +33,7 @@ export default function MenuClientWrapper({
 	const { hasFeature } = useFeatureList(rname)
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
+	const contentRef = useRef<HTMLDivElement>(null)
 
 	// Check localStorage for persisted mode
 	useEffect(() => {
@@ -53,8 +54,25 @@ export default function MenuClientWrapper({
 		}
 	}, [dispatch, restaurantInfo])
 
+	// Trigger scroll recalculation when menu content changes
+	useEffect(() => {
+		const triggerScrollRecalculation = () => {
+			// Dispatch a custom event to trigger scroll recalculation
+			window.dispatchEvent(new CustomEvent('menuContentChanged'))
+		}
+
+		// Trigger after a short delay to ensure DOM is updated
+		const timer = setTimeout(triggerScrollRecalculation, 200)
+
+		return () => clearTimeout(timer)
+	}, [sortedCategories])
+
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
+		// Trigger scroll recalculation when accordion sections change
+		setTimeout(() => {
+			window.dispatchEvent(new CustomEvent('menuContentChanged'))
+		}, 100)
 	}
 
 	const getLink = useMemo(() => {
@@ -77,7 +95,7 @@ export default function MenuClientWrapper({
 
 			<FloatingMenu categories={sortedCategories as unknown as Category[]} />
 
-			<div className="pb-[3rem] mb-[3rem]">
+			<div ref={contentRef} className="pb-[3rem] mb-[3rem]">
 				{sortedCategories.length > 0 ? (
 					<>
 						<MenuAccordion

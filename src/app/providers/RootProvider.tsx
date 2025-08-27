@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode } from "react"
-import { ScrollProvider } from './ScrollbarProvider'
+import { ScrollProvider } from './ProgressbarProvider'
 import { SnackbarProvider } from "./SnackbarProvider"
 import StoreProvider from "./StoreProvider"
 

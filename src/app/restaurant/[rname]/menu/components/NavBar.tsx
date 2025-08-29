@@ -46,16 +46,13 @@ const NavBar = ({
 							<ChevronLeft_Ic className="w-5 h-5 stroke-3" />
 						</Link>
 
-						<Link href={link ?? `/restaurant/${rname}`}>
-							<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">
-								{restaurantInfo?.name}
-							</div>
-						</Link>
+						<div className="text-md w-40 font-bold truncate ml-4 max-w-xs">
+							{restaurantInfo?.name}
+						</div>
 					</div>
 
 					<div className="flex items-center h-12">
 						{/* cart icon */}
-
 						{showCart && (
 							<div className="relative">
 								<Link href={`/restaurant/${rname}/cart`}>
@@ -79,15 +76,17 @@ const NavBar = ({
 						)}
 
 						{showLogo && restaurantInfo?.name && (
-							<div
-								className="w-12 rounded-full cursor-pointer ml-4 aspect-[1]"
-								style={{
-									backgroundImage: logoImg,
-									backgroundSize: "contain",
-									backgroundRepeat: "no-repeat",
-									backgroundPosition: "center"
-								}}
-							/>
+							<Link href={link ?? `/restaurant/${rname}`}>
+								<div
+									className="w-12 rounded-full cursor-pointer ml-4 aspect-[1]"
+									style={{
+										backgroundImage: logoImg,
+										backgroundSize: "contain",
+										backgroundRepeat: "no-repeat",
+										backgroundPosition: "center"
+									}}
+								/>
+							</Link>
 						)}
 					</div>
 				</div>

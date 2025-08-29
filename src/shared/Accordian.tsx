@@ -26,8 +26,8 @@ const Accordion: React.FC<AccordionProps> = ({
 		sections.map((_, index) => index)
 	)
 
-	// Filter state
-	const [activeFilter, setActiveFilter] = useState<FilterType>("all")
+	// Filter state - now supports multiple filters
+	const [activeFilters, setActiveFilters] = useState<FilterType[]>(["all"])
 
 	// Extract all available allergens from menu items
 	const availableAllergens = useMemo(() => {
@@ -59,39 +59,57 @@ const Accordion: React.FC<AccordionProps> = ({
 		[sections]
 	)
 
-	// Memoized filter function
+	// Memoized filter function - now handles multiple filters
 	const filterProducts = useCallback(
 		(products: Category["products"]) => {
-			if (activeFilter === "all") return products
+			// If "all" is selected, return all products
+			if (activeFilters.includes("all")) return products
 
 			return products.filter((product) => {
 				const isVeg = product.variants?.[0]?.is_veg
+				const allergens = product.variants?.[0]?.allergens
+				const productAllergens =
+					allergens && allergens.trim() !== "" && allergens !== "null"
+						? allergens.split(",").map((a) => a.trim())
+						: []
 
-				if (activeFilter === "veg") return isVeg
-				if (activeFilter === "non-veg") return !isVeg
+				// Check each active filter
+				return activeFilters.every((filter) => {
+					// Veg filter
+					if (filter === "veg") return isVeg
+					if (filter === "non-veg") return !isVeg
 
-				// Check if activeFilter is allergen-free
-				if (activeFilter === "allergen-free") {
-					// Show products that have NO allergens
-					const allergens = product.variants?.[0]?.allergens
-					return !allergens || allergens.trim() === "" || allergens === "null"
-				}
-
-				// Check if activeFilter is an allergen name
-				if (availableAllergens.includes(activeFilter)) {
-					// Show products that DO contain this specific allergen
-					const allergens = product.variants?.[0]?.allergens
-					if (!allergens || allergens.trim() === "" || allergens === "null") {
-						return false // No allergens, so don't show
+					// Allergen-free filter
+					if (filter === "allergen-free") {
+						// Show items with no allergens OR only Jain allergen
+						if (!allergens || allergens.trim() === "" || allergens === "null") {
+							return true
+						}
+						// Check if only Jain allergen is present
+						const allergenList = allergens.split(",").map((a) => a.trim())
+						return allergenList.length === 1 && allergenList[0] === "Jain"
 					}
-					const productAllergens = allergens.split(",").map((a) => a.trim())
-					return productAllergens.includes(activeFilter)
-				}
 
-				return true
+					// Jain filter
+					if (filter === "Jain") {
+						return productAllergens.includes("Jain")
+					}
+
+					// Non-jain filter
+					if (filter === "non-jain") {
+						return !productAllergens.includes("Jain")
+					}
+
+					// Individual allergen filters
+					if (availableAllergens.includes(filter)) {
+						return productAllergens.includes(filter)
+					}
+
+					return true
+				})
 			})
 		},
-		[activeFilter, availableAllergens]
+		[activeFilters, availableAllergens]
 	)
 
 	// Memoized pure veg restaurant check
@@ -135,7 +153,23 @@ const Accordion: React.FC<AccordionProps> = ({
 	// Memoized filter change handler
 	const handleFilterChange = useCallback(
 		(filter: FilterType) => {
-			setActiveFilter(filter)
+			setActiveFilters((prevFilters) => {
+				// If "all" is clicked, reset to only "all"
+				if (filter === "all") {
+					return ["all"]
+				}
+
+				// If filter is already selected, remove it
+				if (prevFilters.includes(filter)) {
+					const newFilters = prevFilters.filter((f) => f !== filter)
+					// If no filters left, default to "all"
+					return newFilters.length > 0 ? newFilters : ["all"]
+				}
+
+				// Remove "all" if it's currently selected and add new filter
+				const filtersWithoutAll = prevFilters.filter((f) => f !== "all")
+				return [...filtersWithoutAll, filter]
+			})
 			// Use the original sections array to get all possible indexes
 			setOpenIndexes(sections.map((_, index) => index))
 		},
@@ -163,7 +197,7 @@ const Accordion: React.FC<AccordionProps> = ({
 			{(!isPureVegRestaurant || availableAllergens.length > 0) && (
 				<MenuFilters
 					onFilterChange={handleFilterChange}
-					activeFilter={activeFilter}
+					activeFilter={activeFilters}
 					availableAllergens={availableAllergens}
 					isPureVegRestaurant={isPureVegRestaurant}
 				/>

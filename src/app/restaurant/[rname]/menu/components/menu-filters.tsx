@@ -104,9 +104,18 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 	const handleFilterClick = useCallback(
 		(filterType: FilterType) => {
 			onFilterChange(filterType)
+			// Close dropdown only when "All" is clicked
+			if (filterType === "all") {
+				setIsOpen(false)
+			}
 		},
 		[onFilterChange]
 	)
+
+	// Clear all filters handler
+	const handleClearAll = useCallback(() => {
+		onFilterChange("all")
+	}, [onFilterChange])
 
 	// Get selected filters count for display
 	const selectedCount = activeFilters.filter((f) => f !== "all").length
@@ -145,16 +154,22 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 				{/* Dropdown Menu */}
 				{isOpen && (
 					<div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] max-h-80 overflow-y-auto">
-						<div className="p-2 border-b border-gray-100">
+						<div className="p-2 border-b border-gray-100 flex justify-between items-center">
 							<h3 className="text-sm font-semibold text-gray-700">
 								Filter Options
 							</h3>
+							<button
+								onClick={handleClearAll}
+								className="text-xs text-red-600 hover:text-red-700 font-medium"
+							>
+								Clear All
+							</button>
 						</div>
 						<div className="p-1">
 							{filters.map((filter) => (
 								<label
 									key={filter.type}
-									className="flex items-center gap-2 px-2 py-1 hover:bg-gray-50 rounded cursor-pointer"
+									className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-50 rounded cursor-pointer"
 								>
 									<input
 										type="checkbox"

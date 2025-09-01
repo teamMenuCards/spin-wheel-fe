@@ -39,8 +39,8 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 						}
 				  ]
 				: []),
-			// Add Jain filter if Jain allergen is present
-			...(availableAllergens.includes("Jain")
+			// Add Jain filter if Jain allergen is present (only for non-pure veg restaurants)
+			...(!isPureVegRestaurant && availableAllergens.includes("Jain")
 				? [
 						{
 							type: "Jain" as FilterType,
@@ -49,8 +49,8 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 						}
 				  ]
 				: []),
-			// Add Non-Jain filter if Jain allergen is present
-			...(availableAllergens.includes("Jain")
+			// Add Non-Jain filter if Jain allergen is present (only for non-pure veg restaurants)
+			...(!isPureVegRestaurant && availableAllergens.includes("Jain")
 				? [
 						{
 							type: "non-jain" as FilterType,
@@ -103,13 +103,25 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 	// Memoized filter click handler
 	const handleFilterClick = useCallback(
 		(filterType: FilterType) => {
-			onFilterChange(filterType)
+			// Handle Jain and Non-Jain as mutually exclusive
+			if (filterType === "Jain" || filterType === "non-jain") {
+				// If clicking on Jain, remove non-jain and vice versa
+				const otherFilter = filterType === "Jain" ? "non-jain" : "Jain"
+				onFilterChange(filterType)
+				// Also remove the other filter if it's currently selected
+				if (activeFilters.includes(otherFilter)) {
+					onFilterChange(otherFilter)
+				}
+			} else {
+				onFilterChange(filterType)
+			}
+
 			// Close dropdown only when "All" is clicked
 			if (filterType === "all") {
 				setIsOpen(false)
 			}
 		},
-		[onFilterChange]
+		[onFilterChange, activeFilters]
 	)
 
 	// Clear all filters handler
@@ -117,22 +129,24 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 		onFilterChange("all")
 	}, [onFilterChange])
 
-	// Get selected filters count for display
-	const selectedCount = activeFilters.filter((f) => f !== "all").length
+	// Get selected filters count for display (excluding Jain and Non-Jain since they're upfront buttons)
+	const selectedCount = activeFilters.filter(
+		(f) => f !== "all" && f !== "Jain" && f !== "non-jain"
+	).length
 
 	return (
-		<div className="sticky top-14 z-40 flex items-center justify-start gap-3 py-1 px-2 bg-white border-b border-gray-200 shadow-sm overflow-visible">
+		<div className="sticky top-14 z-40 flex items-center justify-start gap-2 py-1 px-2 bg-white border-b border-gray-200 shadow-sm overflow-visible">
 			{/* Filter Dropdown Button */}
 			<div className="relative flex-shrink-0" ref={dropdownRef}>
 				<button
 					onClick={() => setIsOpen(!isOpen)}
-					className="flex items-center gap-1 px-2 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-600 hover:border-gray-400 transition-all duration-200 min-w-0"
+					className="flex items-center gap-1 px-1 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-600 hover:border-gray-400 transition-all duration-200 min-w-0"
 				>
 					<Image
 						src="/filter-icon.svg"
 						alt="filter icon"
-						width={20}
-						height={20}
+						width={6}
+						height={6}
 						className="w-5 h-5"
 					/>
 					<span className="text-xs font-medium whitespace-nowrap min-w-0">
@@ -198,38 +212,59 @@ const MenuFilters: React.FC<MenuFiltersProps> = ({
 				)}
 			</div>
 
-			{/* Selected Filters Display */}
-			{selectedCount > 0 && (
-				<div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-					<span className="text-xs text-gray-500 whitespace-nowrap">
-						Active:
-					</span>
-					<div className="flex items-center gap-1 min-w-0">
+			{/* Scrollable container for all filter buttons */}
+			<div className="flex items-center gap-2 overflow-x-auto scrollbar-hide min-w-0">
+				{/* Jain and Non-Jain buttons for pure veg restaurants */}
+				{isPureVegRestaurant && availableAllergens.includes("Jain") && (
+					<>
+						<button
+							onClick={() => handleFilterClick("Jain")}
+							className={`px-1 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+								activeFilters.includes("Jain")
+									? "border-green-500 bg-green-50 text-green-700"
+									: "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+							}`}
+						>
+							Jain
+						</button>
+						<button
+							onClick={() => handleFilterClick("non-jain")}
+							className={`px-1 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+								activeFilters.includes("non-jain")
+									? "border-green-500 bg-green-50 text-green-700"
+									: "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+							}`}
+						>
+							Non-Jain
+						</button>
+					</>
+				)}
+
+				{/* Active Filters Display */}
+				{selectedCount > 0 && (
+					<>
 						{activeFilters
-							.filter((f) => f !== "all")
+							.filter((f) => f !== "all" && f !== "Jain" && f !== "non-jain")
 							.map((filter) => {
+								console.log("activeFiltersk--", activeFilters)
 								const filterInfo = filters.find((f) => f.type === filter)
 								return (
-									<span
+									<button
 										key={filter}
-										className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full whitespace-nowrap flex-shrink-0"
+										onClick={() => handleFilterClick(filter)}
+										className={`px-1 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
+											activeFilters.includes(filter)
+												? "border-green-500 bg-green-50 text-green-700"
+												: "border-gray-300 bg-white text-gray-600 hover:border-gray-400"
+										}`}
 									>
-										{filterInfo?.icon && (
-											<Image
-												src={filterInfo.icon}
-												alt={filterInfo.label}
-												width={12}
-												height={12}
-												className="w-3 h-3"
-											/>
-										)}
 										{filterInfo?.label}
-									</span>
+									</button>
 								)
 							})}
-					</div>
-				</div>
-			)}
+					</>
+				)}
+			</div>
 		</div>
 	)
 }

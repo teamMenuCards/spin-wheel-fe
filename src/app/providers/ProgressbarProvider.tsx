@@ -52,20 +52,26 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 
 	// Cache DOM measurements to avoid repeated queries
 	const updateMeasurements = useCallback(() => {
-		// Get the most accurate height by checking multiple sources
-		const docHeight = document.documentElement.scrollHeight
-		const bodyHeight = document.body.scrollHeight
-		const clientHeight = document.documentElement.clientHeight
-		
-		// Use the maximum of all height sources to ensure accuracy
-		const fullHeight = Math.max(docHeight, bodyHeight, clientHeight)
-		
-		measurementsRef.current = {
-			windowHeight: window.innerHeight,
-			fullHeight: fullHeight
+		try {
+			// Check if DOM is available
+			if (typeof document === "undefined" || typeof window === "undefined")
+				return
+
+			// Get the most accurate height by checking multiple sources
+			const docHeight = document.documentElement?.scrollHeight || 0
+			const bodyHeight = document.body?.scrollHeight || 0
+			const clientHeight = document.documentElement?.clientHeight || 0
+
+			// Use the maximum of all height sources to ensure accuracy
+			const fullHeight = Math.max(docHeight, bodyHeight, clientHeight)
+
+			measurementsRef.current = {
+				windowHeight: window.innerHeight,
+				fullHeight: fullHeight
+			}
+		} catch (error) {
+			console.warn("Error updating measurements:", error)
 		}
-		
-		
 	}, [])
 
 	// Force recalculation of measurements and progress
@@ -78,25 +84,29 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 
 	// Optimized scroll handler with throttling
 	const handleScroll = useCallback(() => {
-		const { windowHeight, fullHeight } = measurementsRef.current
-		const scrollPosition = window.scrollY
+		try {
+			const { windowHeight, fullHeight } = measurementsRef.current
+			const scrollPosition = window.scrollY
 
-		// Calculate progress
-		const progress = (scrollPosition / (fullHeight - windowHeight)) * 100
-		const clampedProgress = Math.min(Math.max(progress, 0), 100)
+			// Calculate progress
+			const progress = (scrollPosition / (fullHeight - windowHeight)) * 100
+			const clampedProgress = Math.min(Math.max(progress, 0), 100)
 
-		// Only update state if progress changed significantly (avoid micro-updates)
-		if (Math.abs(clampedProgress - scrollRef.current) > 0.5) {
-			scrollRef.current = clampedProgress
-			setScrollProgress(clampedProgress)
-		}
+			// Only update state if progress changed significantly (avoid micro-updates)
+			if (Math.abs(clampedProgress - scrollRef.current) > 0.5) {
+				scrollRef.current = clampedProgress
+				setScrollProgress(clampedProgress)
+			}
 
-		// Check if at bottom
-		const newIsAtBottom =
-			window.innerHeight + scrollPosition >= document.body.scrollHeight - 10
-		if (newIsAtBottom !== isAtBottomRef.current) {
-			isAtBottomRef.current = newIsAtBottom
-			setIsAtBottom(newIsAtBottom)
+			// Check if at bottom
+			const newIsAtBottom =
+				window.innerHeight + scrollPosition >= document.body.scrollHeight - 10
+			if (newIsAtBottom !== isAtBottomRef.current) {
+				isAtBottomRef.current = newIsAtBottom
+				setIsAtBottom(newIsAtBottom)
+			}
+		} catch (error) {
+			console.warn("Error in handleScroll:", error)
 		}
 	}, [])
 
@@ -110,30 +120,43 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 
 	// Setup MutationObserver to watch for DOM changes
 	useEffect(() => {
-		if (typeof window !== 'undefined' && window.MutationObserver) {
+		if (typeof window !== "undefined" && window.MutationObserver) {
 			mutationObserverRef.current = new MutationObserver((mutations) => {
-				// Check if any mutations affect the document height
-				const hasHeightChanges = mutations.some(mutation => {
-					return (
-						mutation.type === 'childList' ||
-						mutation.type === 'attributes' ||
-						mutation.type === 'characterData'
-					)
-				})
+				try {
+					// Check if any mutations affect the document height
+					const hasHeightChanges = mutations.some((mutation) => {
+						// Add null checks to prevent errors
+						if (!mutation.target || !document.body) return false
 
-				if (hasHeightChanges) {
-					// Debounce the recalculation to avoid excessive updates
-					setTimeout(forceRecalculation, 100)
+						return (
+							mutation.type === "childList" ||
+							mutation.type === "attributes" ||
+							mutation.type === "characterData"
+						)
+					})
+
+					if (hasHeightChanges) {
+						// Debounce the recalculation to avoid excessive updates
+						setTimeout(forceRecalculation, 100)
+					}
+				} catch (error) {
+					console.warn("MutationObserver error:", error)
 				}
 			})
 
 			// Start observing the document body for changes
-			mutationObserverRef.current.observe(document.body, {
-				childList: true,
-				subtree: true,
-				attributes: true,
-				attributeFilter: ['style', 'class']
-			})
+			if (document.body) {
+				try {
+					mutationObserverRef.current.observe(document.body, {
+						childList: true,
+						subtree: true,
+						attributes: true,
+						attributeFilter: ["style", "class"]
+					})
+				} catch (error) {
+					console.warn("Failed to observe document body:", error)
+				}
+			}
 		}
 
 		return () => {
@@ -162,9 +185,13 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 	useEffect(() => {
 		// Initial measurements with a small delay to ensure DOM is ready
 		const initMeasurements = () => {
-			updateMeasurements()
-			// Force a scroll calculation after measurements
-			requestAnimationFrame(handleScroll)
+			try {
+				updateMeasurements()
+				// Force a scroll calculation after measurements
+				requestAnimationFrame(handleScroll)
+			} catch (error) {
+				console.warn("Error in initMeasurements:", error)
+			}
 		}
 
 		// Small delay to ensure DOM is fully rendered
@@ -172,30 +199,56 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 
 		// Update measurements on resize
 		const handleResize = () => {
-			updateMeasurements()
-			// Recalculate progress after resize
-			requestAnimationFrame(handleScroll)
+			try {
+				updateMeasurements()
+				// Recalculate progress after resize
+				requestAnimationFrame(handleScroll)
+			} catch (error) {
+				console.warn("Error in handleResize:", error)
+			}
 		}
 
 		// Handle menu content changes
 		const handleMenuContentChange = () => {
-			// Force recalculation when menu content changes
-			setTimeout(forceRecalculation, 50)
+			try {
+				// Force recalculation when menu content changes
+				setTimeout(forceRecalculation, 50)
+			} catch (error) {
+				console.warn("Error in handleMenuContentChange:", error)
+			}
 		}
 
 		// Add event listeners
-		window.addEventListener("scroll", throttledHandleScroll, { passive: true })
-		window.addEventListener("resize", handleResize, { passive: true })
-		window.addEventListener("menuContentChanged", handleMenuContentChange)
+		try {
+			window.addEventListener("scroll", throttledHandleScroll, {
+				passive: true
+			})
+			window.addEventListener("resize", handleResize, { passive: true })
+			window.addEventListener("menuContentChanged", handleMenuContentChange)
+		} catch (error) {
+			console.warn("Error adding event listeners:", error)
+		}
 
 		// Cleanup function
 		return () => {
 			clearTimeout(timer)
-			window.removeEventListener("scroll", throttledHandleScroll)
-			window.removeEventListener("resize", handleResize)
-			window.removeEventListener("menuContentChanged", handleMenuContentChange)
+			try {
+				window.removeEventListener("scroll", throttledHandleScroll)
+				window.removeEventListener("resize", handleResize)
+				window.removeEventListener(
+					"menuContentChanged",
+					handleMenuContentChange
+				)
+			} catch (error) {
+				console.warn("Error removing event listeners:", error)
+			}
 		}
-	}, [throttledHandleScroll, updateMeasurements, handleScroll, forceRecalculation])
+	}, [
+		throttledHandleScroll,
+		updateMeasurements,
+		handleScroll,
+		forceRecalculation
+	])
 
 	return (
 		<ScrollContext.Provider value={{ scrollProgress, isAtBottom }}>

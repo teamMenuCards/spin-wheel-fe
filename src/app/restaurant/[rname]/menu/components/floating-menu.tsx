@@ -51,7 +51,7 @@ const FloatingMenu = ({ categories }: FloatingMenuProps) => {
 
 				// Scroll smoothly to the element
 				window.scrollTo({
-					top: elementPosition - 60, // Adjust for fixed navbar if needed
+					top: elementPosition - 100, // Adjust for fixed navbar if needed
 					behavior: "smooth"
 				})
 			}

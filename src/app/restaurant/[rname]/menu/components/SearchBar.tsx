@@ -5,11 +5,10 @@ import { useState } from "react"
 import { FiSearch } from "react-icons/fi"
 
 export interface SearchBarProps {
-	restaurantInfo?: string
 	rName: string
 }
 
-export default function SearchBar({ restaurantInfo, rName }: SearchBarProps) {
+export default function SearchBar({ rName }: SearchBarProps) {
 	const router = useRouter()
 	const [query, setQuery] = useState("")
 	const { isVisible } = useSnackbar()
@@ -34,7 +33,7 @@ export default function SearchBar({ restaurantInfo, rName }: SearchBarProps) {
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}
 					onClick={handleSearchClick}
-					placeholder={`Search In ${restaurantInfo}`}
+					placeholder={`Search In ${rName}`}
 					className="bg-gray-100 outline-none w-full text-black  text-md cursor-pointer"
 					readOnly
 				/>

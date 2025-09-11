@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { Category } from "@/services/product/get-menu-list"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { ChevronLeft_Ic } from "../../menu/icons"
 // import { RootState } from "@/store/store"
@@ -57,16 +57,16 @@ const CategoryNavBar = ({  restaurantInfo }: {  restaurantInfo: RestaurantDetail
 
 export default function MenuCategory({ categories, restaurantInfo }: CategoryListProps) {
 	const router = useRouter()
+	const params = useParams<{ rname: string }>()
 
 	const handleSkipToMenu = () => {
 		// Navigate to the menu page
-		router.push(`/restaurant/${window.location.pathname.split('/')[2]}/menu`)
+		router.push(`/restaurant/${params?.rname}/menu`)
 	}
 
 	const handleCategoryClick = (categoryId: string) => {
 		// Navigate to menu page with category ID as URL parameter
-		const restaurantName = window.location.pathname.split('/')[2]
-		router.push(`/restaurant/${restaurantName}/menu?scrollTo=${categoryId}`)
+		router.push(`/restaurant/${params?.rname}/menu?scrollTo=${categoryId}`)
 	}
 
 	return (

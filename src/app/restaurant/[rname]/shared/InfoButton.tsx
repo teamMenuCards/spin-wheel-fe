@@ -1,8 +1,7 @@
-import NextLink from "next/link"
-import { sendGTMEvent } from "@next/third-parties/google"
-import Image from "next/image"
-import { ICON_MAP, URL_PATTERNS, IconKey } from "../constants"
 import clsx from "clsx"
+import Image from "next/image"
+import NextLink from "next/link"
+import { ICON_MAP, IconKey, URL_PATTERNS } from "../constants"
 
 interface Props {
 	icon?: string
@@ -33,10 +32,6 @@ const InfoButton: React.FC<Props> = (props) => {
 			>
 				<div
 					onClick={(e) => {
-						sendGTMEvent({
-							event: "buttonClicked",
-							value: `xyz-${props.value}`
-						})
 						if (props.onClick) {
 							props.onClick(e)
 						}
@@ -74,10 +69,6 @@ const InfoButton: React.FC<Props> = (props) => {
 			<div
 				onClick={(e) => {
 					props.onClick?.(e)
-					sendGTMEvent({
-						event: "buttonClicked",
-						value: `xyz-${props.value}`
-					})
 				}}
 				className="flex items-center px-6 py-4 bg-white rounded-lg mb-4 shadow-md w-[80vw] md:max-w-[500px] mx-auto cursor-pointer relative border border-gray-200 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:bg-gray-50"
 			>

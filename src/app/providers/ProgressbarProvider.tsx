@@ -40,7 +40,13 @@ interface ScrollProviderProps {
 export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 	const [scrollProgress, setScrollProgress] = useState(0)
 	const [isAtBottom, setIsAtBottom] = useState(false)
+	const [isMounted, setIsMounted] = useState(false)
 	const pathname = usePathname()
+
+	// Ensure component is mounted on client side
+	useEffect(() => {
+		setIsMounted(true)
+	}, [])
 
 	const scrollRef = useRef<number>(0)
 	const isAtBottomRef = useRef(false)
@@ -183,6 +189,8 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 	}, [pathname, updateMeasurements, handleScroll])
 
 	useEffect(() => {
+		if (!isMounted) return
+
 		// Initial measurements with a small delay to ensure DOM is ready
 		const initMeasurements = () => {
 			try {
@@ -244,6 +252,7 @@ export const ScrollProvider: React.FC<ScrollProviderProps> = ({ children }) => {
 			}
 		}
 	}, [
+		isMounted,
 		throttledHandleScroll,
 		updateMeasurements,
 		handleScroll,

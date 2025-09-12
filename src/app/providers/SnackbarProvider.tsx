@@ -5,8 +5,8 @@ import {
 	ReactNode,
 	useCallback,
 	useContext,
-	useState,
-	useEffect
+	useEffect,
+	useState
 } from "react"
 import { createPortal } from "react-dom"
 
@@ -24,6 +24,12 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 	const [content, setContent] = useState<ReactNode | null>(null)
 	const [visible, setVisible] = useState(false)
 	const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null)
+	const [isMounted, setIsMounted] = useState(false)
+
+	// Ensure component is mounted on client side
+	useEffect(() => {
+		setIsMounted(true)
+	}, [])
 
 	const hideSnackbar = useCallback(() => {
 		// Clear any existing timeout
@@ -31,25 +37,28 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 			clearTimeout(timeoutId)
 			setTimeoutId(null)
 		}
-		
+
 		setVisible(false)
 		setTimeout(() => setContent(null), 300) // delay for exit animation
 	}, [timeoutId])
 
-	const showSnackbar = useCallback((newContent: ReactNode, duration?: number) => {
-		// Clear any existing timeout first
-		if (timeoutId) {
-			clearTimeout(timeoutId)
-		}
-		
-		setContent(newContent)
-		setVisible(true)
+	const showSnackbar = useCallback(
+		(newContent: ReactNode, duration?: number) => {
+			// Clear any existing timeout first
+			if (timeoutId) {
+				clearTimeout(timeoutId)
+			}
 
-		if (duration && duration > 0) {
-			const newTimeoutId = setTimeout(hideSnackbar, duration)
-			setTimeoutId(newTimeoutId)
-		}
-	}, [hideSnackbar, timeoutId])
+			setContent(newContent)
+			setVisible(true)
+
+			if (duration && duration > 0) {
+				const newTimeoutId = setTimeout(hideSnackbar, duration)
+				setTimeoutId(newTimeoutId)
+			}
+		},
+		[hideSnackbar, timeoutId]
+	)
 
 	// Cleanup on unmount
 	useEffect(() => {
@@ -65,7 +74,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 			value={{ showSnackbar, hideSnackbar, isVisible: visible }}
 		>
 			{children}
-			{typeof window !== "undefined" &&
+			{isMounted &&
 				createPortal(
 					<div
 						className={`fixed bottom-0 left-0 w-full z-[1400] transition-all duration-300 ${

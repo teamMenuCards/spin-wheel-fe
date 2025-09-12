@@ -1,5 +1,6 @@
 "use client"
 import { useFeatureList } from "@/hooks/useFeatureList"
+import { localStorage } from "@/lib/local-storage"
 import { Category } from "@/services/product/get-menu-list"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import MenuAccordion from "@/shared/Accordian"
@@ -7,7 +8,7 @@ import { CLIENT_APP_MODE, setMode } from "@/store/features/app.slice"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
 import { RootState } from "@/store/store"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import AddToCartDrawer from "../../components/add-to-cart-drawer"
 import ScrollProgressBar from "../../components/scroll-progress-bar"
@@ -36,14 +37,22 @@ export default function MenuClientWrapper({
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
 	const contentRef = useRef<HTMLDivElement>(null)
 	const searchParams = useSearchParams()
+	const [isClient, setIsClient] = useState(false)
 
-	// Check localStorage for persisted mode
+	// Ensure we're on client side
 	useEffect(() => {
+		setIsClient(true)
+	}, [])
+
+	// Check localStorage for persisted mode (only on client)
+	useEffect(() => {
+		if (!isClient) return
+
 		const currentAppMode = localStorage.getItem("appMode")
 		if (currentAppMode && currentAppMode !== mode) {
 			dispatch(setMode(currentAppMode as CLIENT_APP_MODE))
 		}
-	}, [dispatch, mode])
+	}, [dispatch, mode, isClient])
 
 	useEffect(() => {
 		// Only dispatch if restaurantInfo is different from current state
@@ -54,6 +63,8 @@ export default function MenuClientWrapper({
 
 	// Handle scroll to category from URL parameter
 	useEffect(() => {
+		if (!isClient) return
+
 		const scrollToCategory = searchParams.get("scrollTo")
 		if (scrollToCategory) {
 			// Wait for the page to fully load and render
@@ -75,10 +86,12 @@ export default function MenuClientWrapper({
 
 			return () => clearTimeout(timer)
 		}
-	}, [searchParams])
+	}, [searchParams, isClient])
 
 	// Trigger scroll recalculation when menu content changes
 	useEffect(() => {
+		if (!isClient) return
+
 		const triggerScrollRecalculation = () => {
 			// Dispatch a custom event to trigger scroll recalculation
 			window.dispatchEvent(new CustomEvent("menuContentChanged"))
@@ -88,14 +101,16 @@ export default function MenuClientWrapper({
 		const timer = setTimeout(triggerScrollRecalculation, 200)
 
 		return () => clearTimeout(timer)
-	}, [sortedCategories])
+	}, [sortedCategories, isClient])
 
 	const handleCategorySelection = (category: Category) => {
 		console.log(category)
 		// Trigger scroll recalculation when accordion sections change
-		setTimeout(() => {
-			window.dispatchEvent(new CustomEvent("menuContentChanged"))
-		}, 100)
+		if (isClient) {
+			setTimeout(() => {
+				window.dispatchEvent(new CustomEvent("menuContentChanged"))
+			}, 100)
+		}
 	}
 
 	const getLink = useMemo(() => {

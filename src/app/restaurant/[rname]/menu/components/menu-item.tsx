@@ -29,6 +29,7 @@ function MenuItem({
 	const dispatch = useDispatch()
 	const { rname } = useParams<{ rname: string }>()
 	const [openImg, setIsOpen] = useState(false)
+	const [imageError, setImageError] = useState(false)
 
 	/* 
 		Only specific restarants will have Ordering feature. 
@@ -165,8 +166,8 @@ function MenuItem({
 		<div className="mb-4">
 			<div className="flex flex-row-reverse items-start">
 				{/* Image Container with Button */}
-				<div className="relative w-[145px] h-[130px] flex flex-col items-center">
-					{!!prdImage ? (
+				<div className="relative w-[145px] h-[130px] flex flex-col items-center justify-center">
+					{!!prdImage && !imageError ? (
 						<div
 							className="w-full aspect-square bg-lightSteelBlue rounded-lg overflow-hidden"
 							onClick={handleImgContainerClick}
@@ -178,12 +179,12 @@ function MenuItem({
 								src={prdImage}
 								alt="food_img"
 								className="object-cover rounded-lg max-w-full h-auto"
+								onError={() => setImageError(true)}
 							/>
 
 							{/* ADD+ Button or IncrementOperator */}
 							<div className="mt-2">
 								{(updatedProduct?.quantity ?? 0) > 0 ? (
-									// <div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
 										<IncrementOperator
 											product={{
@@ -198,7 +199,6 @@ function MenuItem({
 									showAddBtn && (
 										<button
 											className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
-											// className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-14px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
 											onClick={(e) => {
 												e.stopPropagation()
 												handleAdd()
@@ -210,30 +210,40 @@ function MenuItem({
 								)}
 							</div>
 						</div>
-					) : // when item has Image URL but no image
-					(updatedProduct?.quantity ?? 0) > 0 ? (
-						<div className="h-[120px]">
-							<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
-								<IncrementOperator
-									product={{
-										...product,
-										quantity: updatedProduct?.quantity ?? 1
-									}}
-									onClickPlus={handleIncrement}
-									onClickMinus={handleDecrement}
-								/>
-							</div>
-						</div>
 					) : (
-						<div className="h-[120px]">
-							{showAddBtn && (
-								<button
-									className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
-									onClick={handleAdd}
-								>
-									ADD+
-								</button>
-							)}
+						/* Fallback when image fails to load or doesn't exist 
+						border-2 border-dashed border-gray-300 bg-gray-100 
+						*/
+						<div className="w-full aspect-squarerounded-lg overflow-hidden flex items-center justify-center ">
+							<div className="text-center">
+								<div className="text-4xl mb-2 opacity-50">🍽️</div>
+								{/* <p className="text-xs text-gray-500">No Image</p> */}
+							</div>
+
+							{/* ADD+ Button or IncrementOperator for fallback */}
+							<div className="mt-2">
+								{(updatedProduct?.quantity ?? 0) > 0 ? (
+									<div className="text-white absolute left-1/2 -translate-x-1/2 bottom-[-12px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500">
+										<IncrementOperator
+											product={{
+												...product,
+												quantity: updatedProduct?.quantity ?? 1
+											}}
+											onClickPlus={handleIncrement}
+											onClickMinus={handleDecrement}
+										/>
+									</div>
+								) : (
+									showAddBtn && (
+										<button
+											className="text-white absolute left-1/2 -translate-x-1/2 bottom-[35px] w-[100px] text-center font-bold rounded border-2 border-primary text-primary-foreground bg-lime-500"
+											onClick={handleAdd}
+										>
+											ADD+
+										</button>
+									)
+								)}
+							</div>
 						</div>
 					)}
 				</div>

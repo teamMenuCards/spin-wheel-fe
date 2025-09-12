@@ -12,6 +12,7 @@ import { RootState } from "@/store/store"
 import { ProductType, ProductVariantType } from "@/types"
 import Image from "next/image"
 import { useParams } from "next/navigation"
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import IncrementOperator from "../../../components/increment-operator"
 import { FEATURES } from "../../../types"
@@ -30,6 +31,7 @@ function ProductCard({
 	const { products: cartProducts } = useSelector(
 		(state: RootState) => state.cart
 	)
+	const [imageError, setImageError] = useState(false)
 
 	// This product is from redux, it has quantity key
 	const updatedProduct = cartProducts.find((item) => {
@@ -39,7 +41,6 @@ function ProductCard({
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
 	const isDeliveryMode = mode === CLIENT_APP_MODE.DELIVERY
 	const showAddBtn = hasOrderFeature && isDeliveryMode
-
 
 	const productDetails: ProductVariantType | undefined =
 		product &&
@@ -100,7 +101,7 @@ function ProductCard({
 		>
 			{/* Image - Larger size */}
 			<div className="w-full h-[140px] rounded-xl overflow-hidden mb-2 flex items-center justify-center relative">
-				{imageUrl && (
+				{imageUrl && !imageError ? (
 					<Image
 						fill
 						unoptimized
@@ -110,7 +111,15 @@ function ProductCard({
 						onClick={() => onImgClick(productDetails.image_url)}
 						className="hover:scale-105 transition-transform duration-200"
 						priority
+						onError={() => setImageError(true)}
 					/>
+				) : (
+					<div className="w-full h-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-xl">
+						<div className="text-center">
+							<div className="text-3xl mb-1 opacity-30">🍽️</div>
+							{/* <p className="text-xs text-gray-500">No Image</p> */}
+						</div>
+					</div>
 				)}
 			</div>
 

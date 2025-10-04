@@ -22,12 +22,12 @@ export function middleware(request: NextRequest) {
         Match path like "https://www.menu-cards.com/hav-coffee/table/f101"
         Redirect it to "https://www.menu-cards.com/restaurant/hav-coffee/dine-in"
     */
-    // const tableMatch = pathname.match(/^\/([^\/]+)\/table\/([a-zA-Z0-9]+)$/)
-    // if (tableMatch) {
-    //     const rname = tableMatch[1]
-    //     const newUrl = new URL(`/restaurant/${rname}/dine-in`, request.url)
-    //     return NextResponse.redirect(newUrl)
-    // }
+    const tableMatch = pathname.match(/^\/([^\/]+)\/table\/([a-zA-Z0-9]+)$/)
+    if (tableMatch) {
+        const rname = tableMatch[1]
+        const newUrl = new URL(`/restaurant/${rname}/dine-in`, request.url)
+        return NextResponse.redirect(newUrl)
+    }
 
     // Continue for all other requests
     return NextResponse.next()

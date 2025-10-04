@@ -1,7 +1,7 @@
+import { GoogleTagManager } from "@next/third-parties/google"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono, Montserrat } from "next/font/google"
 import Script from "next/script"
-// import { GoogleTagManager } from "@next/third-parties/google"
 import "./globals.css"
 
 import ErrorBoundary from "../components/shared/ErrorBoundary"
@@ -39,7 +39,7 @@ export default function RootLayout({
 		<html lang="en">
 			<head>
 				{/* Google Tag Manager Script */}
-				{/* <GoogleTagManager gtmId="GTM-N6WPVHXW" /> */}
+				<GoogleTagManager gtmId="GTM-N6WPVHXW" />
 
 				{/* Microsoft Clarity Script */}
 				<Script
@@ -60,14 +60,14 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} antialiased`}
 			>
-				{/* <noscript>
+				<noscript>
 					<iframe
 						src="https://www.googletagmanager.com/ns.html?id=GTM-N6WPVHXW"
 						height="0"
 						width="0"
 						style={{ display: "none", visibility: "hidden" }}
 					></iframe>
-				</noscript> */}
+				</noscript>
 				<ErrorBoundary>
 					<RootProvider>{children}</RootProvider>
 				</ErrorBoundary>

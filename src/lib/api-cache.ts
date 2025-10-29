@@ -1,6 +1,6 @@
-import { getMenuListServer } from "@/services/product/get-menu-list-server"
-import { getRestaurantDetailsServer } from "@/services/restaurant/get-restaurant-details-server"
+import { getMenuListServer } from "@/services/graphql/menu"
+import { getRestaurantDetailsServer } from "@/services/graphql/restaurant"
 
-// Direct exports without additional caching - let Next.js page-level caching handle it
+// Server-side functions using GraphQL exclusively
 export const getRestaurantDetails = getRestaurantDetailsServer
 export const getMenuList = getMenuListServer

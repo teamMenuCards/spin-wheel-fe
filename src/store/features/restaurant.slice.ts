@@ -1,4 +1,4 @@
-import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
+import { RestaurantDetailResponse } from "@/services/graphql/restaurant"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 interface RestaurantState {

@@ -2,62 +2,27 @@ import { gql } from "@apollo/client"
 
 // Query to get restaurant details by name
 export const GET_RESTAURANT_DETAILS = gql`
-	query GetRestaurantDetails($name: String!) {
-		restaurant(name: $name) {
+	query {
+		restaurantBySlug(slug: "cafe-cadell") {
 			id
 			name
-			display_name
-			active
-			createdAt
-			updatedAt
-			pincode
-			phone_no
-			email
-			address
-			city
-			country
-			state
-			logo
-			order_count_display
-			cover_image
-			feature_flags
-			dashboardLinks {
-				id
+			averagePrice
+			addressLine1
+			categories {
+				name
+			}
+			links {
 				name
 				url
-				image_url
-				display_order
-				active
-				createdAt
-				updatedAt
-				link_type
-				is_premium
 			}
-			details {
-				wa_api_details {
-					wa_number
-				}
-				platform_reviews {
-					platform_name
-					total_reviews
-					average_rating
-				}
-				reviews_image_url_details {
-					review_image_url
-				}
-				platform_details {
-					platform_name
-					platform_uri
-				}
-				meta_details {
-					category
-					opening_time
-					closing_time
-					phone_number
-					avg_price
-					avg_person
-					location_info
-				}
+			theme {
+				logo
+				coverImage
+			}
+			thirdPartyReviews {
+				rating
+				reviewCount
+				platform
 			}
 		}
 	}

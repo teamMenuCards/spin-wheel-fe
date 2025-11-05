@@ -1,0 +1,554 @@
+"use client"
+import React, { useState, useEffect } from "react"
+import Image from "next/image"
+import WheelComponent from "./component/spinning-wheel"
+import { useParams } from "next/navigation"
+// NOTE: Spin wheel API removed - backend integration needed
+// TODO: Backend Integration Point - Import spin wheel API hook here when backend is ready
+// import { useSpinWheelMutation } from "@/services/spin-wheel/spin-wheel-api"
+import { SpinWheelSegment } from "@/types/spin-wheel.type"
+import { spinWheelContentManager } from "@/lib/spin-wheel-content-manager"
+import { SpinWheelContentConfig } from "@/lib/spin-wheel-content-manager"
+import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+import ReferralPopup from "./component/referralPopUp"
+
+export default function WheelPage() {
+	const [showPopup, setShowPopup] = useState(false)
+	const [showThankYouPopup, setShowThankYouPopup] = useState(false)
+	const [currentPrize, setCurrentPrize] = useState("")
+	const [currentSegment, setCurrentSegment] = useState<SpinWheelSegment | null>(
+		null
+	)
+	const [spinFinished, setSpinFinished] = useState(false)
+	const [showScrollToTop, setShowScrollToTop] = useState(false)
+	const { rname } = useParams<{ rname: string }>()
+
+	// Fetch restaurant data for review links
+	const { data: restaurantData, isLoading: restaurantLoading } =
+		useGetRestaurantDetailByNameQuery(rname)
+
+
+
+	// State for content manager config
+	const [segments, setSegments] = useState<SpinWheelSegment[]>([])
+	const [configLoading, setConfigLoading] = useState(true)
+	// State setters for config and active flag (values unused to avoid lint errors)
+	const [, setContentManagerConfig] = useState<SpinWheelContentConfig | null>(null)
+	const [, setIsSpinWheelActive] = useState<boolean>(true)
+
+	// Extract review links from restaurant data
+	const getReviewLinks = () => {
+		if (!restaurantData?.detail?.details?.platform_details) {
+			return { googleReviewLink: '', zomatoReviewLink: '' }
+		}
+
+		const platformDetails = restaurantData.detail.details.platform_details
+		const links: Record<string, string> = {}
+
+		platformDetails.forEach((item) => {
+			links[item.platform_name] = item.platform_uri
+		})
+
+		return {
+			googleReviewLink: links['google-review'] || '',
+			zomatoReviewLink: links['zomato-dine-in'] || ''
+		}
+	}
+
+	const { googleReviewLink, zomatoReviewLink } = getReviewLinks()
+
+	useEffect(() => {
+		const loadConfig = () => {
+			try {
+				// Always use default segments - no feature flags dependency
+				const config = spinWheelContentManager.getConfig(rname)
+
+				if (config && config.segments && config.segments.length > 0) {
+					setContentManagerConfig(config)
+					setSegments(config.segments)
+					setIsSpinWheelActive(config.isActive ?? true)
+					
+					console.log("🎡 Default segments loaded:", config.segments.length, "segments")
+					console.log("⚙️ Spin wheel settings:", {
+						isSpinWheelActive: config.isActive ?? true,
+						segmentsCount: config.segments.length
+					})
+				} else {
+					console.warn("⚠️ No default segments found, using empty array")
+					setContentManagerConfig(null)
+					setSegments([])
+					setIsSpinWheelActive(false)
+				}
+			} catch (error) {
+				console.error("Error loading spin wheel config:", error)
+				// Fallback: try to get default config even on error
+				try {
+					const fallbackConfig = spinWheelContentManager.getConfig(rname)
+					if (fallbackConfig && fallbackConfig.segments) {
+						setSegments(fallbackConfig.segments)
+						setIsSpinWheelActive(true)
+					} else {
+						setSegments([])
+						setIsSpinWheelActive(false)
+					}
+				} catch (fallbackError) {
+					console.error("Fallback config also failed:", fallbackError)
+					setSegments([])
+					setIsSpinWheelActive(false)
+				}
+			} finally {
+				setConfigLoading(false)
+			}
+		}
+
+		// Load config immediately when component mounts or rname changes
+		// No need to wait for restaurantData
+		if (rname) {
+			loadConfig()
+		}
+	}, [rname])
+
+	
+	useEffect(() => {
+		const handleScroll = () => {
+			const scrollContainer = document.querySelector('.overflow-y-auto');
+			if (scrollContainer) {
+				const { scrollTop } = scrollContainer;
+				const isAtTop = scrollTop < 100; 
+				setShowScrollToTop(!isAtTop);
+			}
+		};
+
+		// Add scroll listener when popup is shown
+		if (showPopup) {
+			const scrollContainer = document.querySelector('.overflow-y-auto');
+			if (scrollContainer) {
+				scrollContainer.addEventListener('scroll', handleScroll);
+				// Initial check
+				handleScroll();
+			}
+		}
+
+		return () => {
+			const scrollContainer = document.querySelector('.overflow-y-auto');
+			if (scrollContainer) {
+				scrollContainer.removeEventListener('scroll', handleScroll);
+			}
+		};
+	}, [showPopup])
+
+
+	const handleSpinFinish = async (
+		winner: string,
+		segment: SpinWheelSegment
+	) => {
+		setCurrentPrize(winner)
+		setCurrentSegment(segment)
+
+		// TODO: Backend Integration Point - Record spin result to backend
+		// This is where you should call the backend API to record the spin result
+		// Expected API: POST /restaurants/{name}/spin-wheel/spin
+		// Payload: { userId?: string, segmentId: string, prize: string, timestamp: string }
+		// Example:
+		// try {
+		//   await spinWheel({ restaurantName: rname, userId: userId }).unwrap()
+		// } catch (error) {
+		//   console.warn("Failed to record spin:", error)
+		// }
+		
+		setSpinFinished(true)
+		
+		// Only show referral popup if there's an actual discount (not "Better Luck Next Time")
+		if (segment.discountType !== 'no_prize' && winner !== "Better Luck Next Time!") {
+			setShowPopup(true)
+		} else {
+			// Go directly to thank you page for "Better Luck Next Time"
+			setShowThankYouPopup(true)
+		}
+	}
+
+	const handleSpinAttempt = () => {
+	
+	}
+
+	const handleSubmit = (selectedOptions: string, otherText?: string) => {
+		console.log("selectedOptions", selectedOptions, "otherText", otherText)
+		setShowThankYouPopup(true)
+		setShowPopup(false)
+	}
+
+
+	const getDiscountAmount = () => {
+		if (!currentSegment) return 200 // Default fallback
+		
+		if (currentSegment.discountType === 'no_prize') {
+			return 0
+		}
+		
+		if (currentSegment.discountType === 'percentage' && currentSegment.discountValue) {
+			// For percentage discounts, show a reasonable estimated amount
+			// This could be enhanced to calculate based on average order value
+			return currentSegment.discountValue * 10 // Rough estimate: 10% = 100rs, 20% = 200rs
+		}
+		
+		if (currentSegment.discountType === 'fixed' && currentSegment.discountValue) {
+			return currentSegment.discountValue
+		}
+		
+		// For free items, show a nominal discount value
+		if (currentSegment.discountType === 'free_item') {
+			return 150 // Default value for free items
+		}
+		
+		return 200 // Default fallback
+	}
+
+	// Enhanced loading component with white background and gradient accents
+	/* if (restaurantLoading) {
+		return (
+			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 relative overflow-hidden">
+					
+					<div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 opacity-50"></div>
+					
+					<div className="relative z-10">
+						<div className="relative">
+							<div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-6">
+								<div className="absolute inset-2 rounded-full border-2 border-transparent border-t-white animate-spin"></div>
+							</div>
+							<div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 blur-lg opacity-30"></div>
+						</div>
+						<h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+							Loading Spin Wheel
+						</h3>
+						<p className="text-gray-600">Preparing your lucky experience...</p>
+						<div className="flex justify-center space-x-1 mt-4">
+							<div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+							<div className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+							<div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+
+	
+	}
+ */
+	// Enhanced error state with white background and gradient accents
+	/* if (!contentManagerConfig || segments.length === 0) {
+		return (
+			
+			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 max-w-sm mx-4 relative overflow-hidden">
+					
+					<div className="absolute inset-0 bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 opacity-50"></div>
+					
+					<div className="relative z-10">
+						<div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full mb-4 shadow-lg">
+							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+							</svg>
+						</div>
+						<h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-4">
+							Spin Wheel Not Available
+						</h2>
+						<p className="text-gray-600 mb-6 leading-relaxed">
+							No spin wheel configuration found for this restaurant
+						</p>
+						<button
+							onClick={() => window.close()}
+							className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		)
+	}
+ */
+	// Enhanced disabled state with white background and gradient accents
+	/* if (!isSpinWheelActive) {
+		return (
+			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 max-w-sm mx-4 relative overflow-hidden">
+				
+					<div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 opacity-50"></div>
+					
+					<div className="relative z-10">
+						<div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4 shadow-lg">
+							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+						</div>
+						<h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4">
+							Spin Wheel Unavailable
+						</h2>
+						<p className="text-gray-600 mb-6 leading-relaxed">
+							The spin wheel is currently disabled. Please check back later!
+						</p>
+						<button
+							onClick={() => window.close()}
+							className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		)
+	} */
+
+	return (
+		<div className="w-full min-h-screen h-screen">
+			{!spinFinished && !showPopup && (
+				<div className="fixed inset-0 z-50 flex flex-col bg-white h-screen items-center justify-between py-4 sm:py-6 lg:py-8 px-4 sm:px-6">
+					{/* Background decorative elements */}
+					<div className="absolute inset-0 overflow-hidden pointer-events-none">
+						<div className="absolute top-8 sm:top-12 left-8 sm:left-12 w-24 sm:w-32 lg:w-36 h-24 sm:h-32 lg:h-36 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+						<div className="absolute bottom-8 sm:bottom-12 right-8 sm:right-12 w-32 sm:w-40 lg:w-44 h-32 sm:h-40 lg:h-44 bg-gradient-to-r from-pink-100 to-indigo-100 rounded-full blur-3xl opacity-60 animate-pulse" style={{animationDelay: '1s'}}></div>
+						<div className="absolute top-1/2 left-1/4 w-20 sm:w-24 lg:w-28 h-20 sm:h-24 lg:h-28 bg-gradient-to-r from-indigo-100 to-purple-100 rounded-full blur-2xl opacity-50 animate-pulse" style={{animationDelay: '2s'}}></div>
+					</div>
+					
+					{/* Header Section - Responsive */}
+					<div className="relative z-10 text-center space-y-2 sm:space-y-3 pt-4 sm:pt-6">
+						<h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+							🎡 Spin to Win
+						</h1>
+						<p className="text-sm sm:text-base text-gray-600 font-medium max-w-xs sm:max-w-sm mx-auto px-2">
+							Try your luck and win amazing prizes!
+						</p>
+						<div className="w-16 sm:w-20 lg:w-24 h-0.5 sm:h-1 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mx-auto"></div>
+					</div>
+					
+					{/* Wheel Component - Responsive */}
+					<div className="relative z-10 flex items-center justify-center flex-1 min-h-0 py-4 sm:py-6 lg:py-8">
+						<div className="w-full max-w-sm sm:max-w-md flex items-center justify-center">
+							<WheelComponent
+								segments={segments}
+								restaurantId={rname}
+								onFinished={handleSpinFinish}
+								onSpinAttempt={handleSpinAttempt}
+								primaryColor="black"
+								primaryColoraround="#ffffffb4"
+								contrastColor="white"
+								buttonText="SPIN"
+								isOnlyOnce={false}
+								size={280}
+								upDuration={50}
+								downDuration={2000}
+							/>
+						</div>
+					</div>
+					
+					{/* Bottom spacing for consistency */}
+					<div className="relative z-10 h-12 sm:h-16 lg:h-20 flex items-center justify-center">
+						
+						
+					</div>
+				</div>
+			)}
+
+			{showPopup && (
+				<ReferralPopup 
+					onSubmit={handleSubmit} 
+					onClose={() => {
+						setShowPopup(false)
+						setShowThankYouPopup(true)
+					}} 
+					discountAmount={getDiscountAmount()}
+				/>
+			)}
+
+			{showThankYouPopup && (
+				<div className="fixed inset-0 z-50 bg-white flex flex-col">
+				{/* Subtle background decorative elements */}
+				<div className="absolute inset-0 overflow-hidden pointer-events-none">
+					<div className="absolute top-12 left-8 w-32 h-32 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full blur-3xl opacity-40"></div>
+					<div className="absolute bottom-12 right-8 w-40 h-40 bg-gradient-to-r from-pink-50 to-indigo-50 rounded-full blur-3xl opacity-40"></div>
+					<div className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full blur-2xl opacity-30"></div>
+				</div>
+
+				{/* Main content container - scrollable without scrollbar */}
+				<div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-4 relative z-10">
+					{/* Scrollable content wrapper */}
+					<div className="min-h-full flex flex-col justify-start">
+						<div className="max-w-md mx-auto w-full space-y-6">
+							{/* Result Header - Clean and spacious */}
+							<div className="text-center space-y-4">
+								{currentPrize !== "Better Luck Next Time!" ? (
+									<>
+										{/* 
+										<div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full shadow-lg">
+											<svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+											</svg>
+										</div> */}
+										
+										{/* Success Message */}
+										<div className="space-y-2">
+											<h2 className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+												Congratulations!
+											</h2>
+											<div className="w-24 h-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mx-auto"></div>
+											<p className="text-md font-medium text-gray-700">
+												You have won: <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
+													{currentPrize}
+												</span>
+											</p>
+										</div>
+										{/* Celebration Image */}
+										<div className="flex justify-center relative mt-2">
+											<Image
+												src="/gift-open.png"
+												alt="Celebration"
+												width={90}
+												height={40}
+												className="object-contain drop-shadow-lg"
+											/>
+										</div>
+									</>
+								) : (
+									<>
+									
+										
+										{/* Better Luck Message */}
+										<div className="space-y-2">
+											<h2 className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-600 bg-clip-text text-transparent">
+												Better Luck Next Time!
+											</h2>
+											<div className="w-24 h-1 bg-gradient-to-r from-red-400 to-pink-500 rounded-full mx-auto"></div>
+										</div>
+										
+										{/* Better Luck Image */}
+										<div className="flex justify-center relative mt-4">
+											<Image
+												src="/unfortunate.png"
+												alt="Better luck next time"
+												width={90}
+												height={40}
+												className="object-contain drop-shadow-lg"
+											/>
+										</div>
+									</>
+								)}
+							</div>
+
+							{/* Feedback Section - Clean and spacious */}
+							<div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
+								<div className="text-center space-y-3 mb-2">
+									<div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-md">
+										<svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+										</svg>
+									</div>
+									<h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+										Your Feedback is Important to Us
+									</h3>
+									<div className="w-16 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto"></div>
+								</div>
+
+								{/* Review Buttons - Clean and touch-friendly */}
+								<div className="space-y-2">
+									<button
+										onClick={() => {
+											if (googleReviewLink) {
+												window.open(googleReviewLink)
+												// Navigate back to menu after opening review
+												setTimeout(() => {
+													window.location.href = `/restaurant/${rname}/menu`
+												}, 1000)
+											}
+										}}
+										className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-3 group"
+									>
+										<div className="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+											<Image
+												src="/google-logo.webp"
+												alt="Google"
+												width={16}
+												height={16}
+												className="object-contain"
+											/>
+										</div>
+										<span className="text-base font-bold">Share a Review on Google</span>
+										<svg className="w-5 h-5 opacity-80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+										</svg>
+									</button>
+
+									<div className="flex items-center justify-center space-x-4">
+										<div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+										<span className="text-sm font-bold text-gray-500 bg-white px-4 py-1 rounded-full shadow-sm">
+											OR
+										</span>
+										<div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+									</div>
+
+									<button
+										onClick={() => {
+											if (zomatoReviewLink) {
+												window.open(zomatoReviewLink)
+												// Navigate back to menu after opening review
+												setTimeout(() => {
+													window.location.href = `/restaurant/${rname}/menu`
+												}, 1000)
+											}
+										}}
+										className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-3 group"
+									>
+										<div className="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
+											<Image
+												src="/zomato-new.png"
+												alt="Zomato logo"
+												width={18}
+												height={18}
+												className="object-contain bg-white rounded-full p-0.5"
+											/>
+										</div>
+										<span className="text-base font-bold">Share a Review on Zomato</span>
+										<svg className="w-5 h-5 opacity-80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+										</svg>
+									</button>
+								</div>
+							</div>
+
+							{/* Thank You Section - Clean and minimal */}
+							<div className="text-center space-y-2">
+								<div className="flex items-center justify-center gap-3">
+									<h4 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+										Thank You
+									</h4>
+									<div className="relative">
+										<Image 
+											src="/heart.png" 
+											alt="Heart" 
+											width={20} 
+											height={20} 
+											className="drop-shadow-lg animate-pulse"
+										/>
+									</div>
+								</div>
+								
+								{currentSegment && (
+									<div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4 shadow-sm">
+										<p className="text-base font-medium text-gray-700 text-center">
+											💡 <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent font-bold">
+												Show this screen to staff to claim your discount
+											</span>
+										</p>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>
+			)}
+		</div>
+	)
+}

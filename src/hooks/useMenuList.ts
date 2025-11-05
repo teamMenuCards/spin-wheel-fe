@@ -1,6 +1,6 @@
 import { GET_MENU_LIST } from "@/graphql/queries/menu"
 import { Category } from "@/services/graphql/menu"
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 // Helper function to sort products by display order
 const sortProductsByDisplayOrder = (products: any[]) => {

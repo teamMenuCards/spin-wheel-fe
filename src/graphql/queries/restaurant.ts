@@ -1,14 +1,22 @@
 import { gql } from "@apollo/client"
 
-// Query to get restaurant details by name
+// Query to get restaurant details by slug
 export const GET_RESTAURANT_DETAILS = gql`
-	query {
-		restaurantBySlug(slug: "cafe-cadell") {
+	query GetRestaurantBySlug($slug: String!) {
+		restaurantBySlug(slug: $slug) {
 			id
 			name
+			openingTime
+			closingTime
+			email
+			phone
+			whatsapp
 			averagePrice
 			addressLine1
 			categories {
+				name
+			}
+			cuisines {
 				name
 			}
 			links {
@@ -24,6 +32,7 @@ export const GET_RESTAURANT_DETAILS = gql`
 				reviewCount
 				platform
 			}
+			settings
 		}
 	}
 `

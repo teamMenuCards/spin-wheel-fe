@@ -16,6 +16,8 @@ import { FEATURES } from "../../types"
 import NavBar from "./NavBar"
 import SearchBar from "./SearchBar"
 import FloatingMenu from "./floating-menu"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface MenuClientWrapperProps {
 	restaurantInfo: RestaurantDetailResponse
@@ -34,10 +36,12 @@ export default function MenuClientWrapper({
 	const { mode } = useSelector((state: RootState) => state.appState)
 	const { hasFeature } = useFeatureList(rname)
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
+	const hasSpinWheelFeature = hasFeature(FEATURES.SPIN_WHEEL_ENABLED)
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
 	const contentRef = useRef<HTMLDivElement>(null)
 	const searchParams = useSearchParams()
 	const [isClient, setIsClient] = useState(false)
+	const router = useRouter()
 
 	// Ensure we're on client side
 	useEffect(() => {
@@ -122,7 +126,7 @@ export default function MenuClientWrapper({
 
 	return (
 		<div ref={contentRef} className="min-h-screen bg-white">
-			{/* Temporarily disabled to fix DOM errors */}
+			
 			<ScrollProgressBar />
 			<NavBar
 				rname={rname}
@@ -130,11 +134,35 @@ export default function MenuClientWrapper({
 				showCart={!!hasOrderFeature}
 				restaurantInfo={restaurantInfo}
 			/>
+			
 			<SearchBar rName={rname} />
 			<MenuAccordion
 				sections={sortedCategories}
 				onSectionSelection={handleCategorySelection}
-			/>
+			/>  
+{/* Spin Wheel Banner */}
+{hasSpinWheelFeature && (
+				<div className="fixed bottom-14 z-50 left-0 right-0 bg-red-500/80 backdrop-blur-md px-4 py-3 flex items-center justify-between shadow-lg border-t border-red-400/30">
+					<div className="flex items-center gap-3">
+						<Image
+							src="/spin-wheel.png"
+							alt="Spin Wheel"
+							width={32}
+							height={32}
+							className="object-contain"
+						/>
+						<div className="text-white text-md font-bold">
+							Get up to 50% off
+						</div>
+					</div>
+					<button
+						onClick={() => router.push(`/restaurant/${rname}/menu/poll`)}
+						className="px-4 py-2 bg-white text-red-500 text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors"
+					>
+						Spin Now
+					</button>
+				</div>
+			)}
 			<FloatingMenu categories={sortedCategories} />
 			{hasOrderFeature && <AddToCartDrawer />}
 			{children}

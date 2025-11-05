@@ -6,7 +6,7 @@ interface IReviewsCarousel {
 	reviews: IReviews[]
 }
 function ReviewsCarousel({ reviews }: IReviewsCarousel) {
-	const reviewList = reviews[0]?.review_image_url?.split(",")
+	const reviewList = reviews[0]?.review_image_url?.split(",").map((url: string) => url.trim()).filter((url: string) => url.length > 0)
 
 	return (
 		<>

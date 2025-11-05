@@ -1,47 +1,79 @@
 import { GET_RESTAURANT_DETAILS } from "@/graphql/queries/restaurant"
 import { RestaurantDetailResponse } from "@/services/graphql/restaurant"
-import { useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client/react"
 
 export const useRestaurantDetails = (name: string) => {
 	const { data, loading, error, refetch } = useQuery(GET_RESTAURANT_DETAILS, {
-		variables: { name },
+		variables: { slug: name },
 		errorPolicy: "all",
 		fetchPolicy: "cache-first",
-		skip: !name // Skip query if name is not provided
-	})
-
-	console.log("useRestaurantDetails--", data)
+		skip: !name 
+	})	
+console.log("data", data)
 	// Transform GraphQL response to match expected format
-	const transformedData: RestaurantDetailResponse | null = data?.restaurant
+	const restaurant = (data as any)?.restaurantBySlug
+	console.log("restaurant", restaurant)
+	const transformedData: RestaurantDetailResponse | null = restaurant
 		? {
-				id: data.restaurant.id,
-				name: data.restaurant.name,
-				display_name: data.restaurant.display_name,
-				active: data.restaurant.active,
-				createdAt: data.restaurant.createdAt,
-				updatedAt: data.restaurant.updatedAt,
-				pincode: data.restaurant.pincode,
-				phone_no: data.restaurant.phone_no,
-				email: data.restaurant.email,
-				address: data.restaurant.address,
-				city: data.restaurant.city,
-				country: data.restaurant.country,
-				state: data.restaurant.state,
-				logo: data.restaurant.logo,
-				order_count_display: data.restaurant.order_count_display,
-				cover_image: data.restaurant.cover_image,
-				feature_flags: data.restaurant.feature_flags,
-				dashboardLinks: data.restaurant.dashboardLinks || [],
+				id: restaurant.id,
+				name: restaurant.name,
+				display_name: restaurant.name, // Use name as display_name if not available
+				active: true, // Default to true if not provided
+				createdAt: new Date().toISOString(), // Default if not available
+				updatedAt: new Date().toISOString(), // Default if not available
+				dashboardLinks: restaurant.links?.map((link: any) => ({
+					id: 0,
+					name: link.name,
+					url: link.url,
+					active: true
+				})) || [],
+				
 				detail: {
-					wa_api_details: data.restaurant.details?.wa_api_details || {},
-					platform_reviews: data.restaurant.details?.platform_reviews || [],
-					reviews_image_url_details:
-						data.restaurant.details?.reviews_image_url_details || [],
-					platform_details: data.restaurant.details?.platform_details || [],
-					meta_details: data.restaurant.details?.meta_details || {}
+					id: 0, // RestaurantDetailType expects number
+					pincode: "", // Not available in GraphQL response
+					phone_no: restaurant.phone || "",
+					email: restaurant.email || "",
+					address: restaurant.addressLine1 || "",
+					city: "", // Not available in GraphQL response
+					country: "", // Not available in GraphQL response
+					state: "", // Not available in GraphQL response
+					logo: restaurant.theme?.logo || "",
+					order_count_display: restaurant.settings?.uiThemeData?.orderCount || 0, // Default if not available
+					cover_image: restaurant.theme?.coverImage || "",
+					feature_flags: {}, // Default if not available
+					dashboardLinks: restaurant.links?.map((link: any) => ({
+						id: 0,
+						name: link.name,
+						url: link.url,
+						active: true
+					})) || [],
+					createdAt: new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+					details: {
+						wa_api_details: restaurant.whatsapp ? {
+							wa_number: restaurant.whatsapp
+						} : undefined,
+						platform_reviews: restaurant.thirdPartyReviews?.map((review: any) => ({
+							platform_name: review.platform,
+							total_reviews: review.reviewCount || 0,
+							average_rating: review.rating || 0
+						})) || [],
+						reviews_image_url_details: restaurant.settings?.uiThemeData?.reviewImageUrl?.length 
+							? [{ review_image_url: restaurant.settings.uiThemeData.reviewImageUrl.map((url: string) => url.trim()).join(", ") }]
+							: [],
+						platform_details: [],
+						meta_details: {
+							opening_time: restaurant.openingTime || "",
+							closing_time: restaurant.closingTime || "",
+							phone_number: restaurant.phone || "",
+							avg_price: restaurant.averagePrice || 0,
+							avg_person: restaurant.averagePerson || 0,
+							location_info: restaurant.addressLine1 || "",
+							category: restaurant.cuisines?.map((cuisine: any) => cuisine.name).join(", ") || ""
 				}
-		  }
-		: null
+			}
+		}
+	} : null
 
 	return {
 		data: transformedData,

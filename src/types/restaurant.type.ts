@@ -1,3 +1,5 @@
+import { FeatureFlags } from './feature-flags.type'
+
 export type RestaurantType = {
 	id: string
 	name: string
@@ -49,7 +51,7 @@ export type RestaurantDetailType = {
 	country: string
 	state: string
 	logo: string
-	feature_flags?: Record<string, boolean>
+	feature_flags?: FeatureFlags
 	order_count_display: number
 	cover_image: string
 	dashboardLinks?: IDynamicLink[]

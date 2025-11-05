@@ -145,9 +145,19 @@ export const apolloClient = new ApolloClient({
 
 // Server-side Apollo Client for SSR
 export const createServerApolloClient = () => {
+	// Create a server-side auth context that ensures Content-Type header is set
+	const serverAuthLink = setContext((_, { headers }) => {
+		return {
+			headers: {
+				...headers,
+				"Content-Type": "application/json"
+			}
+		}
+	})
+	
 	return new ApolloClient({
 		ssrMode: true,
-		link: from([errorLink, httpLink]), // No auth link for server-side
+		link: from([errorLink, serverAuthLink, httpLink]),
 		cache: new InMemoryCache(),
 		defaultOptions: {
 			query: {

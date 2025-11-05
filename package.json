@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 PORT=3001 next dev",
+		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 PORT=3000 next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
@@ -13,7 +13,7 @@
 		"setup-graphql": "node scripts/setup-graphql.js"
 	},
 	"dependencies": {
-		"@apollo/client": "^4.0.7",
+		"@apollo/client": "^4.0.9",
 		"@graphql-codegen/cli": "^6.0.0",
 		"@graphql-codegen/typescript": "^5.0.2",
 		"@graphql-codegen/typescript-operations": "^5.0.2",

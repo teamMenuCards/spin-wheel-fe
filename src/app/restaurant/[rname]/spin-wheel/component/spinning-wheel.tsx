@@ -1,14 +1,19 @@
 "use client"
 import React, { useEffect, useState, useRef, useCallback } from "react"
-import Image from "next/image"
 import { SpinWheelSegment } from "@/types/spin-wheel.type"
 import { spinWheelContentManager } from "@/lib/spin-wheel-content-manager"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 import { useParams } from "next/navigation"
+import { spinSpinner, SpinSpinnerResult } from "@/services/graphql/spinner-spin"
+import { InitialInstructionModal } from "./InitialInstructionModal"
+import { CopyNotification } from "./CopyNotification"
+import { PreviousWinnersModal } from "./PreviousWinnersModal"
+import { SpinButton } from "./SpinButton"
 
 interface WheelComponentProps {
 	segments: SpinWheelSegment[]
 	restaurantId: string
+	spinnerId?: string
 	winningSegment?: string
 	onFinished: (winner: string, segment: SpinWheelSegment) => void
 	onSpinAttempt?: (canSpin: boolean, reason?: string) => void
@@ -26,6 +31,7 @@ interface WheelComponentProps {
 const WheelComponent: React.FC<WheelComponentProps> = ({
 	segments,
 	restaurantId,
+	spinnerId,
 	onFinished,
 	onSpinAttempt,
 	primaryColor = "black",
@@ -49,6 +55,10 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const frames = useRef(0)
 	const [canSpin, setCanSpin] = useState(true)
 	const [spinMessage, setSpinMessage] = useState("")
+	const [isSpinning, setIsSpinning] = useState(false)
+	const targetSegment = useRef<SpinWheelSegment | null>(null)
+	const targetAngle = useRef<number | null>(null)
+	const initialAngle = useRef(0)
 	const { rname } = useParams<{ rname: string }>()
 	const { data: restaurantData } = useGetRestaurantDetailByNameQuery(rname)	
 
@@ -171,45 +181,106 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		draw(ctx)
 
 		const duration = new Date().getTime() - spinStart.current
-		let progress = 0
+		const FAST_SPIN_DURATION = 3000 // 3 seconds of fast spinning
+		const DECELERATION_DURATION = 1000 // 1 second to decelerate and stop
+		const TOTAL_DURATION = FAST_SPIN_DURATION + DECELERATION_DURATION
 		let finished = false
 
-		if (duration < upDuration) {
-			progress = duration / upDuration
-			angleDelta.current = maxSpeed.current * Math.sin((progress * Math.PI) / 2)
+		// If we have a target angle, animate towards it
+		if (targetAngle.current !== null) {
+			if (duration < FAST_SPIN_DURATION) {
+				// Phase 1: Fast spinning for 3 seconds
+				// Spin fast at constant speed (multiple rotations per second)
+				// At 60fps, 0.5 radians/frame = 30 radians/sec ≈ 4.77 rotations/sec
+				const fastSpinSpeed = 0.5 // radians per frame (fast spinning)
+				angleCurrent.current += fastSpinSpeed
+				
+				// Normalize angle to 0-2PI range
+				while (angleCurrent.current >= Math.PI * 2)
+					angleCurrent.current -= Math.PI * 2
+				while (angleCurrent.current < 0)
+					angleCurrent.current += Math.PI * 2
+			} else if (duration < TOTAL_DURATION) {
+				// Phase 2: Deceleration phase - smoothly stop at target
+				const decelProgress = (duration - FAST_SPIN_DURATION) / DECELERATION_DURATION
+				
+				// Use easing function for smooth deceleration (ease-out cubic)
+				const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+				const easedProgress = easeOutCubic(Math.min(decelProgress, 1))
+				
+				// Calculate the angle difference from current position to target
+				let angleDiff = targetAngle.current - angleCurrent.current
+				
+				// Normalize angle difference to shortest path (-PI to PI)
+				while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI
+				while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI
+				
+				// Interpolate from current angle to target angle
+				angleCurrent.current = angleCurrent.current + angleDiff * easedProgress
+				
+				// Normalize angle to 0-2PI range
+				while (angleCurrent.current >= Math.PI * 2)
+					angleCurrent.current -= Math.PI * 2
+				while (angleCurrent.current < 0)
+					angleCurrent.current += Math.PI * 2
+				
+				// Check if we've reached the target
+				if (decelProgress >= 1) {
+					finished = true
+				}
+			} else {
+				finished = true
+			}
 		} else {
-			progress = duration / downDuration
-			angleDelta.current =
-				maxSpeed.current * Math.sin((progress * Math.PI) / 2 + Math.PI / 2)
-			if (progress >= 1) finished = true
+			// Fallback to old animation if no target angle
+			let progress = 0
+
+			if (duration < upDuration) {
+				progress = duration / upDuration
+				angleDelta.current = maxSpeed.current * Math.sin((progress * Math.PI) / 2)
+			} else {
+				progress = duration / downDuration
+				angleDelta.current =
+					maxSpeed.current * Math.sin((progress * Math.PI) / 2 + Math.PI / 2)
+				if (progress >= 1) finished = true
+			}
+
+			angleCurrent.current += angleDelta.current
+			while (angleCurrent.current >= Math.PI * 2)
+				angleCurrent.current -= Math.PI * 2
 		}
 
-		angleCurrent.current += angleDelta.current
-		while (angleCurrent.current >= Math.PI * 2)
-			angleCurrent.current -= Math.PI * 2
-
-			if (finished) {
-			// Stop the wheel animation but keep drawing for 3 seconds
+		if (finished) {
+			// Stop the wheel animation
 			angleDelta.current = 0
 			clearInterval(timerHandle.current)
 			timerHandle.current = 0
+			isStarted.current = false
 			
-			// Continue drawing for 3 seconds to show the needle on winning segment
-			const showResultInterval = setInterval(() => {
+			// Ensure we're at the exact target angle
+			if (targetAngle.current !== null) {
+				angleCurrent.current = targetAngle.current % (Math.PI * 2)
+				if (angleCurrent.current < 0) angleCurrent.current += Math.PI * 2
 				draw(ctx)
-			}, 16) // ~60fps
+			}
 			
-			// After 3 seconds, finish the spin
+			// Wait a moment to show the result, then finish
 			setTimeout(() => {
-				clearInterval(showResultInterval)
 				setFinished(true)
-				if (currentSegment.current) {
-					
+				setIsSpinning(false)
+				
+				if (targetSegment.current) {
+					currentSegment.current = targetSegment.current
+					onFinished(targetSegment.current.text, targetSegment.current)
+				} else if (currentSegment.current) {
 					onFinished(currentSegment.current.text, currentSegment.current)
 				}
-				isStarted.current = false
-				checkSpinEligibility() 
-			}, 1000) // 3 seconds delay
+				
+				// Reset for next spin
+				targetSegment.current = null
+				targetAngle.current = null
+				checkSpinEligibility()
+			}, 500) // Small delay to show the result
 		}
 	}
 
@@ -384,32 +455,210 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		currentSegment.current = segments[i]
 	}
 
-	// Enhanced spin function with content manager integration
-	// TODO: Backend Integration Point - Optionally fetch winning segment from backend
-	// Expected API: POST /restaurants/{name}/spin-wheel/spin (can return pre-selected segment)
-	// Currently using frontend weighted selection via content manager
-	const spinWithContentManager = () => {
-		if (!canSpin) {
+	/**
+	 * Match API response to a segment in the wheel
+	 * Matches by discountType and discountValue, or by offer name
+	 */
+	const matchSegmentToApiResponse = (apiResult: SpinSpinnerResult | null): SpinWheelSegment | null => {
+		if (!apiResult || !apiResult.offer) {
+			return null
+		}
+
+		const offer = apiResult.offer
+		
+		// Try to match by discountType and discountValue first
+		if (offer.discountType && offer.discountValue !== undefined) {
+			const matched = segments.find(segment => {
+				// Normalize discount types for comparison
+				const segmentType = segment.discountType
+				const apiType = offer.discountType.toLowerCase()
+				
+				// Check if types match
+				const typeMatch = 
+					(segmentType === 'percentage' && apiType === 'percentage') ||
+					(segmentType === 'fixed' && apiType === 'fixed') ||
+					(segmentType === 'free_item' && (apiType === 'free_item' || apiType === 'free')) ||
+					(segmentType === 'no_prize' && (apiType === 'no_prize' || apiType === 'no prize'))
+				
+				if (!typeMatch) return false
+				
+				// For percentage and fixed, check value match
+				if ((segmentType === 'percentage' || segmentType === 'fixed') && segment.discountValue) {
+					return segment.discountValue === offer.discountValue
+				}
+				
+				// For free_item and no_prize, just check type
+				return true
+			})
+			
+			if (matched) return matched
+		}
+		
+		// Fallback: Try to match by offer name
+		if (offer.name) {
+			// Extract discount value from offer name (e.g., "spinner discount 60% on bill" -> 60)
+			// Try multiple patterns: "60% off", "discount 60%", "60% discount", etc.
+			const discountMatch = offer.name.match(/(\d+)%?\s*off/i) || 
+								  offer.name.match(/discount\s+(\d+)%/i) ||
+								  offer.name.match(/(\d+)%\s*discount/i) ||
+								  offer.name.match(/(\d+)%/i)
+			const discountValue = discountMatch ? parseInt(discountMatch[1], 10) : undefined
+			
+			if (discountValue !== undefined) {
+				// Try to match by discount value and type
+				const matched = segments.find(segment => {
+					if (segment.discountType === 'percentage' && segment.discountValue === discountValue) {
+						return true
+					}
+					// Also check if segment text contains the discount value
+					const segmentText = segment.text.toLowerCase()
+					return segmentText.includes(`${discountValue}%`) || segmentText.includes(`${discountValue} off`)
+				})
+				if (matched) return matched
+			}
+			
+			// Try to match by text/label similarity
+			const offerNameLower = offer.name.toLowerCase()
+			const matched = segments.find(segment => {
+				const segmentText = segment.text.toLowerCase()
+				
+				// Check if offer name contains segment text or vice versa
+				if (segmentText.includes(offerNameLower) || offerNameLower.includes(segmentText)) {
+					return true
+				}
+				
+				// Check if both contain the same discount value
+				if (discountValue !== undefined) {
+					return segmentText.includes(`${discountValue}%`) || segmentText.includes(`${discountValue} off`)
+				}
+				
+				return false
+			})
+			
+			if (matched) return matched
+		}
+		
+		// Last resort: return first segment if no match found
+		console.warn("Could not match API response to segment, using first segment as fallback", apiResult)
+		return segments.length > 0 ? segments[0] : null
+	}
+
+	/**
+	 * Calculate the target angle for a given segment
+	 * The needle uses angleCurrent + PI/2 to determine which segment it points to
+	 * We need to position the segment so its center is at the top where the needle points
+	 */
+	const calculateTargetAngle = (segment: SpinWheelSegment): number => {
+		const segmentIndex = segments.findIndex(s => s.id === segment.id)
+		if (segmentIndex === -1) {
+			console.warn("Segment not found, using index 0")
+			return 0
+		}
+		
+		// Each segment occupies (2 * PI) / segments.length radians
+		const segmentAngle = (2 * Math.PI) / segments.length
+		
+		// The center of the segment in the wheel's coordinate system
+		// Segments are drawn starting from angle 0, so segment 0 starts at 0
+		// Segment center = segmentIndex * segmentAngle + segmentAngle / 2
+		const segmentCenterAngle = segmentIndex * segmentAngle + segmentAngle / 2
+		
+		// The needle calculation uses: change = angleCurrent + PI/2
+		// To position the segment center at the top (where needle points), we need:
+		// angleCurrent + PI/2 = segmentCenterAngle (mod 2*PI)
+		// So: angleCurrent = segmentCenterAngle - PI/2 (mod 2*PI)
+		// But we want to add multiple full rotations for suspense (2-3 rotations)
+		const fullRotations = 2 + Math.random() * 1 // 2-3 full rotations
+		const baseAngle = segmentCenterAngle - Math.PI / 2
+		
+		// Add full rotations and normalize
+		let targetAngle = baseAngle + fullRotations * 2 * Math.PI
+		
+		// Normalize to 0-2PI range
+		while (targetAngle < 0) targetAngle += 2 * Math.PI
+		while (targetAngle >= 2 * Math.PI) targetAngle -= 2 * Math.PI
+		
+		return targetAngle
+	}
+
+	/**
+	 * Enhanced spin function with API integration
+	 * Calls the spinSpinner API to get the winning segment, then animates the wheel
+	 */
+	const spinWithContentManager = async () => {
+		if (!canSpin || isSpinning) {
 			checkSpinEligibility()
 			return
 		}
 
-		// Use content manager to select the winning segment
-		// NOTE: This can be replaced with backend API call when backend is ready
-		const winningSegment = spinWheelContentManager.selectSegment(restaurantId)
-		if (winningSegment) {
-			// Set the winning segment for the visual spin
-			currentSegment.current = winningSegment
+		if (!spinnerId) {
+			console.error("Spinner ID is required to spin")
+			setSpinMessage("Spinner not available")
+			return
 		}
 
-		if (!isStarted.current) {
-			isStarted.current = true
-			spinStart.current = new Date().getTime()
-			maxSpeed.current = Math.PI / segments.length
-			frames.current = 0
-			timerHandle.current = window.setInterval(onTimerTick, segments.length)
+		// Disable spinning during API call
+		setIsSpinning(true)
+		setCanSpin(false)
+		setFinished(false)
+
+		try {
+			// Call the API to get the winning segment
+			const apiResult = await spinSpinner(spinnerId)
+			console.log("API Spin Result:", apiResult)
+
+			// Match API response to a segment
+			const matchedSegment = matchSegmentToApiResponse(apiResult)
 			
-			// Spin attempt started
+			if (!matchedSegment) {
+				console.error("Could not match API response to segment")
+				// Fallback to content manager selection
+				const fallbackSegment = spinWheelContentManager.selectSegment(restaurantId)
+				if (fallbackSegment) {
+					targetSegment.current = fallbackSegment
+					targetAngle.current = calculateTargetAngle(fallbackSegment)
+				} else {
+					setIsSpinning(false)
+					setCanSpin(true)
+					setSpinMessage("Unable to spin. Please try again.")
+					return
+				}
+			} else {
+				targetSegment.current = matchedSegment
+				targetAngle.current = calculateTargetAngle(matchedSegment)
+			}
+
+			// Store initial angle
+			initialAngle.current = angleCurrent.current
+			
+			// Start the spinning animation
+			if (!isStarted.current) {
+				isStarted.current = true
+				spinStart.current = new Date().getTime()
+				maxSpeed.current = Math.PI / segments.length
+				frames.current = 0
+				timerHandle.current = window.setInterval(onTimerTick, 16) // ~60fps
+			}
+		} catch (error) {
+			console.error("Error spinning spinner:", error)
+			setIsSpinning(false)
+			setCanSpin(true)
+			setSpinMessage("Error spinning. Please try again.")
+			
+			// Fallback to content manager on error
+			const fallbackSegment = spinWheelContentManager.selectSegment(restaurantId)
+			if (fallbackSegment) {
+				targetSegment.current = fallbackSegment
+				targetAngle.current = calculateTargetAngle(fallbackSegment)
+				
+				if (!isStarted.current) {
+					isStarted.current = true
+					spinStart.current = new Date().getTime()
+					maxSpeed.current = Math.PI / segments.length
+					frames.current = 0
+					timerHandle.current = window.setInterval(onTimerTick, 16)
+				}
+			}
 		}
 	}
 
@@ -459,306 +708,42 @@ const instaUserId = getInstagramUsername()
 				/>
 
 				{/* Spin button with enhanced design */}
-				<div className="flex flex-col items-center space-y-3 mt-6">
-					<button
-						className={`relative overflow-hidden font-black py-5 px-12 rounded-3xl transition-all duration-300 group text-lg min-w-[200px] ${
-							!canSpin || closeModal
-								? "bg-gradient-to-r from-gray-400 to-gray-500 text-gray-200 cursor-not-allowed shadow-lg"
-								: "bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white hover:from-purple-700 hover:via-pink-700 hover:to-red-700 active:scale-95 hover:scale-105 shadow-2xl hover:shadow-3xl"
-						}`}
-						style={{
-							boxShadow: !canSpin || closeModal 
-								? "0 10px 25px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-								: "0 20px 40px rgba(147, 51, 234, 0.4), 0 10px 20px rgba(236, 72, 153, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2)"
-						}}
-						onClick={(!canSpin || closeModal) ? undefined : spinWithContentManager}
-						disabled={!canSpin || closeModal}
-					>
-						{/* Enhanced animated background gradient */}
-						{!canSpin || closeModal ? null : (
-							<>
-								<div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-								<div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-pulse"></div>
-								{/* Button press effect */}
-								<div className="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-0 group-active:opacity-20 transition-opacity duration-150"></div>
-							</>
-						)}
-						
-						<span className="relative z-10 flex items-center justify-center gap-3">
-							{!canSpin ? (
-								<>
-									<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-									</svg>
-									<span className="text-base">Cannot Spin</span>
-								</>
-							) : (
-								<>
-									<span className="tracking-wider text-lg font-black">SPIN TO WIN</span>
-									<svg className="w-6 h-6 group-hover:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-									</svg>
-								</>
-							)}
-						</span>
-					</button>
-					
-					{spinMessage && (
-						<div className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-lg p-2 shadow-md">
-							<p className="text-xs text-center text-gray-700 font-semibold max-w-xs">
-								{spinMessage}
-							</p>
-						</div>
-					)}
-				</div>
+				<SpinButton
+					canSpin={canSpin}
+					isSpinning={isSpinning}
+					closeModal={closeModal}
+					onClick={spinWithContentManager}
+				/>
+				
+				{spinMessage && (
+					<div className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-lg p-2 shadow-md">
+						<p className="text-xs text-center text-gray-700 font-semibold max-w-xs">
+							{spinMessage}
+						</p>
+					</div>
+				)}
 		</div>
 	</div>
 
 	
 
-		
-    
-     {closeModal && (
- <div
-	className="fixed inset-0 flex items-end bg-white backdrop-blur-md z-40"
+		<InitialInstructionModal
+			isOpen={closeModal}
+			onClose={() => setCloseModal(false)}
+			onShowWinners={() => setShowWinnersModal(true)}
+			instagramUsername={instaUserId}
+			onCopyText={copyText}
+			isCopying={isCopying}
+			copySuccess={copySuccess}
+		/>
 
->
-	<div className="bg-gradient-to-br from-white via-gray-50 to-white rounded-t-3xl p-6 w-full max-w-sm mx-auto space-y-3 transform transition-all duration-500 ease-out translate-y-0 animate-slide-up shadow-2xl mb-0 relative overflow-hidden">
-		{/* Background decorative elements */}
-		<div className="absolute inset-0 overflow-hidden pointer-events-none">
-			<div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
-			<div className="absolute bottom-5 right-5 w-20 h-20 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full blur-xl opacity-20 animate-pulse" style={{animationDelay: '1s'}}></div>
-		</div>
+		<CopyNotification isVisible={copyNotification} />
 
-		{/* Header with enhanced gradient text */}
-		<div className="text-center space-y-2 relative z-10">
-			<div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-2xl relative">
-				<div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-60 scale-125 animate-pulse"></div>
-				<svg className="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
-				</svg>
-			</div>
-			<div className="space-y-2">
-				<h4 className="text-3xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent leading-tight">
-					Win Up To 50% Off
-				</h4>
-				<div className="flex items-center justify-center space-x-2">
-					<div className="w-8 h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-					<div className="w-2 h-2 bg-gradient-to-r from-pink-500 to-red-500 rounded-full animate-pulse"></div>
-					<div className="w-8 h-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full"></div>
-				</div>
-				<p className="text-lg font-semibold text-gray-700 mt-2">
-					🎉 Exclusive Discounts Available!
-				</p>
-			</div>
-		</div>
-
-		{/* Celebration image with enhanced styling */}
-		<div className="flex justify-center relative">
-			<div className="relative">
-				<div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl blur-lg opacity-30 scale-110"></div>
-				<Image
-					src="/spin-wheel2.png"
-					alt="Celebration"
-					width={120}
-					height={60}
-					className="object-contain relative z-10 drop-shadow-lg"
-				/>
-			</div>
-		</div>
-
-		{/* Enhanced instruction text */}
-		<div className="text-center space-y-2">
-			<p className="text-lg font-semibold text-gray-800 leading-relaxed">
-				Post an Instagram story and tag us to participate
-			</p>
-		{/* 	<div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
-				<div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-				<span>Limited time offer</span>
-				<div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-			</div> */}
-		</div>
-		{/* Enhanced copy button */}
-		<div className="space-y-1 relative z-10">
-			<div className="text-center">
-				<p className="text-sm font-medium text-gray-600 mb-2">Copy our Instagram handle:</p>
-			</div>
-			<div
-				className={`w-full text-lg font-semibold py-1 rounded-2xl transition-all duration-500 flex items-center justify-between px-6 relative overflow-hidden group ${
-					copySuccess 
-						? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg shadow-green-200' 
-						: isCopying
-						? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-200'
-						: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300'
-				}`}
-			>
-				{/* Animated background gradient */}
-				{!isCopying && !copySuccess && (
-					<div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-				)}
-				<span className="flex items-center gap-3 relative z-10">
-					{isCopying && !copySuccess ? (
-						<>
-							<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-							<span className="font-medium">Copying...</span>
-						</>
-					) : copySuccess ? (
-						<>
-							<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-							</svg>
-							<span className="font-medium">Copied!</span>
-						</>
-					) : (
-						<>
-							<div className="flex items-center gap-2">
-								{/* <svg className="w-5 h-5 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2" />
-								</svg> */}
-								<span className="font-medium">@{instaUserId}</span>
-							</div>
-						</>
-					)}
-				</span>
-				{!isCopying && !copySuccess && (
-					<div className="relative z-10">
-						<svg 
-							className="w-12 h-12 cursor-pointer hover:scale-110 active:scale-95 transition-all duration-200 opacity-90 hover:opacity-100 hover:bg-white hover:bg-opacity-20 rounded-xl p-2 backdrop-blur-sm" 
-							fill="none" 
-							stroke="currentColor" 
-							viewBox="0 0 24 24"
-							onClick={(e) => {
-								e.stopPropagation();
-								copyText(`@${instaUserId}`);
-							}}
-						>
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-						</svg>
-					</div>
-				)}
-			</div>
-		</div>
-
-		{/* Enhanced Post Story button */}
-		<button
-			onClick={() =>{ 
-				if (typeof window !== 'undefined') {
-					window.open("https://instagram.com")
-				}
-				setCloseModal(false)
-			}}
-			className="w-full bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 text-white text-lg font-bold py-4 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-pink-200 hover:shadow-xl hover:shadow-pink-300 hover:scale-105 active:scale-95 relative overflow-hidden group"
-		>
-			
-			<div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-			
-			<div className="relative z-10 flex items-center gap-2">
-				<div className="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:scale-110 transition-transform">
-					<Image
-						src="/instagram-icon.webp"
-						alt="instagram"
-						width={16}
-						height={16}
-						className="object-contain"
-					/>
-				</div>
-					<span className="font-bold">Post Story</span>
-				<svg className="w-5 h-5 opacity-80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-				</svg>
-			</div>
-		</button>
-		{/* Previous Winners Button - Always Visible */}
-	<button
-		onClick={() => {
-			
-			setShowWinnersModal(true);
-		}}
-		className="w-full max-w-sm mx-auto text-pink-500 font-bold text-base py-3 px-4 transition-all duration-200 hover:text-pink-600 active:scale-95 relative underline decoration-pink-500 hover:decoration-pink-600 decoration-2 underline-offset-2"
-		style={{ color: '#ec4899' }}
-	>
-		Previous winner who won
-	</button>
-	</div>
-</div>
-)}
-
-{/* Enhanced mobile-friendly copy notification */}
-{copyNotification && (
-	<div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 animate-slide-down">
-		<div className="bg-gradient-to-r from-green-400 to-emerald-500 text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-3 whitespace-nowrap mx-4 backdrop-blur-sm border border-white border-opacity-20 relative overflow-hidden">
-			{/* Animated background */}
-			<div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-green-500 opacity-0 animate-pulse"></div>
-			
-			<div className="relative z-10 flex items-center gap-3">
-				<div className="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-					<svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-					</svg>
-				</div>
-				<span className="text-sm font-semibold">Copied to clipboard!</span>
-				<div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-			</div>
-		</div>
-	</div>
-)}
-
-{/* Previous Winners Modal */}
-{showWinnersModal && (
-	<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-[60] p-4" onClick={() => setShowWinnersModal(false)}>
-		<div className="bg-white rounded-3xl p-6 w-full max-w-sm mx-auto space-y-2 transform transition-all duration-300 scale-100 shadow-2xl relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
-			{/* Background decorative elements */}
-			<div className="absolute inset-0 overflow-hidden pointer-events-none">
-				<div className="absolute top-3 left-3 w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
-				<div className="absolute bottom-3 right-3 w-16 h-16 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full blur-xl opacity-20 animate-pulse" style={{animationDelay: '1s'}}></div>
-			</div>
-
-			{/* Header */}
-			<div className="text-center space-y-2 relative z-10">
-				<div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-3 shadow-xl relative">
-					<div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-lg opacity-60 scale-125 animate-pulse"></div>
-					<svg className="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-					</svg>
-				</div>
-				<h3 className="text-2xl font-black bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 bg-clip-text text-transparent leading-tight">
-					Previous Winners
-				</h3>
-				<p className="text-sm text-gray-600 font-medium">
-					Congratulations to our lucky winners! 🎉
-				</p>
-			</div>
-
-			{/* Winners List */}
-			<div className="space-y-2 max-h-60 overflow-y-auto relative z-10">
-				{previousWinners.map((winner, index) => (
-					<div key={index} className="flex items-center justify-between bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100 hover:shadow-md transition-all duration-200">
-						<div className="flex items-center gap-3">
-							<div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
-								{index + 1}
-							</div>
-							<span className="font-semibold text-gray-800">{winner}</span>
-						</div>
-						<div className="flex items-center gap-1">
-							<svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-								<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-							</svg>
-							<span className="text-xs font-medium text-gray-600">Winner</span>
-						</div>
-					</div>
-				))}
-			</div>
-
-			{/* Close Button */}
-			<button
-				onClick={() => setShowWinnersModal(false)}
-				className="w-full bg-gradient-to-r from-gray-500 to-gray-600 text-white text-lg font-bold py-3 rounded-2xl transition-all duration-300 hover:from-gray-600 hover:to-gray-700 active:scale-95 shadow-lg hover:shadow-xl relative z-10"
-			>
-				Close
-			</button>
-		</div>
-	</div>
-)}
+		<PreviousWinnersModal
+			isOpen={showWinnersModal}
+			onClose={() => setShowWinnersModal(false)}
+			winners={previousWinners}
+		/>
 
     </>
 

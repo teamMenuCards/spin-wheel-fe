@@ -4,7 +4,7 @@ export const API_CONFIG = {
 	REST_BASE_URL:
 		process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4200/",
 	GRAPHQL_ENDPOINT:
-		process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4200/graphql",
+		process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:3001/graphql",
 
 	// Feature Flags - GraphQL is now the default
 	USE_GRAPHQL: process.env.NEXT_PUBLIC_USE_GRAPHQL !== "false",

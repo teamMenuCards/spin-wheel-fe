@@ -5,6 +5,7 @@ import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-d
 import Footer from "@/shared/Footer"
 import ScrollProgressBar from "./components/scroll-progress-bar"
 import ScrollButton from "./shared/ScrollButton"
+import { getSpinnerForRestaurantServer } from "@/services/graphql/spinner"
 
 /* 
 		"http://menu-cards.com/restaurant/<name>/
@@ -28,8 +29,6 @@ export default async function Page({
 }) {
 	const { rname } = await params
 	const restaurantDetails = await getRestaurantDetails(rname)
-	console.log("restaurantDetails", restaurantDetails)
-
 
 	// Handle null restaurant details
 	if (!restaurantDetails) {
@@ -43,6 +42,10 @@ export default async function Page({
 				</div>
 		)
 	}
+
+	// Fetch spinner data only if restaurant details exist
+	const spinnerData = await getSpinnerForRestaurantServer(restaurantDetails.id)
+	console.log("spinnerData", spinnerData)
 
 	return (
 		<div>

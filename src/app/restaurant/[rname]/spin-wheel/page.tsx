@@ -3,14 +3,12 @@ import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import WheelComponent from "./component/spinning-wheel"
 import { useParams } from "next/navigation"
-// NOTE: Spin wheel API removed - backend integration needed
-// TODO: Backend Integration Point - Import spin wheel API hook here when backend is ready
-// import { useSpinWheelMutation } from "@/services/spin-wheel/spin-wheel-api"
 import { SpinWheelSegment } from "@/types/spin-wheel.type"
 import { spinWheelContentManager } from "@/lib/spin-wheel-content-manager"
 import { SpinWheelContentConfig } from "@/lib/spin-wheel-content-manager"
-import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+import { useSpinnerForRestaurant } from "@/hooks/useSpinnerForRestaurant"
 import ReferralPopup from "./component/referralPopUp"
+import { getRestaurantDetailsClient } from "@/services/graphql/restaurant"
 
 export default function WheelPage() {
 	const [showPopup, setShowPopup] = useState(false)
@@ -23,11 +21,40 @@ export default function WheelPage() {
 	const [showScrollToTop, setShowScrollToTop] = useState(false)
 	const { rname } = useParams<{ rname: string }>()
 
-	// Fetch restaurant data for review links
-	const { data: restaurantData, isLoading: restaurantLoading } =
-		useGetRestaurantDetailByNameQuery(rname)
+	// State for restaurant details
+	const [restaurantId, setRestaurantId] = useState<string>('')
+	const [restaurantLoading, setRestaurantLoading] = useState(true)
+	const [restaurantData, setRestaurantData] = useState<any>(null)
 
+	// Fetch restaurant details using the new API
+	useEffect(() => {
+		const fetchRestaurantDetails = async () => {
+			try {
+				setRestaurantLoading(true)
+				const details = await getRestaurantDetailsClient(rname)
+				
+				if (details) {
+					setRestaurantData(details)
+					setRestaurantId(details.id || '')
+				} else {
+					setRestaurantId('')
+				}
+			} catch (error) {
+				setRestaurantId('')
+			} finally {
+				setRestaurantLoading(false)
+			}
+		}
 
+		if (rname) {
+			fetchRestaurantDetails()
+		}
+	}, [rname])
+
+	// Fetch spinner data from API
+	const { data: spinnerData, loading: spinnerLoading, error: spinnerError } = 
+		useSpinnerForRestaurant(restaurantId)
+	console.log("spinnerData", spinnerData)
 
 	// State for content manager config
 	const [segments, setSegments] = useState<SpinWheelSegment[]>([])
@@ -45,7 +72,7 @@ export default function WheelPage() {
 		const platformDetails = restaurantData.detail.details.platform_details
 		const links: Record<string, string> = {}
 
-		platformDetails.forEach((item) => {
+		platformDetails.forEach((item: { platform_name: string; platform_uri: string }) => {
 			links[item.platform_name] = item.platform_uri
 		})
 
@@ -60,53 +87,48 @@ export default function WheelPage() {
 	useEffect(() => {
 		const loadConfig = () => {
 			try {
-				// Always use default segments - no feature flags dependency
-				const config = spinWheelContentManager.getConfig(rname)
+			
+				if (!restaurantId) {
+					return
+				}
+
+				if (spinnerLoading) {
+					return
+				}
+
+				// Check if spinner data is available (null means API returned no data, undefined means still loading)
+				if (spinnerData === undefined) {
+					return
+				}
+
+				// Parse API data using content manager
+				// Pass spinnerData even if null (to indicate no data found)
+				const config = spinWheelContentManager.getConfig(restaurantId, spinnerData || null)
 
 				if (config && config.segments && config.segments.length > 0) {
 					setContentManagerConfig(config)
 					setSegments(config.segments)
 					setIsSpinWheelActive(config.isActive ?? true)
-					
-					console.log("🎡 Default segments loaded:", config.segments.length, "segments")
-					console.log("⚙️ Spin wheel settings:", {
-						isSpinWheelActive: config.isActive ?? true,
-						segmentsCount: config.segments.length
-					})
 				} else {
-					console.warn("⚠️ No default segments found, using empty array")
 					setContentManagerConfig(null)
 					setSegments([])
 					setIsSpinWheelActive(false)
 				}
 			} catch (error) {
-				console.error("Error loading spin wheel config:", error)
-				// Fallback: try to get default config even on error
-				try {
-					const fallbackConfig = spinWheelContentManager.getConfig(rname)
-					if (fallbackConfig && fallbackConfig.segments) {
-						setSegments(fallbackConfig.segments)
-						setIsSpinWheelActive(true)
-					} else {
-						setSegments([])
-						setIsSpinWheelActive(false)
-					}
-				} catch (fallbackError) {
-					console.error("Fallback config also failed:", fallbackError)
-					setSegments([])
-					setIsSpinWheelActive(false)
-				}
+				setSegments([])
+				setIsSpinWheelActive(false)
 			} finally {
 				setConfigLoading(false)
 			}
 		}
 
-		// Load config immediately when component mounts or rname changes
-		// No need to wait for restaurantData
-		if (rname) {
+		// Load config when restaurant ID and spinner data are available
+		if (restaurantId && !spinnerLoading) {
 			loadConfig()
+		} else if (!restaurantId && !restaurantLoading) {
+			setConfigLoading(false)
 		}
-	}, [rname])
+	}, [restaurantId, spinnerData, spinnerLoading, spinnerError, restaurantData, restaurantLoading])
 
 	
 	useEffect(() => {
@@ -145,16 +167,6 @@ export default function WheelPage() {
 		setCurrentPrize(winner)
 		setCurrentSegment(segment)
 
-		// TODO: Backend Integration Point - Record spin result to backend
-		// This is where you should call the backend API to record the spin result
-		// Expected API: POST /restaurants/{name}/spin-wheel/spin
-		// Payload: { userId?: string, segmentId: string, prize: string, timestamp: string }
-		// Example:
-		// try {
-		//   await spinWheel({ restaurantName: rname, userId: userId }).unwrap()
-		// } catch (error) {
-		//   console.warn("Failed to record spin:", error)
-		// }
 		
 		setSpinFinished(true)
 		
@@ -172,7 +184,6 @@ export default function WheelPage() {
 	}
 
 	const handleSubmit = (selectedOptions: string, otherText?: string) => {
-		console.log("selectedOptions", selectedOptions, "otherText", otherText)
 		setShowThankYouPopup(true)
 		setShowPopup(false)
 	}
@@ -188,7 +199,7 @@ export default function WheelPage() {
 		if (currentSegment.discountType === 'percentage' && currentSegment.discountValue) {
 			// For percentage discounts, show a reasonable estimated amount
 			// This could be enhanced to calculate based on average order value
-			return currentSegment.discountValue * 10 // Rough estimate: 10% = 100rs, 20% = 200rs
+			return currentSegment.discountValue * 10 
 		}
 		
 		if (currentSegment.discountType === 'fixed' && currentSegment.discountValue) {
@@ -203,14 +214,14 @@ export default function WheelPage() {
 		return 200 // Default fallback
 	}
 
-	// Enhanced loading component with white background and gradient accents
-	/* if (restaurantLoading) {
+	
+
+	// Show loading state while config is loading or segments are empty
+	if (configLoading || segments.length === 0) {
 		return (
 			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
 				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 relative overflow-hidden">
-					
 					<div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 opacity-50"></div>
-					
 					<div className="relative z-10">
 						<div className="relative">
 							<div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-6">
@@ -222,83 +233,20 @@ export default function WheelPage() {
 							Loading Spin Wheel
 						</h3>
 						<p className="text-gray-600">Preparing your lucky experience...</p>
-						<div className="flex justify-center space-x-1 mt-4">
-							<div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-							<div className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-							<div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		)
-
-	
-	}
- */
-	// Enhanced error state with white background and gradient accents
-	/* if (!contentManagerConfig || segments.length === 0) {
-		return (
-			
-			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 max-w-sm mx-4 relative overflow-hidden">
-					
-					<div className="absolute inset-0 bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 opacity-50"></div>
-					
-					<div className="relative z-10">
-						<div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full mb-4 shadow-lg">
-							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-							</svg>
-						</div>
-						<h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent mb-4">
-							Spin Wheel Not Available
-						</h2>
-						<p className="text-gray-600 mb-6 leading-relaxed">
-							No spin wheel configuration found for this restaurant
-						</p>
-						<button
-							onClick={() => window.close()}
-							className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
-						>
-							Close
-						</button>
+						{spinnerError && (
+							<p className="text-red-500 text-sm mt-2">Error: {spinnerError.message}</p>
+						)}
+						{!restaurantId && !restaurantLoading && (
+							<p className="text-yellow-500 text-sm mt-2">Restaurant ID not found</p>
+						)}
+						{restaurantId && !spinnerLoading && !spinnerData && (
+							<p className="text-yellow-500 text-sm mt-2">No spinner data found for this restaurant</p>
+						)}
 					</div>
 				</div>
 			</div>
 		)
 	}
- */
-	// Enhanced disabled state with white background and gradient accents
-	/* if (!isSpinWheelActive) {
-		return (
-			<div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
-				<div className="bg-white rounded-3xl p-8 text-center shadow-2xl border border-gray-200 max-w-sm mx-4 relative overflow-hidden">
-				
-					<div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 opacity-50"></div>
-					
-					<div className="relative z-10">
-						<div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mb-4 shadow-lg">
-							<svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-						</div>
-						<h2 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4">
-							Spin Wheel Unavailable
-						</h2>
-						<p className="text-gray-600 mb-6 leading-relaxed">
-							The spin wheel is currently disabled. Please check back later!
-						</p>
-						<button
-							onClick={() => window.close()}
-							className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
-						>
-							Close
-						</button>
-					</div>
-				</div>
-			</div>
-		)
-	} */
 
 	return (
 		<div className="w-full min-h-screen h-screen">
@@ -327,7 +275,8 @@ export default function WheelPage() {
 						<div className="w-full max-w-sm sm:max-w-md flex items-center justify-center">
 							<WheelComponent
 								segments={segments}
-								restaurantId={rname}
+								restaurantId={restaurantId || rname}
+								spinnerId={spinnerData?.id}
 								onFinished={handleSpinFinish}
 								onSpinAttempt={handleSpinAttempt}
 								primaryColor="black"

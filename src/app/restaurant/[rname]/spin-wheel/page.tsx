@@ -332,10 +332,21 @@ export default function WheelPage() {
 										
 										{/* Success Message */}
 										<div className="space-y-2">
-											<h2 className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-												Congratulations!
+											<h2 className={`text-2xl font-bold bg-clip-text text-transparent ${
+												currentSegment?.discountType === 'no_prize' 
+													? "bg-gradient-to-r from-gray-500 to-gray-600" 
+													: "bg-gradient-to-r from-green-500 to-emerald-600"
+											}`}>
+												{currentSegment?.discountType === 'no_prize' 
+													? "No Discount This Time" 
+													: "Congratulations!"
+												}
 											</h2>
-											<div className="w-24 h-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mx-auto"></div>
+											<div className={`w-24 h-1 rounded-full mx-auto ${
+												currentSegment?.discountType === 'no_prize' 
+													? "bg-gradient-to-r from-gray-400 to-gray-500" 
+													: "bg-gradient-to-r from-green-400 to-emerald-500"
+											}`}></div>
 											<p className="text-md font-medium text-gray-700">
 												You have won: <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
 													{currentPrize}

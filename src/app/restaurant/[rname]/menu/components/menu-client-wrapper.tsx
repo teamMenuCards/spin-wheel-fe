@@ -36,7 +36,7 @@ export default function MenuClientWrapper({
 	const { mode } = useSelector((state: RootState) => state.appState)
 	const { hasFeature } = useFeatureList(rname)
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
-	const hasSpinWheelFeature = hasFeature(FEATURES.SPIN_WHEEL_ENABLED)
+	const hasSpinWheelFeature =true
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
 	const contentRef = useRef<HTMLDivElement>(null)
 	const searchParams = useSearchParams()

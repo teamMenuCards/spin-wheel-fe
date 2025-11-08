@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState, useRef, useCallback } from "react"
 import { SpinWheelSegment } from "@/types/spin-wheel.type"
-import { spinWheelContentManager } from "@/lib/spin-wheel-content-manager"
 import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
 import { useParams } from "next/navigation"
 import { spinSpinner, SpinSpinnerResult } from "@/services/graphql/spinner-spin"
@@ -16,7 +15,6 @@ interface WheelComponentProps {
 	spinnerId?: string
 	winningSegment?: string
 	onFinished: (winner: string, segment: SpinWheelSegment) => void
-	onSpinAttempt?: (canSpin: boolean, reason?: string) => void
 	primaryColor?: string
 	primaryColoraround?: string
 	contrastColor?: string
@@ -33,7 +31,6 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	restaurantId,
 	spinnerId,
 	onFinished,
-	onSpinAttempt,
 	primaryColor = "black",
 	contrastColor = "white",
 	buttonText = "Spin",
@@ -50,14 +47,16 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const timerHandle = useRef(0)
 	const angleCurrent = useRef(0)
 	const angleDelta = useRef(0)
-	const maxSpeed = useRef(Math.PI / segments.length)
 	const spinStart = useRef(0)
 	const frames = useRef(0)
 	const [canSpin, setCanSpin] = useState(true)
 	const [spinMessage, setSpinMessage] = useState("")
 	const [isSpinning, setIsSpinning] = useState(false)
+	const [apiError, setApiError] = useState<string | null>(null)
+	const [showErrorModal, setShowErrorModal] = useState(false)
 	const targetSegment = useRef<SpinWheelSegment | null>(null)
-	const targetAngle = useRef<number | null>(null)
+	const targetAngle = useRef<number | null>(null) // Absolute target angle (with rotations)
+	const normalizedTargetAngle = useRef<number | null>(null) // Normalized target angle (0-2PI, should match baseAngle)
 	const initialAngle = useRef(0)
 	const { rname } = useParams<{ rname: string }>()
 	const { data: restaurantData } = useGetRestaurantDetailByNameQuery(rname)	
@@ -69,6 +68,104 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
   const [isCopying, setIsCopying] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
   const [showWinnersModal, setShowWinnersModal] = useState(false)
+
+
+	const segmentsWithDefault = React.useMemo(() => {
+		// Separate "No discount" segment from other segments
+		const noDiscountSegment = segments.find(
+			segment => segment.discountType === "no_prize" && segment.text.toLowerCase().includes("no discount")
+		)
+		const otherSegments = segments.filter(
+			segment => !(segment.discountType === "no_prize" && segment.text.toLowerCase().includes("no discount"))
+		)
+		
+		// Sort other segments by displayOrder to ensure consistent placement
+		const sortedOtherSegments = [...otherSegments].sort((a, b) => {
+			// Ensure displayOrder is defined, default to 999 if not
+			const orderA = a.displayOrder ?? 999
+			const orderB = b.displayOrder ?? 999
+			return orderA - orderB
+		})
+		
+		// Reorder: "No discount" first (displayOrder: 0), then other segments sorted by displayOrder
+		let orderedSegments: SpinWheelSegment[]
+		if (noDiscountSegment) {
+			orderedSegments = [noDiscountSegment, ...sortedOtherSegments]
+		} else {
+			// If no "No discount" segment exists, create it
+			const totalSegments = segments.length + 1
+			const anglePerSegment = 360 / totalSegments
+			
+			const defaultNoDiscountSegment: SpinWheelSegment = {
+				id: "default-no-discount",
+				text: "No discount",
+				color: "#808080",
+				probability: 0,
+				discountType: "no_prize",
+				isActive: true,
+				displayOrder: 0,
+				startAngle: 0,
+				endAngle: anglePerSegment,
+				centerAngle: anglePerSegment / 2
+			}
+			
+			orderedSegments = [defaultNoDiscountSegment, ...sortedOtherSegments]
+		}
+		
+		// Always recalculate angles based on final order to ensure consistency
+		// This ensures "No discount" is always at 0-72 degrees (or appropriate range)
+		const totalSegments = orderedSegments.length
+		const anglePerSegment = 360 / totalSegments
+		
+		const segmentsWithAngles = orderedSegments.map((segment, index) => {
+			const startAngle = index * anglePerSegment
+			const endAngle = (index + 1) * anglePerSegment
+			const centerAngle = startAngle + (anglePerSegment / 2)
+			
+			return {
+				...segment,
+				startAngle,
+				endAngle,
+				centerAngle
+			}
+		})
+		
+		return segmentsWithAngles
+	}, [segments])
+
+	// Helper function to get the "No discount" segment
+	const getNoDiscountSegment = (): SpinWheelSegment => {
+		const noDiscountSegment = segmentsWithDefault.find(
+			segment => segment.discountType === "no_prize" && segment.text.toLowerCase().includes("no discount")
+		)
+		
+		// If not found, create a default one with angles
+		if (!noDiscountSegment) {
+			const totalSegments = segmentsWithDefault.length || 1
+			const anglePerSegment = 360 / totalSegments
+			return {
+				id: "default-no-discount",
+				text: "No discount",
+				color: "#808080",
+				probability: 0,
+				discountType: "no_prize",
+				isActive: true,
+				displayOrder: 0,
+				startAngle: 0,
+				endAngle: anglePerSegment,
+				centerAngle: anglePerSegment / 2
+			}
+		}
+		
+		return noDiscountSegment
+	}
+
+	const maxSpeed = useRef(Math.PI / (segments.length > 0 ? segments.length : 1))
+
+	// Update maxSpeed when segmentsWithDefault changes
+	useEffect(() => {
+		maxSpeed.current = Math.PI / segmentsWithDefault.length
+	}, [segmentsWithDefault])
 
 	// Random winners data
 	const previousWinners = [
@@ -92,7 +189,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 	// Extract Instagram username from the link
 	const getInstagramUsername = () => {
-		const instagramLink = getInstagramLink()
+		const instagramLink = /* getInstagramLink()|| */"https://www.instagram.com/aamcheecafe/?hl=en"
 		const match = instagramLink.match(/instagram\.com\/([^\/\?]+)/)
 		return match ? match[1] : null
 	}
@@ -140,14 +237,8 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
   
 	 
 	// Extract colors and texts from segments
-	const segColors = segments.map(segment => segment.color)
-	const segmentTexts = segments.map(segment => segment.text)
-
-	const checkSpinEligibility = useCallback(() => {
-		setCanSpin(true)
-		setSpinMessage("")
-		onSpinAttempt?.(true)
-	}, [onSpinAttempt])
+	const segColors = segmentsWithDefault.map(segment => segment.color)
+	const segmentTexts = segmentsWithDefault.map(segment => segment.text)
 
 	const wheelInit = () => {
 		const canvas = canvasRef.current
@@ -167,11 +258,10 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 	useEffect(() => {
 		wheelInit()
-		checkSpinEligibility()
 		return () => {
 			if (timerHandle.current) clearInterval(timerHandle.current)
 		}
-	}, [checkSpinEligibility, wheelInit])
+	}, [wheelInit])
 
 	const onTimerTick = () => {
 		const ctx = canvasRef.current?.getContext("2d")
@@ -188,11 +278,27 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 		// If we have a target angle, animate towards it
 		if (targetAngle.current !== null) {
+			// Get the normalized target angle (the final stopping position)
+			const normalizedTarget = normalizedTargetAngle.current !== null 
+				? normalizedTargetAngle.current 
+				: (targetAngle.current % (Math.PI * 2) + (Math.PI * 2)) % (Math.PI * 2)
+			
+			// Calculate the shortest angle difference to target (always forward direction)
+			let angleDiff = normalizedTarget - angleCurrent.current
+			
+			// Normalize angle difference to ensure we always rotate forward
+			// If the difference is negative, add 2*PI to make it positive (forward rotation)
+			if (angleDiff < 0) {
+				angleDiff += 2 * Math.PI
+			}
+			// If the difference is more than 2*PI, we've already passed it, so add full rotations
+			// This ensures we always have a forward path to the target
+			if (angleDiff > 2 * Math.PI) {
+				angleDiff = angleDiff % (2 * Math.PI)
+			}
+			
 			if (duration < FAST_SPIN_DURATION) {
-				// Phase 1: Fast spinning for 3 seconds
-				// Spin fast at constant speed (multiple rotations per second)
-				// At 60fps, 0.5 radians/frame = 30 radians/sec ≈ 4.77 rotations/sec
-				const fastSpinSpeed = 0.5 // radians per frame (fast spinning)
+				const fastSpinSpeed = 0.5 
 				angleCurrent.current += fastSpinSpeed
 				
 				// Normalize angle to 0-2PI range
@@ -201,38 +307,57 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				while (angleCurrent.current < 0)
 					angleCurrent.current += Math.PI * 2
 			} else if (duration < TOTAL_DURATION) {
-				// Phase 2: Deceleration phase - smoothly stop at target
+				// Phase 2: Deceleration phase - smoothly stop at target (only forward rotation)
 				const decelProgress = (duration - FAST_SPIN_DURATION) / DECELERATION_DURATION
 				
 				// Use easing function for smooth deceleration (ease-out cubic)
 				const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
 				const easedProgress = easeOutCubic(Math.min(decelProgress, 1))
 				
-				// Calculate the angle difference from current position to target
-				let angleDiff = targetAngle.current - angleCurrent.current
+				// Recalculate angle difference to target (always forward)
+				let currentAngleDiff = normalizedTarget - angleCurrent.current
+				if (currentAngleDiff < 0) {
+					currentAngleDiff += 2 * Math.PI
+				}
 				
-				// Normalize angle difference to shortest path (-PI to PI)
-				while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI
-				while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI
+				// Calculate remaining distance to target
+				const remainingDistance = currentAngleDiff
 				
-				// Interpolate from current angle to target angle
-				angleCurrent.current = angleCurrent.current + angleDiff * easedProgress
+			
+				if (remainingDistance > 0.01) {
+
+					const speed = remainingDistance * (1 - easedProgress)
+					
+					angleCurrent.current += speed
+					
+					while (angleCurrent.current >= Math.PI * 2)
+						angleCurrent.current -= Math.PI * 2
+					while (angleCurrent.current < 0)
+						angleCurrent.current += Math.PI * 2
+					
+					let finalAngleDiff = normalizedTarget - angleCurrent.current
+					if (finalAngleDiff < 0) {
+						finalAngleDiff += 2 * Math.PI
+					}
+					
+					if (finalAngleDiff < 0.01 || finalAngleDiff > 2 * Math.PI - 0.01) {
+						angleCurrent.current = normalizedTarget
+						finished = true
+					}
+				} else {
+					angleCurrent.current = normalizedTarget
+					finished = true
+				}
 				
-				// Normalize angle to 0-2PI range
-				while (angleCurrent.current >= Math.PI * 2)
-					angleCurrent.current -= Math.PI * 2
-				while (angleCurrent.current < 0)
-					angleCurrent.current += Math.PI * 2
-				
-				// Check if we've reached the target
 				if (decelProgress >= 1) {
+					angleCurrent.current = normalizedTarget
 					finished = true
 				}
 			} else {
+				angleCurrent.current = normalizedTarget
 				finished = true
 			}
 		} else {
-			// Fallback to old animation if no target angle
 			let progress = 0
 
 			if (duration < upDuration) {
@@ -251,18 +376,29 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		}
 
 		if (finished) {
-			// Stop the wheel animation
 			angleDelta.current = 0
 			clearInterval(timerHandle.current)
 			timerHandle.current = 0
 			isStarted.current = false
 			
-			// Ensure we're at the exact target angle
-			if (targetAngle.current !== null) {
-				angleCurrent.current = targetAngle.current % (Math.PI * 2)
-				if (angleCurrent.current < 0) angleCurrent.current += Math.PI * 2
+			if (targetAngle.current !== null && normalizedTargetAngle.current !== null) {
+				const normalizedTarget = normalizedTargetAngle.current
+				angleCurrent.current = normalizedTarget
 				draw(ctx)
 			}
+			
+			const change = angleCurrent.current + Math.PI / 2
+			
+			let normalizedChange = change % (Math.PI * 2)
+			if (normalizedChange < 0) normalizedChange += Math.PI * 2
+			
+			const anglePerSegment = (Math.PI * 2) / segmentsWithDefault.length
+			let segmentIndex = Math.floor(normalizedChange / anglePerSegment)
+			
+			if (segmentIndex < 0) segmentIndex += segmentsWithDefault.length
+			if (segmentIndex >= segmentsWithDefault.length) segmentIndex -= segmentsWithDefault.length
+			
+			const finalSegment = segmentsWithDefault[segmentIndex]
 			
 			// Wait a moment to show the result, then finish
 			setTimeout(() => {
@@ -279,7 +415,9 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				// Reset for next spin
 				targetSegment.current = null
 				targetAngle.current = null
-				checkSpinEligibility()
+				normalizedTargetAngle.current = null
+				setCanSpin(true)
+				setSpinMessage("")
 			}, 500) // Small delay to show the result
 		}
 	}
@@ -381,8 +519,8 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		let lastAngle = angleCurrent.current
 		const PI2 = Math.PI * 2
 
-		for (let i = 1; i <= segments.length; i++) {
-			const angle = PI2 * (i / segments.length) + angleCurrent.current
+		for (let i = 1; i <= segmentsWithDefault.length; i++) {
+			const angle = PI2 * (i / segmentsWithDefault.length) + angleCurrent.current
 			drawSegment(ctx, i - 1, lastAngle, angle)
 			lastAngle = angle
 		}
@@ -422,7 +560,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		ctx.shadowBlur = 12
 		ctx.stroke()
 		ctx.shadowBlur = 0
-	}, [segments, primaryColor, contrastColor, fontFamily, buttonText, size, drawSegment])
+	}, [segmentsWithDefault, primaryColor, contrastColor, fontFamily, buttonText, size, drawSegment])
 
 	const draw = (ctx: CanvasRenderingContext2D) => {
 		drawWheel(ctx)
@@ -448,17 +586,14 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 		const change = angleCurrent.current + Math.PI / 2
 		let i =
-			segments.length -
-			Math.floor((change / (Math.PI * 2)) * segments.length) -
+			segmentsWithDefault.length -
+			Math.floor((change / (Math.PI * 2)) * segmentsWithDefault.length) -
 			1
-		if (i < 0) i += segments.length
-		currentSegment.current = segments[i]
+		if (i < 0) i += segmentsWithDefault.length
+		currentSegment.current = segmentsWithDefault[i]
 	}
 
-	/**
-	 * Match API response to a segment in the wheel
-	 * Matches by discountType and discountValue, or by offer name
-	 */
+
 	const matchSegmentToApiResponse = (apiResult: SpinSpinnerResult | null): SpinWheelSegment | null => {
 		if (!apiResult || !apiResult.offer) {
 			return null
@@ -466,9 +601,35 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 		const offer = apiResult.offer
 		
-		// Try to match by discountType and discountValue first
+		// Priority 1: Match by discountValue (most reliable)
+		// The server sends the winning segment with discountValue, use this to match
+		if (offer.discountValue !== undefined) {
+			const matched = segmentsWithDefault.find(segment => {
+				// Match by discountValue first (most accurate)
+				if (segment.discountValue === offer.discountValue) {
+					// Also verify discountType matches
+					const segmentType = segment.discountType
+					const apiType = offer.discountType?.toLowerCase() || ''
+					
+					const typeMatch = 
+						(segmentType === 'percentage' && (apiType === 'percentage' || apiType === '')) ||
+						(segmentType === 'fixed' && apiType === 'fixed') ||
+						(segmentType === 'free_item' && (apiType === 'free_item' || apiType === 'free')) ||
+						(segmentType === 'no_prize' && (apiType === 'no_prize' || apiType === 'no prize' || apiType === ''))
+					
+					return typeMatch
+				}
+				return false
+			})
+			
+			if (matched) {
+				return matched
+			}
+		}
+		
+		// Priority 2: Try to match by discountType and discountValue
 		if (offer.discountType && offer.discountValue !== undefined) {
-			const matched = segments.find(segment => {
+			const matched = segmentsWithDefault.find(segment => {
 				// Normalize discount types for comparison
 				const segmentType = segment.discountType
 				const apiType = offer.discountType.toLowerCase()
@@ -491,10 +652,12 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				return true
 			})
 			
-			if (matched) return matched
+			if (matched) {
+				return matched
+			}
 		}
 		
-		// Fallback: Try to match by offer name
+		// Priority 3: Fallback - Try to match by offer name
 		if (offer.name) {
 			// Extract discount value from offer name (e.g., "spinner discount 60% on bill" -> 60)
 			// Try multiple patterns: "60% off", "discount 60%", "60% discount", etc.
@@ -506,7 +669,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			
 			if (discountValue !== undefined) {
 				// Try to match by discount value and type
-				const matched = segments.find(segment => {
+				const matched = segmentsWithDefault.find(segment => {
 					if (segment.discountType === 'percentage' && segment.discountValue === discountValue) {
 						return true
 					}
@@ -514,12 +677,14 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 					const segmentText = segment.text.toLowerCase()
 					return segmentText.includes(`${discountValue}%`) || segmentText.includes(`${discountValue} off`)
 				})
-				if (matched) return matched
+				if (matched) {
+					return matched
+				}
 			}
 			
 			// Try to match by text/label similarity
 			const offerNameLower = offer.name.toLowerCase()
-			const matched = segments.find(segment => {
+			const matched = segmentsWithDefault.find(segment => {
 				const segmentText = segment.text.toLowerCase()
 				
 				// Check if offer name contains segment text or vice versa
@@ -535,59 +700,66 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				return false
 			})
 			
-			if (matched) return matched
+			if (matched) {
+				return matched
+			}
 		}
 		
-		// Last resort: return first segment if no match found
-		console.warn("Could not match API response to segment, using first segment as fallback", apiResult)
-		return segments.length > 0 ? segments[0] : null
+		// Last resort: return "No discount" segment if no match found
+		const fallbackSegment = getNoDiscountSegment()
+		return fallbackSegment
 	}
 
 	/**
-	 * Calculate the target angle for a given segment
+	 * Calculate the target angle for a given segment using its centerAngle property
 	 * The needle uses angleCurrent + PI/2 to determine which segment it points to
 	 * We need to position the segment so its center is at the top where the needle points
+	 * Uses the segment's centerAngle (in degrees) converted to radians
+	 * Returns both absolute angle (with rotations) and normalized angle (0-2PI, baseAngle)
 	 */
-	const calculateTargetAngle = (segment: SpinWheelSegment): number => {
-		const segmentIndex = segments.findIndex(s => s.id === segment.id)
-		if (segmentIndex === -1) {
-			console.warn("Segment not found, using index 0")
-			return 0
+	const calculateTargetAngle = (segment: SpinWheelSegment): { absolute: number; normalized: number } => {
+		// Use the segment's centerAngle if available (in degrees)
+		let segmentCenterAngleRad: number
+		
+		if (segment.centerAngle !== undefined) {
+			// Convert centerAngle from degrees to radians
+			segmentCenterAngleRad = (segment.centerAngle * Math.PI) / 180
+		} else {
+			// Fallback: calculate center angle from segment index
+			const segmentIndex = segmentsWithDefault.findIndex(s => s.id === segment.id)
+			if (segmentIndex === -1) {
+				return { absolute: 0, normalized: 0 }
+			}
+			
+			// Each segment occupies (2 * PI) / segmentsWithDefault.length radians
+			const segmentAngle = (2 * Math.PI) / segmentsWithDefault.length
+			segmentCenterAngleRad = segmentIndex * segmentAngle + segmentAngle / 2
 		}
 		
-		// Each segment occupies (2 * PI) / segments.length radians
-		const segmentAngle = (2 * Math.PI) / segments.length
+		let baseAngle = -Math.PI / 2 - segmentCenterAngleRad
 		
-		// The center of the segment in the wheel's coordinate system
-		// Segments are drawn starting from angle 0, so segment 0 starts at 0
-		// Segment center = segmentIndex * segmentAngle + segmentAngle / 2
-		const segmentCenterAngle = segmentIndex * segmentAngle + segmentAngle / 2
-		
-		// The needle calculation uses: change = angleCurrent + PI/2
-		// To position the segment center at the top (where needle points), we need:
-		// angleCurrent + PI/2 = segmentCenterAngle (mod 2*PI)
-		// So: angleCurrent = segmentCenterAngle - PI/2 (mod 2*PI)
-		// But we want to add multiple full rotations for suspense (2-3 rotations)
+		while (baseAngle < 0) baseAngle += 2 * Math.PI
+		while (baseAngle >= 2 * Math.PI) baseAngle -= 2 * Math.PI
+
 		const fullRotations = 2 + Math.random() * 1 // 2-3 full rotations
-		const baseAngle = segmentCenterAngle - Math.PI / 2
 		
-		// Add full rotations and normalize
 		let targetAngle = baseAngle + fullRotations * 2 * Math.PI
 		
-		// Normalize to 0-2PI range
-		while (targetAngle < 0) targetAngle += 2 * Math.PI
-		while (targetAngle >= 2 * Math.PI) targetAngle -= 2 * Math.PI
+		let currentAbs = angleCurrent.current
+		const EPS = 0.0001
 		
-		return targetAngle
+		while (targetAngle <= currentAbs + EPS) {
+			targetAngle += 2 * Math.PI
+		}
+		
+		const normalizedTarget = baseAngle
+		
+		return { absolute: targetAngle, normalized: normalizedTarget }
 	}
 
-	/**
-	 * Enhanced spin function with API integration
-	 * Calls the spinSpinner API to get the winning segment, then animates the wheel
-	 */
+	
 	const spinWithContentManager = async () => {
 		if (!canSpin || isSpinning) {
-			checkSpinEligibility()
 			return
 		}
 
@@ -603,29 +775,50 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		setFinished(false)
 
 		try {
-			// Call the API to get the winning segment
-			const apiResult = await spinSpinner(spinnerId)
-			console.log("API Spin Result:", apiResult)
-
-			// Match API response to a segment
-			const matchedSegment = matchSegmentToApiResponse(apiResult)
+			// Reset error state
+			setApiError(null)
+			setShowErrorModal(false)
 			
-			if (!matchedSegment) {
-				console.error("Could not match API response to segment")
-				// Fallback to content manager selection
-				const fallbackSegment = spinWheelContentManager.selectSegment(restaurantId)
-				if (fallbackSegment) {
-					targetSegment.current = fallbackSegment
-					targetAngle.current = calculateTargetAngle(fallbackSegment)
+			const apiResult = await spinSpinner(spinnerId)
+
+			let targetSegmentToUse: SpinWheelSegment | null = null
+
+			// Case 1: API returned null (entire response is null)
+			if (!apiResult) {
+				setApiError("Unable to connect to the server. Please check your connection and try again.")
+				setShowErrorModal(true)
+				setIsSpinning(false)
+				setCanSpin(true)
+				return // Don't proceed with spinning
+			}
+			// Case 2: API returned result but offer is null
+			else if (!apiResult.offer) {
+				targetSegmentToUse = getNoDiscountSegment()
+			}
+			// Case 3: API returned result with offer - try to match it
+			else {
+				const matchedSegment = matchSegmentToApiResponse(apiResult)
+				
+				if (!matchedSegment) {
+					targetSegmentToUse = getNoDiscountSegment()
 				} else {
-					setIsSpinning(false)
-					setCanSpin(true)
-					setSpinMessage("Unable to spin. Please try again.")
-					return
+					targetSegmentToUse = matchedSegment
 				}
+			}
+
+			// Set the target segment and angle
+			if (targetSegmentToUse) {
+				targetSegment.current = targetSegmentToUse
+				const targetAngleResult = calculateTargetAngle(targetSegmentToUse)
+				targetAngle.current = targetAngleResult.absolute
+				normalizedTargetAngle.current = targetAngleResult.normalized
 			} else {
-				targetSegment.current = matchedSegment
-				targetAngle.current = calculateTargetAngle(matchedSegment)
+				// Fallback: should never happen, but just in case
+				const noDiscountSegment = getNoDiscountSegment()
+				targetSegment.current = noDiscountSegment
+				const targetAngleResult = calculateTargetAngle(noDiscountSegment)
+				targetAngle.current = targetAngleResult.absolute
+				normalizedTargetAngle.current = targetAngleResult.normalized
 			}
 
 			// Store initial angle
@@ -635,34 +828,26 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			if (!isStarted.current) {
 				isStarted.current = true
 				spinStart.current = new Date().getTime()
-				maxSpeed.current = Math.PI / segments.length
+				maxSpeed.current = Math.PI / segmentsWithDefault.length
 				frames.current = 0
 				timerHandle.current = window.setInterval(onTimerTick, 16) // ~60fps
 			}
-		} catch (error) {
+		} catch (error: any) {
+			// Catch all errors: network errors, API errors, parsing errors, etc.
 			console.error("Error spinning spinner:", error)
+			
+			// Show error modal to user
+			const errorMessage = error?.message || error?.networkError?.message || 
+				"Unable to connect to the server. Please check your connection and try again."
+			setApiError(errorMessage)
+			setShowErrorModal(true)
 			setIsSpinning(false)
 			setCanSpin(true)
-			setSpinMessage("Error spinning. Please try again.")
-			
-			// Fallback to content manager on error
-			const fallbackSegment = spinWheelContentManager.selectSegment(restaurantId)
-			if (fallbackSegment) {
-				targetSegment.current = fallbackSegment
-				targetAngle.current = calculateTargetAngle(fallbackSegment)
-				
-				if (!isStarted.current) {
-					isStarted.current = true
-					spinStart.current = new Date().getTime()
-					maxSpeed.current = Math.PI / segments.length
-					frames.current = 0
-					timerHandle.current = window.setInterval(onTimerTick, 16)
-				}
-			}
+			// Don't proceed with spinning on error
 		}
 	}
 
-const instaUserId = getInstagramUsername()
+const instaUserId = getInstagramUsername() 
 	
 	return (
     <>
@@ -744,6 +929,79 @@ const instaUserId = getInstagramUsername()
 			onClose={() => setShowWinnersModal(false)}
 			winners={previousWinners}
 		/>
+
+		{/* Error Modal for API errors */}
+		{showErrorModal && (
+			<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+				<div className="relative bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 shadow-2xl border border-gray-200 animate-in fade-in zoom-in duration-300">
+					{/* Background decorative elements */}
+					<div className="absolute inset-0 overflow-hidden pointer-events-none rounded-3xl">
+						<div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-r from-red-100 to-orange-100 rounded-full blur-3xl opacity-30"></div>
+						<div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-full blur-2xl opacity-30"></div>
+					</div>
+
+					<div className="relative z-10">
+						{/* Error Icon */}
+						<div className="flex justify-center mb-4">
+							<div className="relative">
+								<div className="w-16 h-16 bg-gradient-to-r from-red-100 to-orange-100 rounded-full flex items-center justify-center">
+									<svg
+										className="w-8 h-8 text-red-500"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+										/>
+									</svg>
+								</div>
+								<div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+									<span className="text-white text-xs font-bold">!</span>
+								</div>
+							</div>
+						</div>
+
+						{/* Error Title */}
+						<h3 className="text-2xl font-bold text-center mb-3 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+							Oops! Something went wrong
+						</h3>
+
+						{/* Error Message */}
+						<p className="text-gray-600 text-center mb-6 leading-relaxed">
+							{apiError || "We couldn't process your spin. Please try again."}
+						</p>
+
+						{/* Action Buttons */}
+						<div className="flex flex-col sm:flex-row gap-3">
+							<button
+								onClick={() => {
+									setShowErrorModal(false)
+									setApiError(null)
+								}}
+								className="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+							>
+								Close
+							</button>
+							<button
+								onClick={() => {
+									setShowErrorModal(false)
+									setApiError(null)
+									// Retry the spin
+									spinWithContentManager()
+								}}
+								className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+							>
+								🔄 Try Again
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		)}
 
     </>
 

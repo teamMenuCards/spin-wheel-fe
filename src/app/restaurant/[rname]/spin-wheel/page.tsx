@@ -179,17 +179,13 @@ export default function WheelPage() {
 		}
 	}
 
-	const handleSpinAttempt = () => {
-	
-	}
-
 	const handleSubmit = (selectedOptions: string, otherText?: string) => {
 		setShowThankYouPopup(true)
 		setShowPopup(false)
 	}
 
 
-	const getDiscountAmount = () => {
+	const getDiscountValue = () => {
 		if (!currentSegment) return 200 // Default fallback
 		
 		if (currentSegment.discountType === 'no_prize') {
@@ -199,7 +195,7 @@ export default function WheelPage() {
 		if (currentSegment.discountType === 'percentage' && currentSegment.discountValue) {
 			// For percentage discounts, show a reasonable estimated amount
 			// This could be enhanced to calculate based on average order value
-			return currentSegment.discountValue * 10 
+			return currentSegment.discountValue
 		}
 		
 		if (currentSegment.discountType === 'fixed' && currentSegment.discountValue) {
@@ -278,7 +274,6 @@ export default function WheelPage() {
 								restaurantId={restaurantId || rname}
 								spinnerId={spinnerData?.id}
 								onFinished={handleSpinFinish}
-								onSpinAttempt={handleSpinAttempt}
 								primaryColor="black"
 								primaryColoraround="#ffffffb4"
 								contrastColor="white"
@@ -306,7 +301,7 @@ export default function WheelPage() {
 						setShowPopup(false)
 						setShowThankYouPopup(true)
 					}} 
-					discountAmount={getDiscountAmount()}
+					discountValue={getDiscountValue()}
 				/>
 			)}
 

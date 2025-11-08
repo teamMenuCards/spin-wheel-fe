@@ -35,6 +35,8 @@ class SpinWheelContentManager {
 
   /**
    * Parse API spinner data into SpinWheelContentConfig
+   * Calculates angles for each segment based on total segments
+   * Default "No discount" segment always gets 0-72 degrees (first segment)
    */
   parseApiData(restaurantId: string, spinnerData: SpinnerData | null): SpinWheelContentConfig | null {
     if (!spinnerData) {
@@ -45,7 +47,8 @@ class SpinWheelContentManager {
       return null
     }
 
-    const segments: SpinWheelSegment[] = spinnerData.distributions.map((distribution, index) => {
+    // First, create segments without angles
+    const segmentsWithoutAngles: SpinWheelSegment[] = spinnerData.distributions.map((distribution, index) => {
       const label = distribution.label || ''
       const percentage = distribution.percentage || 0
       
@@ -63,7 +66,7 @@ class SpinWheelContentManager {
         // Try to extract item name from offer name or label
         const itemMatch = label.match(/free\s+(\w+)/i) || distribution.offer?.name?.match(/free\s+(\w+)/i)
         freeItemName = itemMatch ? itemMatch[1] : 'Item'
-      } else if (lowerLabel.includes('better luck') || lowerLabel.includes('no prize') || lowerLabel.includes('try again')) {
+      } else if (lowerLabel.includes('better luck') || lowerLabel.includes('no prize') || lowerLabel.includes('try again') || lowerLabel.includes('no discount')) {
         discountType = 'no_prize'
       } else if (discountValue !== undefined) {
         discountType = 'percentage'
@@ -79,6 +82,44 @@ class SpinWheelContentManager {
         freeItemName,
         isActive: true,
         displayOrder: index + 1
+      }
+    })
+
+    // Separate "No discount" segment from other segments
+    const noDiscountSegment = segmentsWithoutAngles.find(
+      segment => segment.discountType === 'no_prize' && segment.text.toLowerCase().includes('no discount')
+    )
+    const otherSegments = segmentsWithoutAngles.filter(
+      segment => !(segment.discountType === 'no_prize' && segment.text.toLowerCase().includes('no discount'))
+    )
+
+    // Sort other segments by displayOrder to ensure consistent placement
+    const sortedOtherSegments = [...otherSegments].sort((a, b) => {
+      // Ensure displayOrder is defined, default to 999 if not
+      const orderA = a.displayOrder ?? 999
+      const orderB = b.displayOrder ?? 999
+      return orderA - orderB
+    })
+
+    // Reorder: "No discount" first (displayOrder: 0), then other segments sorted by displayOrder
+    const orderedSegments: SpinWheelSegment[] = noDiscountSegment 
+      ? [noDiscountSegment, ...sortedOtherSegments]
+      : sortedOtherSegments
+
+    // Calculate angles for each segment
+    const totalSegments = orderedSegments.length
+    const anglePerSegment = 360 / totalSegments // e.g., 5 segments = 72 degrees each
+
+    const segments: SpinWheelSegment[] = orderedSegments.map((segment, index) => {
+      const startAngle = index * anglePerSegment
+      const endAngle = (index + 1) * anglePerSegment
+      const centerAngle = startAngle + (anglePerSegment / 2)
+
+      return {
+        ...segment,
+        startAngle,
+        endAngle,
+        centerAngle
       }
     })
 

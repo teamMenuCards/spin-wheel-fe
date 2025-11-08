@@ -4,7 +4,7 @@ import Image from "next/image"
 interface Props {
 	onSubmit: (selectedOptions: string, otherText?: string) => void
 	onClose?: () => void
-	discountAmount?: number | string
+	discountValue?: number | string
 }
 
 const options = [
@@ -15,7 +15,7 @@ const options = [
 	"Others"
 ]
 
-const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountAmount = 200 }) => {
+const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountValue }) => {
 	const [selected, setSelected] = useState("")
 	const [otherText, setOtherText] = useState("")
 
@@ -75,7 +75,7 @@ const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountAmount = 20
 						</h2>
 						<div className="flex items-center justify-center gap-2">
 							<p className="text-2xl sm:text-3xl font-bold text-black">
-								You Saved {discountAmount} rs
+								You Saved {discountValue} %
 							</p>
 							<span className="text-3xl">🥳</span>
 						</div>

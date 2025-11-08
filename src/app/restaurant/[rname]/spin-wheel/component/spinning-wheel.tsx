@@ -169,9 +169,9 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 	// Random winners data
 	const previousWinners = [
-		"Sarah Johnson", "Mike Chen", "Emily Rodriguez", "David Kim", "Lisa Wang",
-		"Alex Thompson", "Maria Garcia", "James Wilson", "Anna Smith", "Chris Brown",
-		"Jessica Lee", "Ryan Davis", "Amanda Taylor", "Kevin Martinez", "Rachel Green"
+		"Rajesh Kumar", "Priya Sharma", "Amit Patel", "Kavita Desai", "Rohit Mehta",
+		"Anjali Shah", "Vikram Singh", "Neha Gupta", "Suresh Iyer", "Divya Reddy",
+		"Arjun Nair", "Pooja Joshi", "Manish Agarwal", "Swati Malhotra", "Rahul Kapoor"
 	]
 
 	// Extract Instagram link from restaurant data

@@ -156,7 +156,7 @@ export default function MenuClientWrapper({
 						</div>
 					</div>
 					<button
-						onClick={() => router.push(`/restaurant/${rname}/menu/poll`)}
+						onClick={() => router.push(`/restaurant/${rname}/spin-wheel`)}
 						className="px-4 py-2 bg-white text-red-500 text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors"
 					>
 						Spin Now

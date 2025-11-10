@@ -6,6 +6,7 @@ import Footer from "@/shared/Footer"
 import ScrollProgressBar from "./components/scroll-progress-bar"
 import ScrollButton from "./shared/ScrollButton"
 import { getSpinnerForRestaurantServer } from "@/services/graphql/spinner"
+import { getMenuListServer } from "@/services/graphql/menu"
 
 /* 
 		"http://menu-cards.com/restaurant/<name>/
@@ -45,8 +46,7 @@ export default async function Page({
 
 	// Fetch spinner data only if restaurant details exist
 	const spinnerData = await getSpinnerForRestaurantServer(restaurantDetails.id)
-	console.log("spinnerData", spinnerData)
-
+	const menuList = await getMenuListServer(restaurantDetails.id as string)
 	return (
 		<div>
 			<ScrollProgressBar />

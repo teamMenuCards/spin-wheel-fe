@@ -270,6 +270,7 @@ export default function WheelPage() {
 					<div className="relative z-10 flex items-center justify-center flex-1 min-h-0 py-4 sm:py-6 lg:py-8">
 						<div className="w-full max-w-sm sm:max-w-md flex items-center justify-center">
 							<WheelComponent
+								restaurantData={restaurantData}
 								segments={segments}
 								restaurantId={restaurantId || rname}
 								spinnerId={spinnerData?.id}

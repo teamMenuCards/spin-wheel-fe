@@ -1,53 +1,25 @@
+// NOTE: Currently unused in production - only used in test/example components
+// Uncomment if needed for client-side React hooks
+
+/*
 import { GET_MENU_LIST } from "@/graphql/queries/menu"
 import { Category } from "@/services/graphql/menu"
 import { useQuery } from "@apollo/client/react"
+import { transformMenuData } from "@/utils/transform-menu-data"
 
-// Helper function to sort products by display order
-const sortProductsByDisplayOrder = (products: any[]) => {
-	return products
-		.map((product) => ({
-			...product,
-			variants: product.variants.sort(
-				(a: any, b: any) => parseFloat(a.price) - parseFloat(b.price)
-			)
-		}))
-		.sort((a, b) => {
-			const aRegular = a.variants.find(
-				(v: any) => v.variant_name === "Regular" || a.name
-			)
-			const bRegular = b.variants.find(
-				(v: any) => v.variant_name === "Regular" || a.name
-			)
-
-			const aDisplayOrder = aRegular ? parseFloat(aRegular?.display_order) : 0
-			const bDisplayOrder = bRegular ? parseFloat(bRegular?.display_order) : 0
-
-			return aDisplayOrder - bDisplayOrder
-		})
-}
-
-export const useMenuList = (name: string) => {
+export const useMenuList = (id: string) => {
 	const { data, loading, error, refetch } = useQuery(GET_MENU_LIST, {
-		variables: { name },
+		variables: { id },
 		errorPolicy: "all",
 		fetchPolicy: "cache-first",
-		skip: !name // Skip query if name is not provided
+		skip: !id // Skip query if id is not provided
 	})
 
-	// Transform and sort the data
-	const transformedData: Category[] =
-		data?.menuList && data.menuList.length > 0
-			? data.menuList.map((menu: any) => {
-					const productsWithSortedVariants = sortProductsByDisplayOrder(
-						menu.categories || []
-					)
-
-					return {
-						...menu,
-						categories: productsWithSortedVariants
-					}
-			  })[0]?.categories || []
-			: []
+	// Get raw categories from API
+	const categories = (data as any)?.productCategoriesByRestaurant || []
+	
+	// Transform new API data to match old format
+	const transformedData: Category[] = transformMenuData(categories)
 
 	return {
 		data: transformedData,
@@ -56,3 +28,4 @@ export const useMenuList = (name: string) => {
 		refetch
 	}
 }
+*/

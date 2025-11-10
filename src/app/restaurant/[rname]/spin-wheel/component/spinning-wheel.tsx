@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState, useRef, useCallback } from "react"
 import { SpinWheelSegment } from "@/types/spin-wheel.type"
-import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail"
+/* import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail" */
 import { useParams } from "next/navigation"
 import { spinSpinner, SpinSpinnerResult } from "@/services/graphql/spinner-spin"
 import { InitialInstructionModal } from "./InitialInstructionModal"
@@ -10,6 +10,7 @@ import { PreviousWinnersModal } from "./PreviousWinnersModal"
 import { SpinButton } from "./SpinButton"
 
 interface WheelComponentProps {
+	restaurantData: any
 	segments: SpinWheelSegment[]
 	restaurantId: string
 	spinnerId?: string
@@ -28,6 +29,7 @@ interface WheelComponentProps {
 
 const WheelComponent: React.FC<WheelComponentProps> = ({
 	segments,
+	restaurantData,
 	restaurantId,
 	spinnerId,
 	onFinished,
@@ -58,8 +60,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const targetAngle = useRef<number | null>(null) // Absolute target angle (with rotations)
 	const normalizedTargetAngle = useRef<number | null>(null) // Normalized target angle (0-2PI, should match baseAngle)
 	const initialAngle = useRef(0)
-	const { rname } = useParams<{ rname: string }>()
-	const { data: restaurantData } = useGetRestaurantDetailByNameQuery(rname)	
+	
 
 	const centerX = 300
 	const centerY = 300
@@ -174,22 +175,23 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		"Arjun Nair", "Pooja Joshi", "Manish Agarwal", "Swati Malhotra", "Rahul Kapoor"
 	]
 
+
 	// Extract Instagram link from restaurant data
 	const getInstagramLink = () => {
-		if (!restaurantData?.detail?.details?.platform_details) {
-			return "https://instagram.com"
-		}
-		
-		const instagramPlatform = restaurantData.detail.details.platform_details.find(
-			platform => platform.platform_name === "insta"
+	
+		const links = restaurantData?.dashboardLinks || []
+		const instagramLink = links.find(
+			(link: any) => link.type === "INSTAGRAM"
 		)
 		
-		return instagramPlatform?.platform_uri || "https://instagram.com"
+		return instagramLink?.url || null
+		
 	}
 
 	// Extract Instagram username from the link
 	const getInstagramUsername = () => {
-		const instagramLink = /* getInstagramLink()|| */"https://www.instagram.com/aamcheecafe/?hl=en"
+		const instagramLink = getInstagramLink()
+		if (!instagramLink) return null
 		const match = instagramLink.match(/instagram\.com\/([^\/\?]+)/)
 		return match ? match[1] : null
 	}

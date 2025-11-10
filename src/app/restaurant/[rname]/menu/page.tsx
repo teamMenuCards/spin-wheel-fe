@@ -11,6 +11,7 @@ export async function generateMetadata({
 }) {
 	const { rname } = await params
 	const restaurantInfo = await getRestaurantDetails(rname)
+	console.log("restaurantInfon from menu page", restaurantInfo)
 
 	return {
 		title: `${restaurantInfo?.name || "Restaurant"} - Menu`,
@@ -32,10 +33,9 @@ export default async function MenuPage({
 }) {
 	const { rname } = await params
 
-	// Fetch data at build time using clean services
-	const sortedCategories = await getMenuList(rname)
+	// First get restaurant details to obtain the ID
 	const restaurantInfo = await getRestaurantDetails(rname)
-
+	
 	// Handle null restaurant info
 	if (!restaurantInfo) {
 		return (
@@ -44,6 +44,10 @@ export default async function MenuPage({
 			</div>
 		)
 	}
+
+	// Fetch menu list using restaurant ID (not name)
+	const sortedCategories = await getMenuList(restaurantInfo.id as string)
+	console.log("sortedCategories from menu page", sortedCategories)
 
 	if (!sortedCategories.length) {
 		return (

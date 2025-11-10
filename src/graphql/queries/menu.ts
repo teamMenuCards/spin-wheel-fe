@@ -1,48 +1,45 @@
 import { gql } from "@apollo/client"
 
-// Query to get menu list by restaurant name
+// Query to get menu list by restaurant ID
 export const GET_MENU_LIST = gql`
-	query GetMenuList($name: String!) {
-		menuList(restaurantName: $name) {
+	query GetMenuList($id: ID!) {
+		productCategoriesByRestaurant(restaurantId: $id) {
 			id
 			name
-			display_name
-			active
+			description
+			displayOrder
+			isActive
 			createdAt
 			updatedAt
-			categories {
+			parentId
+			parent {
 				id
 				name
-				display_name
+			}
+			products {
+				id
+				name
+				displayName
 				description
-				image_url
-				display_order
+				basePrice
+				displayOrder
 				active
+				isActive
+				type
+				image
+				availableFrom
+				availableTo
 				createdAt
 				updatedAt
-				products {
+				variants {
 					id
 					name
-					display_name
-					description
-					image_url
-					display_order
-					active
+					price
+					displayOrder
+					isActive
+					available
 					createdAt
 					updatedAt
-					is_veg
-					is_available
-					variants {
-						id
-						variant_name
-						price
-						display_order
-						active
-						createdAt
-						updatedAt
-						preparation_time_minutes
-						is_available
-					}
 				}
 			}
 		}

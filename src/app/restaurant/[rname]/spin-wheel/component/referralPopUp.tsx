@@ -9,8 +9,9 @@ interface Props {
 
 const options = [
 	"Friends & Family",
-	"XYZ Blooger",
+	"Social Media",
 	"Walk in",
+	"Zomato or Swiggy",
 	"Google Search",
 	"Others"
 ]
@@ -69,7 +70,7 @@ const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountValue }) =>
 					</button>
 
 					{/* Congratulations Section */}
-					<div className="text-center mb-6 space-y-2">
+					<div className="text-center mb-6 space-y-1">
 						<h2 className="text-3xl sm:text-4xl font-bold text-black">
 							Congratulations
 						</h2>
@@ -93,12 +94,12 @@ const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountValue }) =>
 					</div>
 
 					{/* Survey Question */}
-					<h3 className="text-lg sm:text-xl font-bold text-black mb-4 text-left">
+					<h3 className="text-lg sm:text-xl font-bold text-black mb-2 text-left">
 						How did you come to know about us ?
 					</h3>
 
 					{/* Options List */}
-					<div className="space-y-3 mb-4">
+					<div className="space-y-1 mb-4">
 						{options.map((option) => (
 							<label
 								key={option}

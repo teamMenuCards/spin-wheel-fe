@@ -76,67 +76,69 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 					</p>
 				</div>
 
-				{/* Enhanced copy button */}
-				<div className="space-y-1 relative z-10">
-					<div className="text-center">
-						<p className="text-sm font-medium text-gray-600 mb-2">Copy our Instagram handle:</p>
-					</div>
-					<button
-						type="button"
-						onClick={(e) => {
-							e.stopPropagation();
-							if (instagramUsername && !isCopying && !copySuccess) {
-								onCopyText(`@${instagramUsername}`);
-							}
-						}}
-						disabled={isCopying || copySuccess}
-						className={`w-full text-lg font-semibold py-1 rounded-2xl transition-all duration-500 flex items-center justify-between px-6 relative overflow-hidden group ${
-							copySuccess 
-								? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg shadow-green-200 cursor-default' 
-								: isCopying
-								? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-200 cursor-wait'
-								: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 cursor-pointer active:scale-95'
-						}`}
-					>
-						{/* Animated background gradient */}
-						{!isCopying && !copySuccess && (
-							<div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-						)}
-						<span className="flex items-center gap-3 relative z-10">
-							{isCopying && !copySuccess ? (
-								<>
-									<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-									<span className="font-medium">Copying...</span>
-								</>
-							) : copySuccess ? (
-								<>
-									<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-									</svg>
-									<span className="font-medium">Copied!</span>
-								</>
-							) : (
-								<>
-									<div className="flex items-center gap-2">
-										<span className="font-medium">@{instagramUsername || 'username'}</span>
-									</div>
-								</>
+				{/* Enhanced copy button - Only show if Instagram username exists */}
+				{instagramUsername && (
+					<div className="space-y-1 relative z-10">
+						<div className="text-center">
+							<p className="text-sm font-medium text-gray-600 mb-2">Copy our Instagram handle:</p>
+						</div>
+						<button
+							type="button"
+							onClick={(e) => {
+								e.stopPropagation();
+								if (instagramUsername && !isCopying && !copySuccess) {
+									onCopyText(`@${instagramUsername}`);
+								}
+							}}
+							disabled={isCopying || copySuccess}
+							className={`w-full text-lg font-semibold py-1 rounded-2xl transition-all duration-500 flex items-center justify-between px-6 relative overflow-hidden group ${
+								copySuccess 
+									? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg shadow-green-200 cursor-default' 
+									: isCopying
+									? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-200 cursor-wait'
+									: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 cursor-pointer active:scale-95'
+							}`}
+						>
+							{/* Animated background gradient */}
+							{!isCopying && !copySuccess && (
+								<div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 							)}
-						</span>
-						{!isCopying && !copySuccess && (
-							<div className="relative z-10">
-								<svg 
-									className="w-12 h-12 opacity-90 hover:opacity-100 hover:bg-white hover:bg-opacity-20 rounded-xl p-2 backdrop-blur-sm transition-all duration-200" 
-									fill="none" 
-									stroke="currentColor" 
-									viewBox="0 0 24 24"
-								>
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-								</svg>
-							</div>
-						)}
-					</button>
-				</div>
+							<span className="flex items-center gap-3 relative z-10">
+								{isCopying && !copySuccess ? (
+									<>
+										<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+										<span className="font-medium">Copying...</span>
+									</>
+								) : copySuccess ? (
+									<>
+										<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+										</svg>
+										<span className="font-medium">Copied!</span>
+									</>
+								) : (
+									<>
+										<div className="flex items-center gap-2">
+											<span className="font-medium">@{instagramUsername}</span>
+										</div>
+									</>
+								)}
+							</span>
+							{!isCopying && !copySuccess && (
+								<div className="relative z-10">
+									<svg 
+										className="w-12 h-12 opacity-90 hover:opacity-100 hover:bg-white hover:bg-opacity-20 rounded-xl p-2 backdrop-blur-sm transition-all duration-200" 
+										fill="none" 
+										stroke="currentColor" 
+										viewBox="0 0 24 24"
+									>
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+									</svg>
+								</div>
+							)}
+						</button>
+					</div>
+				)}
 
 				{/* Enhanced Post Story button */}
 				<button

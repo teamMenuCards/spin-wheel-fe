@@ -22,6 +22,7 @@ export const GET_RESTAURANT_DETAILS = gql`
 			links {
 				name
 				url
+				type
 			}
 			theme {
 				logo

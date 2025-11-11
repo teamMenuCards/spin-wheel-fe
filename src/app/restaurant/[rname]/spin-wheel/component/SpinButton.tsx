@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 interface SpinButtonProps {
 	canSpin: boolean
@@ -14,6 +14,39 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
 	closeModal,
 	onClick
 }) => {
+	const [isClicked, setIsClicked] = useState(false)
+	const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+	const handleClick = () => {
+		if (!canSpin || closeModal || isSpinning) return
+		setIsClicked(true)
+		onClick()
+		// Keep animation until isSpinning takes over, or reset after 2 seconds
+		if (timeoutRef.current) {
+			clearTimeout(timeoutRef.current)
+		}
+		timeoutRef.current = setTimeout(() => {
+			if (!isSpinning) {
+				setIsClicked(false)
+			}
+		}, 2000)
+	}
+
+	// Reset isClicked when isSpinning becomes false
+	useEffect(() => {
+		if (!isSpinning && isClicked) {
+			setIsClicked(false)
+		}
+	}, [isSpinning, isClicked])
+
+	// Cleanup timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current)
+			}
+		}
+	}, [])
 	return (
 		<div className="flex flex-col items-center space-y-3 mt-6">
 			<button
@@ -32,7 +65,7 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
 						userSelect: 'none',
 					})
 				}}
-				onClick={(!canSpin || closeModal || isSpinning) ? undefined : onClick}
+				onClick={(!canSpin || closeModal || isSpinning) ? undefined : handleClick}
 				disabled={!canSpin || closeModal || isSpinning}
 				onMouseDown={(e) => {
 					// Prevent default browser grey background on click
@@ -56,21 +89,19 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
 				}}
 			>
 				<span className="relative z-10 flex items-center justify-center gap-3">
-					{!canSpin ? (
-						<>
-							<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-							</svg>
-							<span className="text-base">Cannot Spin</span>
-						</>
-					) : (
-						<>
-							<span className="tracking-wider text-lg font-black transform group-active:scale-95 transition-transform duration-150">SPIN TO WIN</span>
-							<svg className="w-6 h-6 transform group-active:scale-110 group-active:rotate-180 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-							</svg>
-						</>
-					)}
+					<span className="tracking-wider text-lg font-black transform group-active:scale-95 transition-transform duration-150">SPIN TO WIN</span>
+					<svg 
+						className={`w-6 h-6 transform transition-all duration-300 ${
+							isSpinning || isClicked
+								? "animate-spin" 
+								: "group-active:scale-110 group-active:rotate-180"
+						}`}
+						fill="none" 
+						stroke="currentColor" 
+						viewBox="0 0 24 24"
+					>
+						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+					</svg>
 				</span>
 			</button>
 		</div>

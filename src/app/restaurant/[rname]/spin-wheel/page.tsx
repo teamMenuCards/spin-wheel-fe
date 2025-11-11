@@ -179,17 +179,13 @@ export default function WheelPage() {
 		}
 	}
 
-	const handleSpinAttempt = () => {
-	
-	}
-
 	const handleSubmit = (selectedOptions: string, otherText?: string) => {
 		setShowThankYouPopup(true)
 		setShowPopup(false)
 	}
 
 
-	const getDiscountAmount = () => {
+	const getDiscountValue = () => {
 		if (!currentSegment) return 200 // Default fallback
 		
 		if (currentSegment.discountType === 'no_prize') {
@@ -199,7 +195,7 @@ export default function WheelPage() {
 		if (currentSegment.discountType === 'percentage' && currentSegment.discountValue) {
 			// For percentage discounts, show a reasonable estimated amount
 			// This could be enhanced to calculate based on average order value
-			return currentSegment.discountValue * 10 
+			return currentSegment.discountValue
 		}
 		
 		if (currentSegment.discountType === 'fixed' && currentSegment.discountValue) {
@@ -274,11 +270,11 @@ export default function WheelPage() {
 					<div className="relative z-10 flex items-center justify-center flex-1 min-h-0 py-4 sm:py-6 lg:py-8">
 						<div className="w-full max-w-sm sm:max-w-md flex items-center justify-center">
 							<WheelComponent
+								restaurantData={restaurantData}
 								segments={segments}
 								restaurantId={restaurantId || rname}
 								spinnerId={spinnerData?.id}
 								onFinished={handleSpinFinish}
-								onSpinAttempt={handleSpinAttempt}
 								primaryColor="black"
 								primaryColoraround="#ffffffb4"
 								contrastColor="white"
@@ -306,7 +302,7 @@ export default function WheelPage() {
 						setShowPopup(false)
 						setShowThankYouPopup(true)
 					}} 
-					discountAmount={getDiscountAmount()}
+					discountValue={getDiscountValue()}
 				/>
 			)}
 
@@ -337,10 +333,21 @@ export default function WheelPage() {
 										
 										{/* Success Message */}
 										<div className="space-y-2">
-											<h2 className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
-												Congratulations!
+											<h2 className={`text-2xl font-bold bg-clip-text text-transparent ${
+												currentSegment?.discountType === 'no_prize' 
+													? "bg-gradient-to-r from-gray-500 to-gray-600" 
+													: "bg-gradient-to-r from-green-500 to-emerald-600"
+											}`}>
+												{currentSegment?.discountType === 'no_prize' 
+													? "No Discount This Time" 
+													: "Congratulations!"
+												}
 											</h2>
-											<div className="w-24 h-1 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mx-auto"></div>
+											<div className={`w-24 h-1 rounded-full mx-auto ${
+												currentSegment?.discountType === 'no_prize' 
+													? "bg-gradient-to-r from-gray-400 to-gray-500" 
+													: "bg-gradient-to-r from-green-400 to-emerald-500"
+											}`}></div>
 											<p className="text-md font-medium text-gray-700">
 												You have won: <span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
 													{currentPrize}

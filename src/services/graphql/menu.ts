@@ -1,11 +1,14 @@
 import { GET_MENU_LIST } from "@/graphql/queries/menu"
-import { apolloClient, createServerApolloClient } from "@/lib/apollo-client"
+// import { apolloClient } from "@/lib/apollo-client" // Only used in commented-out getMenuListClient
+import { createServerApolloClient } from "@/lib/apollo-client"
+import { API_CONFIG } from "@/config/api"
 import {
 	ProductCategoryType,
 	ProductType,
 	ProductVariantType,
 	RestaurantType
 } from "@/types"
+import { transformMenuData } from "@/utils/transform-menu-data"
 
 export type Category = ProductCategoryType & {
 	products: Array<
@@ -19,93 +22,63 @@ export type MenuListResponseType = {
 	categories: Array<Category> | []
 } & RestaurantType
 
-// Helper function to sort products by display order
-const sortProductsByDisplayOrder = (products: any[]) => {
-	return products
-		.map((product) => ({
-			...product,
-			variants: product.variants.sort(
-				(a: any, b: any) => parseFloat(a.price) - parseFloat(b.price)
-			)
-		}))
-		.sort((a, b) => {
-			const aRegular = a.variants.find(
-				(v: any) => v.variant_name === "Regular" || a.name
-			)
-			const bRegular = b.variants.find(
-				(v: any) => v.variant_name === "Regular" || a.name
-			)
-
-			const aDisplayOrder = aRegular ? parseFloat(aRegular?.display_order) : 0
-			const bDisplayOrder = bRegular ? parseFloat(bRegular?.display_order) : 0
-
-			return aDisplayOrder - bDisplayOrder
-		})
-}
-
 // Client-side function using Apollo Client
-export const getMenuListClient = async (name: string): Promise<Category[]> => {
+// NOTE: Currently unused in production - only used in test/example components
+// Uncomment if needed for client-side fetching
+// Also uncomment the apolloClient import above
+/*
+export const getMenuListClient = async (id: string): Promise<Category[]> => {
 	try {
 		const { data } = await apolloClient.query({
 			query: GET_MENU_LIST,
-			variables: { name },
+			variables: { id },
 			errorPolicy: "all",
 			fetchPolicy: "cache-first" // Use cache if available
 		})
 
-		if (!data?.menuList || !data.menuList.length) {
+		const categories = (data as any)?.productCategoriesByRestaurant || []
+		
+		if (!categories.length) {
 			return []
 		}
 
-		// Transform and sort the data
-		const sortedCategories = data.menuList.map((menu: any) => {
-			const productsWithSortedVariants = sortProductsByDisplayOrder(
-				menu.categories || []
-			)
-
-			return {
-				...menu,
-				categories: productsWithSortedVariants
-			}
-		})
-
-		return sortedCategories[0]?.categories || []
+		// Transform new API data to match old format
+		return transformMenuData(categories)
 	} catch (error) {
-		console.error("Error fetching menu list:", error)
 		return []
 	}
 }
+*/
 
 // Server-side function using server Apollo Client
-export const getMenuListServer = async (name: string): Promise<Category[]> => {
+export const getMenuListServer = async (id: string): Promise<Category[]> => {
 	try {
+		if (!id) {
+			return []
+		}
+		
+		if (!API_CONFIG.GRAPHQL_ENDPOINT) {
+			return []
+		}
+		
 		const client = createServerApolloClient()
-		const { data } = await client.query({
+		const result = await client.query({
 			query: GET_MENU_LIST,
-			variables: { name },
+			variables: { id },
 			errorPolicy: "all",
 			fetchPolicy: "network-only" // Always fetch fresh data on server
 		})
 
-		if (!data?.menuList || !data.menuList.length) {
+		const data = result.data
+		const categories = (data as any)?.productCategoriesByRestaurant || []
+		
+		if (!categories.length) {
 			return []
 		}
 
-		// Transform and sort the data
-		const sortedCategories = data.menuList.map((menu: any) => {
-			const productsWithSortedVariants = sortProductsByDisplayOrder(
-				menu.categories || []
-			)
-
-			return {
-				...menu,
-				categories: productsWithSortedVariants
-			}
-		})
-
-		return sortedCategories[0]?.categories || []
+		// Transform new API data to match old format
+		return transformMenuData(categories)
 	} catch (error) {
-		console.error("Error fetching menu list on server:", error)
 		return []
 	}
 }

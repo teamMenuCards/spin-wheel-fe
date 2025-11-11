@@ -10,6 +10,10 @@ export interface SpinWheelSegment {
 	maxUsesTotal?: number // total limit for this segment
 	isActive: boolean
 	displayOrder: number
+	// Angle properties in degrees (0-360)
+	startAngle?: number // Start angle of the segment in degrees
+	endAngle?: number // End angle of the segment in degrees
+	centerAngle?: number // Center angle of the segment in degrees
 }
 
 export interface SpinWheelConfig {

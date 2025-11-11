@@ -24,7 +24,7 @@ export function GraphQLExample() {
 		loading: menuLoading,
 		error: menuError,
 		refetch: refetchMenu
-	} = useMenuList(restaurantName)
+	} = useMenuList(restaurantData?.id || "")
 
 	const handleRefresh = () => {
 		refetchRestaurant()

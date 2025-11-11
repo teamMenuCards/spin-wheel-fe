@@ -4,18 +4,19 @@ import Image from "next/image"
 interface Props {
 	onSubmit: (selectedOptions: string, otherText?: string) => void
 	onClose?: () => void
-	discountAmount?: number | string
+	discountValue?: number | string
 }
 
 const options = [
 	"Friends & Family",
-	"XYZ Blooger",
+	"Social Media",
 	"Walk in",
+	"Zomato or Swiggy",
 	"Google Search",
 	"Others"
 ]
 
-const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountAmount = 200 }) => {
+const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountValue }) => {
 	const [selected, setSelected] = useState("")
 	const [otherText, setOtherText] = useState("")
 
@@ -69,13 +70,13 @@ const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountAmount = 20
 					</button>
 
 					{/* Congratulations Section */}
-					<div className="text-center mb-6 space-y-2">
+					<div className="text-center mb-6 space-y-1">
 						<h2 className="text-3xl sm:text-4xl font-bold text-black">
 							Congratulations
 						</h2>
 						<div className="flex items-center justify-center gap-2">
 							<p className="text-2xl sm:text-3xl font-bold text-black">
-								You Saved {discountAmount} rs
+								You Saved {discountValue} %
 							</p>
 							<span className="text-3xl">🥳</span>
 						</div>
@@ -93,12 +94,12 @@ const ReferralPopup: React.FC<Props> = ({ onSubmit, onClose, discountAmount = 20
 					</div>
 
 					{/* Survey Question */}
-					<h3 className="text-lg sm:text-xl font-bold text-black mb-4 text-left">
+					<h3 className="text-lg sm:text-xl font-bold text-black mb-2 text-left">
 						How did you come to know about us ?
 					</h3>
 
 					{/* Options List */}
-					<div className="space-y-3 mb-4">
+					<div className="space-y-1 mb-4">
 						{options.map((option) => (
 							<label
 								key={option}

@@ -1,6 +1,7 @@
 import DeliveryLandingPage from "./components/DeliveryLandingPage"
 
 import { getRestaurantDetails } from "@/lib/api-cache"
+import { getMenuListServer } from "@/services/graphql/menu"
 import { getSpinnerForRestaurantServer } from "@/services/graphql/spinner"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import Footer from "@/shared/Footer"
@@ -45,8 +46,7 @@ export default async function Page({
 
 	// Fetch spinner data only if restaurant details exist
 	const spinnerData = await getSpinnerForRestaurantServer(restaurantDetails.id)
-	console.log("spinnerData", spinnerData)
-
+	const menuList = await getMenuListServer(restaurantDetails.id as string)
 	return (
 		<div>
 			<ScrollProgressBar />

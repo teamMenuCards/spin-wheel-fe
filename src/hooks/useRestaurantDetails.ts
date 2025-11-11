@@ -25,6 +25,7 @@ console.log("data", data)
 					id: 0,
 					name: link.name,
 					url: link.url,
+					type: link.type,
 					active: true
 				})) || [],
 				

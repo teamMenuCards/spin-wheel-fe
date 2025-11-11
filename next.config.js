@@ -29,7 +29,15 @@ const nextConfig = {
 		qualities: [75, 85],
 		deviceSizes: [640, 768, 1024, 1280], // Responsive breakpoints
 		imageSizes: [16, 32, 48, 64, 96] // Non-responsive images (e.g., avatars, icons)
-	}
+	},
+	source: "/(.*)",
+	headers: [
+		{
+			key: "Content-Security-Policy",
+			value:
+				"default-src 'self' http://localhost:3010; connect-src 'self' http://localhost:3010 ws://localhost:3010;"
+		}
+	]
 }
 
 module.exports = nextConfig

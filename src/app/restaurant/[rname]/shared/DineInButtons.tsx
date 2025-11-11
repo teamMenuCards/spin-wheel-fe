@@ -1,13 +1,12 @@
 "use client"
-import { useState } from "react"
+import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IDynamicLink } from "@/types"
+import { useParams } from "next/navigation"
+import { useState } from "react"
+import FeedbackPopup from "../components/feedback"
 import { IOption } from "../types"
 import InfoButton from "./InfoButton"
-import { useParams } from "next/navigation"
-import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
-import FeedbackPopup from "../components/feedback"
 // import { useFeatureList } from "@/hooks/useFeatureList"
-
 
 // type RestaurantConfig = {
 // 	showReferralPopup: boolean
@@ -40,9 +39,9 @@ const DineInButtons = ({
 
 	const { dineInOptions = [], deliveryOptions = [] } = options || {}
 
-	const links = (dynamicOptions ?? []).sort(
-		(a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)
-	)
+	// const links = (dynamicOptions ?? []).sort(
+	// 	(a, b) => (a.display_order ?? 0) - (b.display_order ?? 0)
+	// )
 	// const [activePopup, setActivePopup] = useState<string | null>(null)
 	const [redirectLink, setRedirectLink] = useState<string | null>(null)
 
@@ -84,9 +83,9 @@ const DineInButtons = ({
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 			{/* DYNAMIC Menu for IS_DELIVERY page */}
-			{!isDineIn &&
-				links &&
-				links?.map((item: IDynamicLink, index) => {
+			{dynamicOptions &&
+				dynamicOptions?.map((item: IDynamicLink, index) => {
+					console.log("item--", item)
 					return item.active ? (
 						<InfoButton
 							key={index}

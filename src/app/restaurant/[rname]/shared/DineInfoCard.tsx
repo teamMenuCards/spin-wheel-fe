@@ -1,9 +1,9 @@
 "use client"
-import Image from "next/image"
-import { Users_Ic, Phone_Ic, MapIcon_Tc } from "./icons"
-import Rating from "./Rating"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { IMetaData } from "@/types"
+import Image from "next/image"
+import { MapIcon_Tc, Phone_Ic, Users_Ic } from "./icons"
+import Rating from "./Rating"
 
 const RestaurantInfoCard = ({
 	isDineIn = false,
@@ -23,6 +23,8 @@ const RestaurantInfoCard = ({
 		} = {},
 		order_count_display = 500
 	} = restaurantInfo?.detail || {}
+
+	console.log("restaurantInfollnan---", restaurantInfo.detail)
 
 	const whatsappNumber =
 		restaurantInfo?.detail.details.wa_api_details?.wa_number

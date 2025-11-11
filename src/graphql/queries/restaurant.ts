@@ -2,14 +2,21 @@ import { gql } from "@apollo/client"
 
 // Query to get restaurant details by slug
 export const GET_RESTAURANT_DETAILS = gql`
-	query GetRestaurantBySlug($slug: String!) {
-		restaurantBySlug(slug: $slug) {
+	query {
+		restaurantBySlug(slug: "aamchee-cafee") {
 			id
 			name
 			openingTime
 			closingTime
 			email
 			phone
+			tenant {
+				subscriptions {
+					plan {
+						name
+					}
+				}
+			}
 			whatsapp
 			averagePrice
 			addressLine1
@@ -17,9 +24,11 @@ export const GET_RESTAURANT_DETAILS = gql`
 				name
 			}
 			cuisines {
+				id
 				name
 			}
 			links {
+				id
 				name
 				url
 			}

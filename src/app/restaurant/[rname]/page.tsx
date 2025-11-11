@@ -1,11 +1,11 @@
 import DeliveryLandingPage from "./components/DeliveryLandingPage"
 
 import { getRestaurantDetails } from "@/lib/api-cache"
+import { getSpinnerForRestaurantServer } from "@/services/graphql/spinner"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import Footer from "@/shared/Footer"
 import ScrollProgressBar from "./components/scroll-progress-bar"
 import ScrollButton from "./shared/ScrollButton"
-import { getSpinnerForRestaurantServer } from "@/services/graphql/spinner"
 
 /* 
 		"http://menu-cards.com/restaurant/<name>/
@@ -33,13 +33,13 @@ export default async function Page({
 	// Handle null restaurant details
 	if (!restaurantDetails) {
 		return (
-				<div>
-					<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
-						Restaurant not found!
-					</div>
-					<ScrollButton />
-					<Footer />
+			<div>
+				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+					Restaurant not found!
 				</div>
+				<ScrollButton />
+				<Footer />
+			</div>
 		)
 	}
 

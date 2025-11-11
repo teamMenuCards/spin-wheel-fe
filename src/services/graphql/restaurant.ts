@@ -19,7 +19,7 @@ export const getRestaurantDetailsClient = async (
 		})
 
 		const restaurant = (data as any).restaurantBySlug
-		
+
 		if (!restaurant) {
 			return null
 		}
@@ -34,13 +34,14 @@ export const getRestaurantDetailsClient = async (
 			active: true, // Default to true if not provided
 			createdAt: new Date().toISOString(), // Default if not available
 			updatedAt: new Date().toISOString(), // Default if not available
-			dashboardLinks: restaurant.links?.map((link: any) => ({
-				id: 0,
-				name: link.name,
-				url: link.url,
-				active: true
-			})) || [],
-			
+			dashboardLinks:
+				restaurant.links?.map((link: any) => ({
+					id: link.id,
+					name: link.name,
+					url: link.url,
+					active: true
+				})) || [],
+
 			detail: {
 				id: 0, // RestaurantDetailType expects number
 				pincode: "", // Not available in GraphQL response
@@ -54,25 +55,35 @@ export const getRestaurantDetailsClient = async (
 				order_count_display: 0, // Default if not available
 				cover_image: restaurant.theme?.coverImage || "",
 				feature_flags: {}, // Default if not available
-				dashboardLinks: restaurant.links?.map((link: any) => ({
-					id: 0,
-					name: link.name,
-					url: link.url,
-					active: true
-				})) || [],
+				dashboardLinks:
+					restaurant.links?.map((link: any) => ({
+						id: link.id,
+						name: link.name,
+						url: link.url,
+						active: true
+					})) || [],
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 				details: {
-					wa_api_details: restaurant.whatsapp ? {
-						wa_number: restaurant.whatsapp
-					} : undefined,
-					platform_reviews: restaurant.thirdPartyReviews?.map((review: any) => ({
-						platform_name: review.platform,
-						total_reviews: review.reviewCount || 0,
-						average_rating: review.rating || 0
-					})) || [],
-					reviews_image_url_details: restaurant.settings?.uiThemeData?.reviewImageUrl?.length 
-						? [{ review_image_url: restaurant.settings.uiThemeData.reviewImageUrl.join(",") }]
+					wa_api_details: restaurant.whatsapp
+						? {
+								wa_number: restaurant.whatsapp
+						  }
+						: undefined,
+					platform_reviews:
+						restaurant.thirdPartyReviews?.map((review: any) => ({
+							platform_name: review.platform,
+							total_reviews: review.reviewCount || 0,
+							average_rating: review.rating || 0
+						})) || [],
+					reviews_image_url_details: restaurant.settings?.uiThemeData
+						?.reviewImageUrl?.length
+						? [
+								{
+									review_image_url:
+										restaurant.settings.uiThemeData.reviewImageUrl.join(",")
+								}
+						  ]
 						: [],
 					platform_details: [],
 					meta_details: {
@@ -82,7 +93,10 @@ export const getRestaurantDetailsClient = async (
 						avg_price: restaurant.averagePrice || 0,
 						avg_person: 0,
 						location_info: restaurant.addressLine1 || "",
-						category: restaurant.cuisines?.map((cuisine: any) => cuisine.name).join(", ") || ""
+						category:
+							restaurant.cuisines
+								?.map((cuisine: any) => cuisine.name)
+								.join(", ") || ""
 					}
 				}
 			}
@@ -100,9 +114,13 @@ export const getRestaurantDetailsServer = async (
 	try {
 		const client = createServerApolloClient()
 		console.log("Server: Fetching restaurant with slug:", name)
-		console.log("Server: GraphQL endpoint:", process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4200/graphql")
+		console.log(
+			"Server: GraphQL endpoint:",
+			process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ||
+				"http://localhost:4200/graphql"
+		)
 		console.log("Server: Query variables:", { slug: name })
-		
+
 		let result
 		try {
 			result = await client.query({
@@ -115,10 +133,13 @@ export const getRestaurantDetailsServer = async (
 			console.error("Server: Query failed with error:", error)
 			console.error("Server: Error message:", error?.message)
 			console.error("Server: Error name:", error?.name)
-			
+
 			// Log GraphQL errors with full details
 			if (error?.graphQLErrors) {
-				console.error("Server: GraphQL errors count:", error.graphQLErrors.length)
+				console.error(
+					"Server: GraphQL errors count:",
+					error.graphQLErrors.length
+				)
 				error.graphQLErrors.forEach((gqlError: any, index: number) => {
 					console.error(`Server: GraphQL error ${index + 1}:`, {
 						message: gqlError.message,
@@ -129,7 +150,7 @@ export const getRestaurantDetailsServer = async (
 					})
 				})
 			}
-			
+
 			// Log network errors
 			if (error?.networkError) {
 				console.error("Server: Network error details:", {
@@ -140,19 +161,23 @@ export const getRestaurantDetailsServer = async (
 					bodyText: error.networkError.bodyText
 				})
 			}
-			
-		// Log the query and variables for debugging
-		try {
-			const queryString = GET_RESTAURANT_DETAILS.loc?.source?.body || 
-				(GET_RESTAURANT_DETAILS as any).definitions?.[0]?.loc?.source?.body ||
-				"Unable to extract query"
-			console.error("Server: Query string:", queryString)
-		} catch (e) {
-			console.error("Server: Could not extract query string")
-		}
-		console.error("Server: Variables sent:", { slug: name })
-		console.error("Server: Full error object:", JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
-			
+
+			// Log the query and variables for debugging
+			try {
+				const queryString =
+					GET_RESTAURANT_DETAILS.loc?.source?.body ||
+					(GET_RESTAURANT_DETAILS as any).definitions?.[0]?.loc?.source?.body ||
+					"Unable to extract query"
+				console.error("Server: Query string:", queryString)
+			} catch (e) {
+				console.error("Server: Could not extract query string")
+			}
+			console.error("Server: Variables sent:", { slug: name })
+			console.error(
+				"Server: Full error object:",
+				JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
+			)
+
 			// Return null on error
 			return null
 		}
@@ -163,15 +188,15 @@ export const getRestaurantDetailsServer = async (
 		console.log("Server: GraphQL error:", result.error)
 		console.log("Server: Result loading:", (result as any).loading)
 		console.log("Server: Result networkStatus:", (result as any).networkStatus)
-		
+
 		const { data, error } = result
-		
+
 		// Check if data exists but is an empty object
-		if (data && typeof data === 'object' && Object.keys(data).length === 0) {
+		if (data && typeof data === "object" && Object.keys(data).length === 0) {
 			console.error("Server: Data is an empty object")
 			return null
 		}
-		
+
 		if (error) {
 			console.error("Server: GraphQL error:", error)
 			if ((error as any).graphQLErrors) {
@@ -187,22 +212,23 @@ export const getRestaurantDetailsServer = async (
 			console.error("Server: No data returned from GraphQL query")
 			console.error("Server: This might mean:")
 			console.error("  1. The GraphQL server is not running")
-			console.error("  2. The query failed but errorPolicy: 'all' hid the error")
+			console.error(
+				"  2. The query failed but errorPolicy: 'all' hid the error"
+			)
 			console.error("  3. Network connectivity issue")
 			return null
 		}
 
 		// Transform GraphQL response to match expected format
 		const restaurant = (data as any)?.restaurantBySlug
-		
+
 		if (!restaurant) {
 			console.log("Server: restaurantBySlug is null or undefined in response")
 			return null
 		}
-		
-		
+
 		console.log("Server: Restaurant found:", restaurant.name)
-		
+
 		// Map GraphQL response fields to expected format
 		// Top level: RestaurantType fields
 		// detail: RestaurantDetailType with all fields including details nested object
@@ -213,13 +239,14 @@ export const getRestaurantDetailsServer = async (
 			active: true, // Default to true if not provided
 			createdAt: new Date().toISOString(), // Default if not available
 			updatedAt: new Date().toISOString(), // Default if not available
-			dashboardLinks: restaurant.links?.map((link: any) => ({
-				id: 0,
-				name: link.name,
-				url: link.url,
-				active: true
-			})) || [],
-			
+			dashboardLinks:
+				restaurant.links?.map((link: any) => ({
+					id: link.id,
+					name: link.name,
+					url: link.url,
+					active: true
+				})) || [],
+
 			detail: {
 				id: 0, // RestaurantDetailType expects number
 				pincode: "", // Not available in GraphQL response
@@ -233,25 +260,37 @@ export const getRestaurantDetailsServer = async (
 				order_count_display: restaurant.settings?.uiThemeData?.orderCount || 0, // Default if not available
 				cover_image: restaurant.theme?.coverImage || "",
 				feature_flags: {}, // Default if not available
-				dashboardLinks: restaurant.links?.map((link: any) => ({
-					id: 0,
-					name: link.name,
-					url: link.url,
-					active: true
-				})) || [],
+				dashboardLinks:
+					restaurant.links?.map((link: any) => ({
+						id: link.id,
+						name: link.name,
+						url: link.url,
+						active: true
+					})) || [],
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
 				details: {
-					wa_api_details: restaurant.whatsapp ? {
-						wa_number: restaurant.whatsapp
-					} : undefined,
-					platform_reviews: restaurant.thirdPartyReviews?.map((review: any) => ({
-						platform_name: review.platform,
-						total_reviews: review.reviewCount || 0,
-						average_rating: review.rating || 0
-					})) || [],
-					reviews_image_url_details: restaurant.settings?.uiThemeData?.reviewImageUrl?.length 
-						? [{ review_image_url: restaurant.settings.uiThemeData.reviewImageUrl.map((url: string) => url.trim()).join(", ") }]
+					wa_api_details: restaurant.whatsapp
+						? {
+								wa_number: restaurant.whatsapp
+						  }
+						: undefined,
+					platform_reviews:
+						restaurant.thirdPartyReviews?.map((review: any) => ({
+							platform_name: review.platform,
+							total_reviews: review.reviewCount || 0,
+							average_rating: review.rating || 0
+						})) || [],
+					reviews_image_url_details: restaurant.settings?.uiThemeData
+						?.reviewImageUrl?.length
+						? [
+								{
+									review_image_url:
+										restaurant.settings.uiThemeData.reviewImageUrl
+											.map((url: string) => url.trim())
+											.join(", ")
+								}
+						  ]
 						: [],
 					platform_details: [],
 					meta_details: {
@@ -261,7 +300,10 @@ export const getRestaurantDetailsServer = async (
 						avg_price: restaurant.averagePrice || 0,
 						avg_person: restaurant.averagePerson || 0,
 						location_info: restaurant.addressLine1 || "",
-						category: restaurant.cuisines?.map((cuisine: any) => cuisine.name).join(", ") || ""
+						category:
+							restaurant.cuisines
+								?.map((cuisine: any) => cuisine.name)
+								.join(", ") || ""
 					}
 				}
 			}
@@ -270,19 +312,25 @@ export const getRestaurantDetailsServer = async (
 		console.error("Server: Error fetching restaurant details:", error)
 		console.error("Server: Error message:", error?.message)
 		console.error("Server: Error stack:", error?.stack)
-		
+
 		// Check if it's a network error
 		if (error?.networkError) {
 			console.error("Server: Network error:", error.networkError)
-			console.error("Server: Network error status:", error.networkError?.statusCode)
-			console.error("Server: Network error message:", error.networkError?.message)
+			console.error(
+				"Server: Network error status:",
+				error.networkError?.statusCode
+			)
+			console.error(
+				"Server: Network error message:",
+				error.networkError?.message
+			)
 		}
-		
+
 		// Check if it's a GraphQL error
 		if (error?.graphQLErrors) {
 			console.error("Server: GraphQL errors in catch:", error.graphQLErrors)
 		}
-		
+
 		return null
 	}
 }

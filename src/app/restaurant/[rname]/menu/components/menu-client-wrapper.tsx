@@ -1,5 +1,6 @@
 "use client"
 import { useFeatureList } from "@/hooks/useFeatureList"
+import { useSpinnerForRestaurant } from "@/hooks/useSpinnerForRestaurant"
 import { localStorage } from "@/lib/local-storage"
 import { Category } from "@/services/product/get-menu-list"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
@@ -36,7 +37,10 @@ export default function MenuClientWrapper({
 	const { mode } = useSelector((state: RootState) => state.appState)
 	const { hasFeature } = useFeatureList(rname)
 	const hasOrderFeature = hasFeature(FEATURES.RESTAURANT_ORDER_MODULE)
-	const hasSpinWheelFeature =true
+	const { data: spinnerData, loading: spinnerLoading } = useSpinnerForRestaurant(
+		restaurantInfo?.id || ""
+	)
+	const hasSpinWheelFeature = !spinnerLoading && spinnerData
 	const isDineInMode = mode === CLIENT_APP_MODE.DINE_IN
 	const contentRef = useRef<HTMLDivElement>(null)
 	const searchParams = useSearchParams()

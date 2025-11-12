@@ -104,6 +104,7 @@ function MenuItem({
 			return null
 		}
 
+
 		return (
 			<div className="flex flex-wrap gap-1 items-start">
 				{allergensList.map((allergen, index) => (
@@ -161,6 +162,8 @@ function MenuItem({
 			handleAdd()
 		}
 	}
+
+
 
 	return (
 		<div className="mb-4">
@@ -281,6 +284,11 @@ function MenuItem({
 
 						{/* Variants or Price */}
 						{hasVariants ? (
+							/* 
+								Case 1: Product has multiple variants (hasVariants = true)
+								Display all variants with their individual prices, veg/non-veg icons, and names
+								Only show variants where variant_name doesn't duplicate the product name
+							*/
 							<>
 								{product.variants.map((item) =>
 									!item.variant_name.includes(product.name) ? (
@@ -300,12 +308,24 @@ function MenuItem({
 								)}
 							</>
 						) : (
-							product?.variants &&
-							product?.variants[0]?.price && (
+							/* 
+								Case 2: Product has no variants or only one variant (hasVariants = false)
+								Price display logic with fallback chain:
+								1. First, try to show price from first variant if it exists and has a price
+								2. If no variant price available, fall back to product.price
+								This ensures price is always shown when available, regardless of variant structure
+							*/
+							(product?.variants &&
+								product?.variants[0]?.price && (
+									<p className="text-secondary text-sm font-bold pt-1">
+										{validatedPrice(product?.variants[0]?.price)}
+									</p>
+								)) ||
+							(product?.price && (
 								<p className="text-secondary text-sm font-bold pt-1">
-									{validatedPrice(product?.variants[0]?.price)}
+									{validatedPrice(String(product.price))}
 								</p>
-							)
+							))
 						)}
 
 						{/* {getAllergenChips()} */}

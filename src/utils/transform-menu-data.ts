@@ -15,8 +15,14 @@ const productTypeToIsVeg = (type: string | null | undefined): boolean => {
 export const transformProductVariant = (
 	variant: any,
 	productType?: string | null,
-	productImage?: string | null
+	productImage?: string | null,
+	allergens?: string[] | null
 ): ProductVariantType => {
+	// Convert allergens array to comma-separated string
+	const allergensString = allergens && Array.isArray(allergens) && allergens.length > 0
+		? allergens.join(", ")
+		: ""
+
 	return {
 		id: variant.id || "",
 		variant_name: variant.name || "",
@@ -29,7 +35,7 @@ export const transformProductVariant = (
 		image_url: productImage || "",
 		display_order: variant.displayOrder?.toString() || "0",
 		preparation_time_minutes: null, // Not available in new API
-		allergens: "", // Not available in new API
+		allergens: allergensString, 
 		average_rating: null, // Not available in new API
 		rating_count: 0, // Not available in new API
 		dietary_info: null, // Not available in new API
@@ -43,18 +49,42 @@ export const transformProductVariant = (
 
 // Transform new API Product to old format ProductType
 export const transformProduct = (product: any): ProductType => {
+	// Extract allergens from product.settings.allergens
+	const allergens = product.settings?.allergens || null
+
 	// Transform variants and sort by price
-	const variants: ProductVariantType[] = (product.variants || [])
+	let variants: ProductVariantType[] = (product.variants || [])
 		.map((variant: any) => {
-			// Pass product type and image to variant transformation
+			// Pass product type, image, and allergens to variant transformation
 			return transformProductVariant(
 				variant,
 				product.type,
-				product.image
+				product.image,
+				allergens
 			)
 		})
 		// Sort variants by price (as done in old code)
 		.sort((a: ProductVariantType, b: ProductVariantType) => parseFloat(a.price) - parseFloat(b.price))
+
+	// If product has no variants, create a default variant using product data
+	// This ensures veg/non-veg icon and allergens are always available
+	if (variants.length === 0) {
+		const defaultVariant: ProductVariantType = transformProductVariant(
+			{
+				id: product.id || "",
+				name: product.name || "",
+				price: product.basePrice || 0,
+				isActive: product.active ?? product.isActive ?? true,
+				displayOrder: product.displayOrder || 0,
+				createdAt: product.createdAt || "",
+				updatedAt: product.updatedAt || ""
+			},
+			product.type,
+			product.image,
+			allergens
+		)
+		variants = [defaultVariant]
+	}
 
 	return {
 		id: product.id || "",

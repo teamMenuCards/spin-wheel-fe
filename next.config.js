@@ -1,3 +1,20 @@
+// Get API base URL from environment variable
+const apiBaseUrl =
+	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3010"
+
+// Parse the URL to extract protocol and host
+let apiUrl, wsUrl
+try {
+	const url = new URL(apiBaseUrl)
+	apiUrl = `${url.protocol}//${url.host}`
+	// Generate WebSocket URL (ws:// for http, wss:// for https)
+	wsUrl = url.protocol === "https:" ? `wss://${url.host}` : `ws://${url.host}`
+} catch {
+	// Fallback if URL parsing fails
+	apiUrl = apiBaseUrl
+	wsUrl = apiBaseUrl.replace(/^https?:\/\//, "ws://")
+}
+
 const nextConfig = {
 	/* config options here */
 	images: {
@@ -34,8 +51,7 @@ const nextConfig = {
 	headers: [
 		{
 			key: "Content-Security-Policy",
-			value:
-				"default-src 'self' http://localhost:3010; connect-src 'self' http://localhost:3010 ws://localhost:3010;"
+			value: `default-src 'self' ${apiUrl}; connect-src 'self' ${apiUrl} ${wsUrl};`
 		}
 	]
 }

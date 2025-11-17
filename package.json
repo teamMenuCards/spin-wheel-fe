@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 PORT=3000 next dev",
+		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 next dev",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
@@ -39,6 +39,7 @@
 		"react-modern-drawer": "^1.4.0",
 		"react-redux": "^9.2.0",
 		"redux-logger": "^3.0.6",
+		"rxjs": "^7.8.2",
 		"tailwind-merge": "^2.6.0"
 	},
 	"lint-staged": {

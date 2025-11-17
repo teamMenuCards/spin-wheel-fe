@@ -1,13 +1,15 @@
 // API Configuration
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4200/"
+// Ensure base URL doesn't have trailing slash for GraphQL endpoint construction
+const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl
+
 export const API_CONFIG = {
 	// Base URLs
-	REST_BASE_URL:
-		process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4200/",
-	GRAPHQL_ENDPOINT:
-		process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:3010/graphql",
+	REST_BASE_URL: baseUrl,
+	GRAPHQL_ENDPOINT: `${normalizedBaseUrl}/graphql`,
 
 	// Feature Flags - GraphQL is now the default
-	USE_GRAPHQL: process.env.NEXT_PUBLIC_USE_GRAPHQL !== "false",
+	USE_GRAPHQL: process.env.NEXT_PUBLIC_API_BASE_URL !== "false",
 
 	// Cache Settings
 	CACHE_TTL: 10 * 60 * 60, // 10 hours in seconds (matching your current revalidation)

@@ -31,6 +31,8 @@ export default async function Page({
 	const { rname } = await params
 	const restaurantDetails = await getRestaurantDetails(rname)
 
+	console.log("restaurantDetails---", restaurantDetails)
+
 	// Handle null restaurant details
 	if (!restaurantDetails) {
 		return (

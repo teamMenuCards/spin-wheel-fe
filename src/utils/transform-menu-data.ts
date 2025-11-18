@@ -13,15 +13,16 @@ const productTypeToIsVeg = (type: string | null | undefined): boolean => {
 
 // Transform new API ProductVariant to old format ProductVariantType
 export const transformProductVariant = (
-	variant: any,
+	variant: ProductVariantType,
 	productType?: string | null,
 	productImage?: string | null,
 	allergens?: string[] | null
 ): ProductVariantType => {
 	// Convert allergens array to comma-separated string
-	const allergensString = allergens && Array.isArray(allergens) && allergens.length > 0
-		? allergens.join(", ")
-		: ""
+	const allergensString =
+		allergens && Array.isArray(allergens) && allergens.length > 0
+			? allergens.join(", ")
+			: ""
 
 	return {
 		id: variant.id || "",
@@ -35,7 +36,7 @@ export const transformProductVariant = (
 		image_url: productImage || "",
 		display_order: variant.displayOrder?.toString() || "0",
 		preparation_time_minutes: null, // Not available in new API
-		allergens: allergensString, 
+		allergens: allergensString,
 		average_rating: null, // Not available in new API
 		rating_count: 0, // Not available in new API
 		dietary_info: null, // Not available in new API
@@ -64,7 +65,10 @@ export const transformProduct = (product: any): ProductType => {
 			)
 		})
 		// Sort variants by price (as done in old code)
-		.sort((a: ProductVariantType, b: ProductVariantType) => parseFloat(a.price) - parseFloat(b.price))
+		.sort(
+			(a: ProductVariantType, b: ProductVariantType) =>
+				parseFloat(a.price) - parseFloat(b.price)
+		)
 
 	// If product has no variants, create a default variant using product data
 	// This ensures veg/non-veg icon and allergens are always available
@@ -125,30 +129,31 @@ export const transformProductCategory = (
 
 // Transform full menu data structure
 export const transformMenuData = (categories: any[]) => {
-	return categories
-		.map((category: any) => {
-			// Transform category
-			const transformedCategory = transformProductCategory(category)
+	return (
+		categories
+			.map((category: any) => {
+				// Transform category
+				const transformedCategory = transformProductCategory(category)
 
-			// Transform products and sort by display_order
-			const transformedProducts = (category.products || [])
-				.map((product: any) => transformProduct(product))
-				.sort((a: ProductType, b: ProductType) => {
-					// Sort products by display_order
-					return a.display_order - b.display_order
-				})
+				// Transform products and sort by display_order
+				const transformedProducts = (category.products || [])
+					.map((product: any) => transformProduct(product))
+					.sort((a: ProductType, b: ProductType) => {
+						// Sort products by display_order
+						return a.display_order - b.display_order
+					})
 
-			return {
-				...transformedCategory,
-				products: transformedProducts
-			}
-		})
-        
-		// Sort categories by display_order
-		.sort((a, b) => {
-			const aOrder = a.display_order ?? 0
-			const bOrder = b.display_order ?? 0
-			return aOrder - bOrder
-		})
+				return {
+					...transformedCategory,
+					products: transformedProducts
+				}
+			})
+
+			// Sort categories by display_order
+			.sort((a, b) => {
+				const aOrder = a.display_order ?? 0
+				const bOrder = b.display_order ?? 0
+				return aOrder - bOrder
+			})
+	)
 }
-

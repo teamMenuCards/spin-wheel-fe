@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GET_SPINNER_FOR_RESTAURANT } from "@/graphql/queries/spinner"
 import { createServerApolloClient } from "@/lib/apollo-client"
 

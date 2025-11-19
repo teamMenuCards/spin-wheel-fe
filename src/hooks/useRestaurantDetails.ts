@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GET_RESTAURANT_DETAILS } from "@/graphql/queries/restaurant"
 import { RestaurantDetailResponse } from "@/services/graphql/restaurant"
 import { useQuery } from "@apollo/client/react"

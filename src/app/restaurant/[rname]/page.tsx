@@ -47,8 +47,10 @@ export default async function Page({
 	}
 
 	// Fetch spinner data only if restaurant details exist
-	const spinnerData = await getSpinnerForRestaurantServer(restaurantDetails.id)
-	const menuList = await getMenuListServer(restaurantDetails.id as string)
+	// Note: spinnerData and menuList are fetched but not used in this component
+	// They may be needed for future features
+	await getSpinnerForRestaurantServer(restaurantDetails.id)
+	await getMenuListServer(restaurantDetails.id as string)
 	return (
 		<div>
 			<ScrollProgressBar />

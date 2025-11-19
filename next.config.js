@@ -47,13 +47,19 @@ const nextConfig = {
 		deviceSizes: [640, 768, 1024, 1280], // Responsive breakpoints
 		imageSizes: [16, 32, 48, 64, 96] // Non-responsive images (e.g., avatars, icons)
 	},
-	source: "/(.*)",
-	headers: [
-		{
-			key: "Content-Security-Policy",
-			value: `default-src 'self' ${apiUrl}; connect-src 'self' ${apiUrl} ${wsUrl};`
-		}
-	]
+	async headers() {
+		return [
+			{
+				source: "/(.*)",
+				headers: [
+					{
+						key: "Content-Security-Policy",
+						value: `default-src 'self' ${apiUrl}; connect-src 'self' ${apiUrl} ${wsUrl};`
+					}
+				]
+			}
+		]
+	}
 }
 
 module.exports = nextConfig

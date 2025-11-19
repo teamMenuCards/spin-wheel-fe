@@ -1,4 +1,5 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RestaurantDetailResponse } from "@/services/graphql/restaurant"
 import { SpinnerData } from "@/services/graphql/spinner"
 import { SpinWheelSegment } from "@/types/spin-wheel.type"

@@ -1,6 +1,6 @@
 "use client"
-import React, { useState } from "react"
 import Image from "next/image"
+import React from "react"
 
 interface InitialInstructionModalProps {
 	isOpen: boolean
@@ -12,7 +12,9 @@ interface InitialInstructionModalProps {
 	copySuccess: boolean
 }
 
-export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = ({
+export const InitialInstructionModal: React.FC<
+	InitialInstructionModalProps
+> = ({
 	isOpen,
 	onClose,
 	onShowWinners,
@@ -29,15 +31,28 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 				{/* Background decorative elements */}
 				<div className="absolute inset-0 overflow-hidden pointer-events-none">
 					<div className="absolute top-5 left-5 w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-20 animate-pulse"></div>
-					<div className="absolute bottom-5 right-5 w-20 h-20 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full blur-xl opacity-20 animate-pulse" style={{animationDelay: '1s'}}></div>
+					<div
+						className="absolute bottom-5 right-5 w-20 h-20 bg-gradient-to-r from-pink-400 to-indigo-400 rounded-full blur-xl opacity-20 animate-pulse"
+						style={{ animationDelay: "1s" }}
+					></div>
 				</div>
 
 				{/* Header with enhanced gradient text */}
 				<div className="text-center space-y-2 relative z-10">
 					<div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-4 shadow-2xl relative">
 						<div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-60 scale-125 animate-pulse"></div>
-						<svg className="w-10 h-10 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+						<svg
+							className="w-10 h-10 text-white relative z-10"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+							/>
 						</svg>
 					</div>
 					<div className="space-y-2">
@@ -80,23 +95,25 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 				{instagramUsername && (
 					<div className="space-y-1 relative z-10">
 						<div className="text-center">
-							<p className="text-sm font-medium text-gray-600 mb-2">Copy our Instagram handle:</p>
+							<p className="text-sm font-medium text-gray-600 mb-2">
+								Copy our Instagram handle:
+							</p>
 						</div>
 						<button
 							type="button"
 							onClick={(e) => {
-								e.stopPropagation();
+								e.stopPropagation()
 								if (instagramUsername && !isCopying && !copySuccess) {
-									onCopyText(`@${instagramUsername}`);
+									onCopyText(`@${instagramUsername}`)
 								}
 							}}
 							disabled={isCopying || copySuccess}
 							className={`w-full text-lg font-semibold py-1 rounded-2xl transition-all duration-500 flex items-center justify-between px-6 relative overflow-hidden group ${
-								copySuccess 
-									? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg shadow-green-200 cursor-default' 
+								copySuccess
+									? "bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg shadow-green-200 cursor-default"
 									: isCopying
-									? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-200 cursor-wait'
-									: 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 cursor-pointer active:scale-95'
+									? "bg-gradient-to-r from-blue-400 to-cyan-500 text-white shadow-lg shadow-blue-200 cursor-wait"
+									: "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-200 hover:shadow-xl hover:shadow-purple-300 cursor-pointer active:scale-95"
 							}`}
 						>
 							{/* Animated background gradient */}
@@ -111,8 +128,18 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 									</>
 								) : copySuccess ? (
 									<>
-										<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+										<svg
+											className="w-5 h-5 text-white"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M5 13l4 4L19 7"
+											/>
 										</svg>
 										<span className="font-medium">Copied!</span>
 									</>
@@ -126,13 +153,18 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 							</span>
 							{!isCopying && !copySuccess && (
 								<div className="relative z-10">
-									<svg 
-										className="w-12 h-12 opacity-90 hover:opacity-100 hover:bg-white hover:bg-opacity-20 rounded-xl p-2 backdrop-blur-sm transition-all duration-200" 
-										fill="none" 
-										stroke="currentColor" 
+									<svg
+										className="w-12 h-12 opacity-90 hover:opacity-100 hover:bg-white hover:bg-opacity-20 rounded-xl p-2 backdrop-blur-sm transition-all duration-200"
+										fill="none"
+										stroke="currentColor"
 										viewBox="0 0 24 24"
 									>
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+										/>
 									</svg>
 								</div>
 							)}
@@ -143,7 +175,7 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 				{/* Enhanced Post Story button */}
 				<button
 					onClick={() => {
-						if (typeof window !== 'undefined') {
+						if (typeof window !== "undefined") {
 							window.open("https://instagram.com")
 						}
 						onClose()
@@ -162,8 +194,18 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 							/>
 						</div>
 						<span className="font-bold">Post Story</span>
-						<svg className="w-5 h-5 opacity-80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+						<svg
+							className="w-5 h-5 opacity-80 group-hover:translate-x-1 transition-transform"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M13 7l5 5m0 0l-5 5m5-5H6"
+							/>
 						</svg>
 					</div>
 				</button>
@@ -172,7 +214,7 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 				<button
 					onClick={onShowWinners}
 					className="w-full max-w-sm mx-auto text-pink-500 font-bold text-base py-3 px-4 transition-all duration-200 hover:text-pink-600 active:scale-95 relative underline decoration-pink-500 hover:decoration-pink-600 decoration-2 underline-offset-2"
-					style={{ color: '#ec4899' }}
+					style={{ color: "#ec4899" }}
 				>
 					Previous winner who won
 				</button>
@@ -180,4 +222,3 @@ export const InitialInstructionModal: React.FC<InitialInstructionModalProps> = (
 		</div>
 	)
 }
-

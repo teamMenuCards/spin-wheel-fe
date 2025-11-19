@@ -47,68 +47,65 @@ const authLink = setContext((_, { headers }) => {
 })
 
 // Error Link for handling GraphQL errors
-const errorLink = onError(
-	({ graphQLErrors, networkError, operation, forward }: any) => {
-		if (graphQLErrors) {
-			graphQLErrors.forEach(({ message, locations, path }: any) => {
+const errorLink = onError(({ graphQLErrors, networkError }: any) => {
+	if (graphQLErrors) {
+		graphQLErrors.forEach(({ message, locations, path }: any) => {
+			console.error(
+				`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+			)
+		})
+	}
+
+	if (networkError) {
+		const statusCode =
+			(networkError as any)?.statusCode || (networkError as any)?.status
+		const endpoint = API_CONFIG.GRAPHQL_ENDPOINT
+		const isServer = typeof window === "undefined"
+		const errorMessage = (networkError as any)?.message || String(networkError)
+
+		console.error(`[Network error]: ${networkError}`)
+		console.error(`GraphQL Endpoint: ${endpoint}`)
+		console.error(`Running on: ${isServer ? "Server" : "Client"}`)
+
+		// Handle fetch failed errors (common in SSR when server can't reach localhost)
+		if (
+			errorMessage.includes("fetch failed") ||
+			errorMessage.includes("ECONNREFUSED")
+		) {
+			if (isServer) {
 				console.error(
-					`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+					`Server-side fetch failed. This usually means:\n` +
+						`1. The GraphQL server at ${endpoint} is not running\n` +
+						`2. The Next.js server cannot reach localhost URLs (try using the internal IP or hostname)\n` +
+						`3. For production, ensure NEXT_PUBLIC_GRAPHQL_ENDPOINT points to an accessible URL\n` +
+						`4. Consider using an internal network URL for server-side requests\n` +
+						`\nTip: If your GraphQL server is on the same machine, try using:\n` +
+						`- 127.0.0.1 instead of localhost\n` +
+						`- Or your machine's internal IP address`
 				)
-			})
+			}
 		}
 
-		if (networkError) {
-			const statusCode =
-				(networkError as any)?.statusCode || (networkError as any)?.status
-			const endpoint = API_CONFIG.GRAPHQL_ENDPOINT
-			const isServer = typeof window === "undefined"
-			const errorMessage =
-				(networkError as any)?.message || String(networkError)
+		if (statusCode === 404) {
+			console.error(
+				`GraphQL endpoint not found (404). Please check:\n` +
+					`1. Is the GraphQL server running?\n` +
+					`2. Is the endpoint URL correct? Current: ${endpoint}\n` +
+					`3. Set NEXT_PUBLIC_GRAPHQL_ENDPOINT in your .env.local file`
+			)
+		}
 
-			console.error(`[Network error]: ${networkError}`)
-			console.error(`GraphQL Endpoint: ${endpoint}`)
-			console.error(`Running on: ${isServer ? "Server" : "Client"}`)
-
-			// Handle fetch failed errors (common in SSR when server can't reach localhost)
-			if (
-				errorMessage.includes("fetch failed") ||
-				errorMessage.includes("ECONNREFUSED")
-			) {
-				if (isServer) {
-					console.error(
-						`Server-side fetch failed. This usually means:\n` +
-							`1. The GraphQL server at ${endpoint} is not running\n` +
-							`2. The Next.js server cannot reach localhost URLs (try using the internal IP or hostname)\n` +
-							`3. For production, ensure NEXT_PUBLIC_GRAPHQL_ENDPOINT points to an accessible URL\n` +
-							`4. Consider using an internal network URL for server-side requests\n` +
-							`\nTip: If your GraphQL server is on the same machine, try using:\n` +
-							`- 127.0.0.1 instead of localhost\n` +
-							`- Or your machine's internal IP address`
-					)
-				}
-			}
-
-			if (statusCode === 404) {
-				console.error(
-					`GraphQL endpoint not found (404). Please check:\n` +
-						`1. Is the GraphQL server running?\n` +
-						`2. Is the endpoint URL correct? Current: ${endpoint}\n` +
-						`3. Set NEXT_PUBLIC_GRAPHQL_ENDPOINT in your .env.local file`
-				)
-			}
-
-			// Handle specific network errors
-			if (statusCode === 401) {
-				// Handle unauthorized access
-				if (typeof window !== "undefined") {
-					localStorage.removeItem("token")
-					// Optionally redirect to login page
-					// window.location.href = '/login'
-				}
+		// Handle specific network errors
+		if (statusCode === 401) {
+			// Handle unauthorized access
+			if (typeof window !== "undefined") {
+				localStorage.removeItem("token")
+				// Optionally redirect to login page
+				// window.location.href = '/login'
 			}
 		}
 	}
-)
+})
 
 // Create Apollo Client
 export const apolloClient = new ApolloClient({
@@ -154,7 +151,7 @@ export const createServerApolloClient = () => {
 			}
 		}
 	})
-	
+
 	return new ApolloClient({
 		ssrMode: true,
 		link: from([errorLink, serverAuthLink, httpLink]),

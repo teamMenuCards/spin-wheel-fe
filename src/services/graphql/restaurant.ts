@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GET_RESTAURANT_DETAILS } from "@/graphql/queries/restaurant"
 import { apolloClient, createServerApolloClient } from "@/lib/apollo-client"
 import { RestaurantDetailType, RestaurantType } from "@/types"

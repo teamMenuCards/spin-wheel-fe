@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { apolloClient } from "@/lib/apollo-client"
 import { SPIN_SPINNER } from "@/graphql/mutations/spinner"
 

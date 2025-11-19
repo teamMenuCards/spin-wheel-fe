@@ -4,7 +4,6 @@ import { useFeatureList } from "@/hooks/useFeatureList"
 import { RestaurantDetailResponse } from "@/services/restaurant/get-restaurant-detail"
 import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 import { setRestaurantDetails } from "@/store/features/restaurant.slice"
-import { IDynamicLink } from "@/types"
 import { isSafeArray } from "@/utils/isSafeArray"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch } from "react-redux"
@@ -178,7 +177,8 @@ function DeliveryLandingPage({
 					/>
 				)}
 
-				{restaurantInfo?.dashboardLinks && isSafeArray(restaurantInfo?.dashboardLinks) ? (
+				{restaurantInfo?.dashboardLinks &&
+				isSafeArray(restaurantInfo?.dashboardLinks) ? (
 					<DineInButtons dynamicOptions={restaurantInfo?.dashboardLinks} />
 				) : defualtBtns ? (
 					<DineInButtons

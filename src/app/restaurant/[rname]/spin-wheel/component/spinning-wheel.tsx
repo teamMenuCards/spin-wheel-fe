@@ -1,4 +1,5 @@
 "use client"
+
 import { SpinWheelSegment } from "@/types/spin-wheel.type"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 /* import { useGetRestaurantDetailByNameQuery } from "@/services/restaurant/get-restaurant-detail" */
@@ -30,6 +31,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	segments,
 	restaurantData,
 	spinnerId,
+	restaurantId: _restaurantId, // Unused but kept for API compatibility
 	onFinished,
 	primaryColor = "black",
 	contrastColor = "white",
@@ -194,6 +196,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	// Extract Instagram link from restaurant data
 	const getInstagramLink = () => {
 		const links = restaurantData?.dashboardLinks || []
+
 		const instagramLink = links.find((link: any) => link.type === "INSTAGRAM")
 
 		return instagramLink?.url || null
@@ -414,7 +417,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			if (segmentIndex >= segmentsWithDefault.length)
 				segmentIndex -= segmentsWithDefault.length
 
-			const finalSegment = segmentsWithDefault[segmentIndex]
+			// const finalSegment = segmentsWithDefault[segmentIndex] // Unused but kept for potential future use
 
 			// Wait a moment to show the result, then finish
 			setTimeout(() => {

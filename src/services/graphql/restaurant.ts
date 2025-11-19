@@ -103,7 +103,7 @@ export const getRestaurantDetailsClient = async (
 			}
 		}
 	} catch (error) {
-		console.error("Error fetching restaurant details:", error)
+		console.error("Error fetching restaurant detailsjajja:", error)
 		return null
 	}
 }
@@ -124,7 +124,7 @@ export const getRestaurantDetailsServer = async (
 		const { data, error } = result
 
 		if (error) {
-			console.error("Error fetching restaurant details:", error)
+			console.error("Error fetching restaurant details from server:", error)
 			return null
 		}
 
@@ -219,7 +219,7 @@ export const getRestaurantDetailsServer = async (
 			}
 		}
 	} catch (error) {
-		console.error("Error fetching restaurant details:", error)
+		console.error("Error fetching restaurant detailhahhahas:", error)
 		return null
 	}
 }

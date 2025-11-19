@@ -2,8 +2,8 @@ import { gql } from "@apollo/client"
 
 // Query to get restaurant details by slug
 export const GET_RESTAURANT_DETAILS = gql`
-	query {
-		restaurantBySlug(slug: "aamchee-cafee") {
+	query GetRestaurantDetails($slug: String!) {
+		restaurantBySlug(slug: $slug) {
 			id
 			name
 			openingTime

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	ProductCategoryType,
 	ProductType,
@@ -50,13 +49,13 @@ export const transformProductVariant = (
 }
 
 // Transform new API Product to old format ProductType
-export const transformProduct = (product: any): ProductType => {
+export const transformProduct = (product: unknown): ProductType => {
 	// Extract allergens from product.settings.allergens
 	const allergens = product.settings?.allergens || null
 
 	// Transform variants and sort by price
 	let variants: ProductVariantType[] = (product.variants || [])
-		.map((variant: any) => {
+		.map((variant: unknown) => {
 			// Pass product type, image, and allergens to variant transformation
 			return transformProductVariant(
 				variant,
@@ -110,7 +109,7 @@ export const transformProduct = (product: any): ProductType => {
 
 // Transform new API ProductCategory to old format ProductCategoryType
 export const transformProductCategory = (
-	category: any
+	category: unknown
 ): ProductCategoryType => {
 	return {
 		id: category.id || "",
@@ -129,16 +128,16 @@ export const transformProductCategory = (
 }
 
 // Transform full menu data structure
-export const transformMenuData = (categories: any[]) => {
+export const transformMenuData = (categories: unknown[]) => {
 	return (
 		categories
-			.map((category: any) => {
+			.map((category: unknown) => {
 				// Transform category
 				const transformedCategory = transformProductCategory(category)
 
 				// Transform products and sort by display_order
 				const transformedProducts = (category.products || [])
-					.map((product: any) => transformProduct(product))
+					.map((product: unknown) => transformProduct(product))
 					.sort((a: ProductType, b: ProductType) => {
 						// Sort products by display_order
 						return a.display_order - b.display_order

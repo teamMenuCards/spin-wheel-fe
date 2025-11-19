@@ -1,4 +1,5 @@
 import { getMenuList } from "@/lib/api-cache"
+import { transformToMenuCategory } from "@/utils/transform-to-menu-category"
 
 import SearchClient from "./SearchClient"
 
@@ -10,9 +11,12 @@ export default async function SearchPage({
 	params: Promise<{ rname: string }>
 }) {
 	const { rname } = await params
-	
+
 	// Server-side: Get cached menu data
 	const menuData = await getMenuList(rname)
 
-	return <SearchClient initialMenuData={menuData} />
+	// Transform Category[] to MenuCategory[] for SearchClient
+	const transformedMenuData = transformToMenuCategory(menuData)
+
+	return <SearchClient initialMenuData={transformedMenuData} />
 }

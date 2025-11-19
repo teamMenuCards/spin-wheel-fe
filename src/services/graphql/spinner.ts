@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { GET_SPINNER_FOR_RESTAURANT } from "@/graphql/queries/spinner"
 import { createServerApolloClient } from "@/lib/apollo-client"
 
@@ -21,7 +20,7 @@ export const getSpinnerForRestaurantServer = async (
 ): Promise<SpinnerData | null> => {
 	try {
 		const client = createServerApolloClient()
-		
+
 		const result = await client.query({
 			query: GET_SPINNER_FOR_RESTAURANT,
 			variables: { restaurantId },
@@ -30,7 +29,7 @@ export const getSpinnerForRestaurantServer = async (
 		})
 
 		const { data, error } = result
-		
+
 		if (error) {
 			console.error("Server: GraphQL error fetching spinner:", error)
 			return null
@@ -41,14 +40,14 @@ export const getSpinnerForRestaurantServer = async (
 		}
 
 		// Extract spinner data from GraphQL response
-		const spinner = (data as any)?.spinnerByRestaurantId
-		
+		const spinner = (data as unknown)?.spinnerByRestaurantId
+
 		if (!spinner) {
 			return null
 		}
-		
+
 		return spinner
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Server: Error fetching spinner for restaurant:", error)
 		return null
 	}

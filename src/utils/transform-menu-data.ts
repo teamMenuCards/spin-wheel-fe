@@ -4,6 +4,54 @@ import {
 	ProductVariantType
 } from "@/types/product.type"
 
+// GraphQL response types
+interface GraphQLVariant {
+	id: string
+	name: string
+	price: number | string
+	displayOrder?: number
+	isActive?: boolean
+	available?: boolean
+	createdAt?: string
+	updatedAt?: string
+}
+
+interface GraphQLProduct {
+	id: string
+	name: string
+	description?: string
+	basePrice?: number
+	displayOrder?: number
+	active?: boolean
+	isActive?: boolean
+	type?: string | null
+	image?: string | null
+	availableFrom?: string
+	availableTo?: string
+	createdAt?: string
+	updatedAt?: string
+	variants?: GraphQLVariant[]
+	settings?: {
+		allergens?: string[]
+	}
+}
+
+interface GraphQLCategory {
+	id: string
+	name: string
+	description?: string
+	displayOrder?: number
+	isActive?: boolean
+	createdAt?: string
+	updatedAt?: string
+	parentId?: string | null
+	parent?: {
+		id: string
+		name: string
+	} | null
+	products?: GraphQLProduct[]
+}
+
 // Helper function to convert ProductType enum to is_veg boolean
 const productTypeToIsVeg = (type: string | null | undefined): boolean => {
 	if (!type) return false
@@ -13,7 +61,7 @@ const productTypeToIsVeg = (type: string | null | undefined): boolean => {
 
 // Transform new API ProductVariant to old format ProductVariantType
 export const transformProductVariant = (
-	variant: ProductVariantType,
+	variant: GraphQLVariant | Partial<ProductVariantType>,
 	productType?: string | null,
 	productImage?: string | null,
 	allergens?: string[] | null
@@ -24,17 +72,18 @@ export const transformProductVariant = (
 			? allergens.join(", ")
 			: ""
 
+	const graphqlVariant = variant as GraphQLVariant
 	return {
-		id: variant.id || "",
-		variant_name: variant.name || "",
+		id: graphqlVariant.id || "",
+		variant_name: graphqlVariant.name || "",
 		variant_details: {},
 		is_veg: productTypeToIsVeg(productType) || false,
 		contains_egg: false, // Not available in new API
-		active: variant.isActive ?? variant.available ?? true,
-		price: variant.price?.toString() || "0",
+		active: graphqlVariant.isActive ?? graphqlVariant.available ?? true,
+		price: graphqlVariant.price?.toString() || "0",
 		discounted_price: null, // Not available in new API
 		image_url: productImage || "",
-		display_order: variant.displayOrder?.toString() || "0",
+		display_order: graphqlVariant.displayOrder?.toString() || "0",
 		preparation_time_minutes: null, // Not available in new API
 		allergens: allergensString,
 		average_rating: null, // Not available in new API
@@ -43,24 +92,28 @@ export const transformProductVariant = (
 		calories: null, // Not available in new API
 		spiciness: null, // Not available in new API
 		ingredients: null, // Not available in new API
-		createdAt: variant.createdAt || "",
-		updatedAt: variant.updatedAt || ""
+		createdAt: graphqlVariant.createdAt || "",
+		updatedAt: graphqlVariant.updatedAt || ""
 	}
 }
 
 // Transform new API Product to old format ProductType
-export const transformProduct = (product: unknown): ProductType => {
+// Returns ProductType with required variants array (always present)
+export const transformProduct = (
+	product: unknown
+): ProductType & { variants: ProductVariantType[] } => {
+	const graphqlProduct = product as GraphQLProduct
 	// Extract allergens from product.settings.allergens
-	const allergens = product.settings?.allergens || null
+	const allergens = graphqlProduct.settings?.allergens || null
 
 	// Transform variants and sort by price
-	let variants: ProductVariantType[] = (product.variants || [])
-		.map((variant: unknown) => {
+	let variants: ProductVariantType[] = (graphqlProduct.variants || [])
+		.map((variant: GraphQLVariant) => {
 			// Pass product type, image, and allergens to variant transformation
 			return transformProductVariant(
 				variant,
-				product.type,
-				product.image,
+				graphqlProduct.type,
+				graphqlProduct.image,
 				allergens
 			)
 		})
@@ -75,53 +128,55 @@ export const transformProduct = (product: unknown): ProductType => {
 	if (variants.length === 0) {
 		const defaultVariant: ProductVariantType = transformProductVariant(
 			{
-				id: product.id || "",
-				name: product.name || "",
-				price: product.basePrice || 0,
-				isActive: product.active ?? product.isActive ?? true,
-				displayOrder: product.displayOrder || 0,
-				createdAt: product.createdAt || "",
-				updatedAt: product.updatedAt || ""
+				id: graphqlProduct.id || "",
+				name: graphqlProduct.name || "",
+				price: graphqlProduct.basePrice || 0,
+				isActive: graphqlProduct.active ?? graphqlProduct.isActive ?? true,
+				displayOrder: graphqlProduct.displayOrder || 0,
+				createdAt: graphqlProduct.createdAt || "",
+				updatedAt: graphqlProduct.updatedAt || ""
 			},
-			product.type,
-			product.image,
+			graphqlProduct.type,
+			graphqlProduct.image,
 			allergens
 		)
 		variants = [defaultVariant]
 	}
 
 	return {
-		id: product.id || "",
-		name: product.name || "",
-		price: product.basePrice?.toString() || "0",
-		active: product.active ?? product.isActive ?? true,
-		description: product.description || "",
+		id: graphqlProduct.id || "",
+		name: graphqlProduct.name || "",
+		price: graphqlProduct.basePrice?.toString() || "0",
+		active: graphqlProduct.active ?? graphqlProduct.isActive ?? true,
+		description: graphqlProduct.description || "",
 		quantity: undefined, // Not part of product data
 		is_featured: false, // Not available in new API
-		display_order: product.displayOrder || 0,
-		variants: variants,
-		createdAt: product.createdAt || "",
-		updatedAt: product.updatedAt || "",
-		available_from: product.availableFrom || undefined,
-		available_to: product.availableTo || undefined
-	}
+		display_order: graphqlProduct.displayOrder || 0,
+		variants: variants, // Always present (either from product or default)
+		createdAt: graphqlProduct.createdAt || "",
+		updatedAt: graphqlProduct.updatedAt || "",
+		available_from: graphqlProduct.availableFrom || undefined,
+		available_to: graphqlProduct.availableTo || undefined
+	} as ProductType & { variants: ProductVariantType[] }
 }
 
 // Transform new API ProductCategory to old format ProductCategoryType
 export const transformProductCategory = (
 	category: unknown
 ): ProductCategoryType => {
+	const graphqlCategory = category as GraphQLCategory
 	return {
-		id: category.id || "",
-		name: category.name || "",
-		active: category.isActive ?? true,
-		created_at: category.createdAt || "",
-		updated_at: category.updatedAt || undefined,
-		description: category.description || null,
+		id: graphqlCategory.id || "",
+		name: graphqlCategory.name || "",
+		active: graphqlCategory.isActive ?? true,
+		created_at: graphqlCategory.createdAt || "",
+		updated_at: graphqlCategory.updatedAt || undefined,
+		description: graphqlCategory.description || null,
 		image_url: null, // Not available in new API
-		display_order: category.displayOrder || 0,
-		display_name: category.name || "", // Use name as display_name if not available
-		parent_category_id: category.parentId || category.parent?.id || null,
+		display_order: graphqlCategory.displayOrder || 0,
+		display_name: graphqlCategory.name || "", // Use name as display_name if not available
+		parent_category_id:
+			graphqlCategory.parentId || graphqlCategory.parent?.id || null,
 		available_from: "", // Not available in new API, use empty string
 		available_to: "" // Not available in new API, use empty string
 	}
@@ -132,12 +187,13 @@ export const transformMenuData = (categories: unknown[]) => {
 	return (
 		categories
 			.map((category: unknown) => {
+				const graphqlCategory = category as GraphQLCategory
 				// Transform category
-				const transformedCategory = transformProductCategory(category)
+				const transformedCategory = transformProductCategory(graphqlCategory)
 
 				// Transform products and sort by display_order
-				const transformedProducts = (category.products || [])
-					.map((product: unknown) => transformProduct(product))
+				const transformedProducts = (graphqlCategory.products || [])
+					.map((product: GraphQLProduct) => transformProduct(product))
 					.sort((a: ProductType, b: ProductType) => {
 						// Sort products by display_order
 						return a.display_order - b.display_order

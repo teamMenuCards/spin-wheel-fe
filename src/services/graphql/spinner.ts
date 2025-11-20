@@ -21,7 +21,9 @@ export const getSpinnerForRestaurantServer = async (
 	try {
 		const client = createServerApolloClient()
 
-		const result = await client.query({
+		const result = await client.query<{
+			spinnerByRestaurantId: SpinnerData | null
+		}>({
 			query: GET_SPINNER_FOR_RESTAURANT,
 			variables: { restaurantId },
 			errorPolicy: "none",
@@ -40,7 +42,7 @@ export const getSpinnerForRestaurantServer = async (
 		}
 
 		// Extract spinner data from GraphQL response
-		const spinner = (data as unknown)?.spinnerByRestaurantId
+		const spinner = data.spinnerByRestaurantId
 
 		if (!spinner) {
 			return null

@@ -22,7 +22,7 @@ export function GraphQLTest() {
 		loading: menuLoading,
 		error: menuError
 	} = useMenuList(restaurantName)
- console.log("restaurantData",restaurantData)
+	console.log("restaurantData", restaurantData)
 	// Test using service functions
 	const testServiceFunctions = async () => {
 		try {
@@ -67,8 +67,8 @@ export function GraphQLTest() {
 						<div>
 							<p className="text-green-600">Success!</p>
 							<p>Restaurant: {restaurantData.display_name || "No name"}</p>
-							<p>Phone: {restaurantData.phone_no || "No phone"}</p>
-							<p>Address: {restaurantData.address || "No address"}</p>
+							<p>Phone: {restaurantData.detail.phone_no || "No phone"}</p>
+							<p>Address: {restaurantData.detail.address || "No address"}</p>
 						</div>
 					)}
 				</div>

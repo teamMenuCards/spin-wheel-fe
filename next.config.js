@@ -54,7 +54,17 @@ const nextConfig = {
 				headers: [
 					{
 						key: "Content-Security-Policy",
-						value: `default-src 'self' ${apiUrl}; connect-src 'self' ${apiUrl} ${wsUrl};`
+						value: [
+							`default-src 'self' ${apiUrl}`,
+							`script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.clarity.ms ${apiUrl}`,
+							`style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
+							`connect-src 'self' ${apiUrl} ${wsUrl} https://www.googletagmanager.com https://www.clarity.ms`,
+							`img-src 'self' data: https: blob:`,
+							`font-src 'self' https://fonts.gstatic.com data:`,
+							`frame-src 'self' https://www.googletagmanager.com`,
+							`object-src 'none'`,
+							`base-uri 'self'`
+						].join("; ")
 					}
 				]
 			}

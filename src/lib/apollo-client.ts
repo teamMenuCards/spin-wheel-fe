@@ -9,12 +9,21 @@ import { setContext } from "@apollo/client/link/context"
 import { onError } from "@apollo/client/link/error"
 
 // HTTP Link for GraphQL endpoint
+// Use proxy API route for client-side to bypass CORS, direct endpoint for server-side
+const getGraphQLEndpoint = () => {
+	// Client-side: use Next.js API proxy to bypass CORS
+	if (typeof window !== "undefined") {
+		return "/api/graphql"
+	}
+	// Server-side: use direct endpoint (no CORS issues)
+	return API_CONFIG.GRAPHQL_ENDPOINT
+}
+
 const httpLink = createHttpLink({
-	uri: API_CONFIG.GRAPHQL_ENDPOINT,
+	uri: getGraphQLEndpoint(),
 	fetch: (uri, options) => {
-		// Use native fetch for server-side, fallback to window.fetch for client-side
+		// Server-side: add error handling
 		if (typeof window === "undefined") {
-			// Server-side: use node fetch or native fetch
 			return fetch(uri, options).catch((error) => {
 				console.error(
 					`Server-side fetch failed for ${uri}. This might happen if:\n` +
@@ -26,8 +35,71 @@ const httpLink = createHttpLink({
 				throw error
 			})
 		}
-		// Client-side: use browser fetch
-		return fetch(uri, options)
+		
+		// Client-side: handle CORS preflight properly
+		// Only add logging in development
+		if (process.env.NODE_ENV === "development") {
+			try {
+				const body = options?.body ? JSON.parse(options.body as string) : null
+				console.log("[Apollo Client] Making request to:", uri, {
+					method: options?.method || "POST",
+					operationName: body?.operationName,
+					hasAuth: !!(options?.headers as any)?.authorization
+				})
+			} catch (e) {
+				// Ignore parse errors
+			}
+		}
+		
+		// Build fetch options that minimize CORS preflight issues
+		const fetchOptions: RequestInit = {
+			...options,
+			// Don't include credentials to avoid CORS preflight
+			// Server should handle auth via headers, not cookies
+			credentials: "omit",
+			// Ensure CORS mode is set
+			mode: "cors",
+			// Ensure headers are properly formatted
+			headers: {
+				...options?.headers,
+				// Remove any undefined headers
+			}
+		}
+		
+		// Remove undefined headers to avoid issues
+		if (fetchOptions.headers) {
+			const headers: Record<string, string> = {}
+			Object.entries(fetchOptions.headers).forEach(([key, value]) => {
+				if (value !== undefined && value !== null && value !== "") {
+					headers[key] = String(value)
+				}
+			})
+			fetchOptions.headers = headers
+		}
+		
+		// Make the request with proper CORS handling
+		return fetch(uri, fetchOptions).catch((error: any) => {
+			// Enhanced error for CORS issues
+			const errorMessage = error?.message || String(error)
+			if (
+				errorMessage.includes("Failed to fetch") ||
+				errorMessage.includes("CORS") ||
+				errorMessage.includes("NetworkError")
+			) {
+				console.error(
+					`[CORS Error] Request to ${uri} failed.\n` +
+						`This is likely a CORS preflight issue. The server needs to:\n` +
+						`1. Allow your origin in Access-Control-Allow-Origin\n` +
+						`2. Handle OPTIONS preflight requests\n` +
+						`3. Allow Authorization header in Access-Control-Allow-Headers\n` +
+						`\nRequest details: ${JSON.stringify({
+							method: fetchOptions.method,
+							headers: Object.keys(fetchOptions.headers || {})
+						})}`
+				)
+			}
+			throw error
+		})
 	}
 })
 
@@ -70,7 +142,8 @@ const errorLink = onError(({ graphQLErrors, networkError }: any) => {
 		// Handle fetch failed errors (common in SSR when server can't reach localhost)
 		if (
 			errorMessage.includes("fetch failed") ||
-			errorMessage.includes("ECONNREFUSED")
+			errorMessage.includes("ECONNREFUSED") ||
+			errorMessage.includes("Failed to fetch")
 		) {
 			if (isServer) {
 				console.error(
@@ -82,6 +155,20 @@ const errorLink = onError(({ graphQLErrors, networkError }: any) => {
 						`\nTip: If your GraphQL server is on the same machine, try using:\n` +
 						`- 127.0.0.1 instead of localhost\n` +
 						`- Or your machine's internal IP address`
+				)
+			} else {
+				// Client-side fetch failed
+				console.error(
+					`Client-side fetch failed. This usually means:\n` +
+						`1. The GraphQL server at ${endpoint} is not running\n` +
+						`2. CORS is not properly configured on the server\n` +
+						`3. Network connectivity issues\n` +
+						`4. The endpoint URL is incorrect\n` +
+						`\nTo fix this:\n` +
+						`- Ensure the GraphQL server is running at ${endpoint}\n` +
+						`- Check that CORS is enabled for your frontend origin\n` +
+						`- Verify NEXT_PUBLIC_API_BASE_URL in your .env.local file\n` +
+						`- Check your browser's network tab for more details`
 				)
 			}
 		}

@@ -1,5 +1,7 @@
+import { unstable_cache } from "next/cache"
 import { GET_SPINNER_FOR_RESTAURANT } from "@/graphql/queries/spinner"
 import { createServerApolloClient } from "@/lib/apollo-client"
+import { CACHE_TAG_ALL_APIS } from "@/lib/cache-tags"
 
 export type SpinnerData = {
 	id: string
@@ -14,8 +16,8 @@ export type SpinnerData = {
 	}>
 }
 
-// Server-side function using server Apollo Client
-export const getSpinnerForRestaurantServer = async (
+// Internal server function (without cache)
+const _getSpinnerForRestaurantServer = async (
 	restaurantId: string
 ): Promise<SpinnerData | null> => {
 	try {
@@ -53,4 +55,25 @@ export const getSpinnerForRestaurantServer = async (
 		console.error("Server: Error fetching spinner for restaurant:", error)
 		return null
 	}
+}
+
+// Server-side function with cache tags for Vercel
+export const getSpinnerForRestaurantServer = async (
+	restaurantId: string
+): Promise<SpinnerData | null> => {
+	return unstable_cache(
+		async () => {
+			return _getSpinnerForRestaurantServer(restaurantId)
+		},
+		[`spinner-${restaurantId}`],
+		{
+			tags: [
+				CACHE_TAG_ALL_APIS, // Common tag for all APIs (for Vercel)
+				`spinner-${restaurantId}`,
+				"spinner",
+				"spinners"
+			],
+			revalidate: 36000 // 10 hours
+		}
+	)()
 }

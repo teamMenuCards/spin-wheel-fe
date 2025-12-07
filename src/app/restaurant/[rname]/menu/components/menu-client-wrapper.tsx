@@ -149,7 +149,7 @@ export default function MenuClientWrapper({
 				<div className="fixed bottom-14 z-50 left-0 right-0 bg-red-500/80 backdrop-blur-md px-4 py-3 flex items-center justify-between shadow-lg border-t border-red-400/30">
 					<div className="flex items-center gap-3">
 						<Image
-							src="/spin-wheel.png"
+							src="/spin-wheel2.png"
 							alt="Spin Wheel"
 							width={32}
 							height={32}

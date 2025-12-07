@@ -54,12 +54,19 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const [canSpin, setCanSpin] = useState(true)
 	const [spinMessage, setSpinMessage] = useState("")
 	const [isSpinning, setIsSpinning] = useState(false)
+	const [isLoadingApi, setIsLoadingApi] = useState(false)
 	const [apiError, setApiError] = useState<string | null>(null)
 	const [showErrorModal, setShowErrorModal] = useState(false)
 	const targetSegment = useRef<SpinWheelSegment | null>(null)
 	const targetAngle = useRef<number | null>(null) // Absolute target angle (with rotations)
 	const normalizedTargetAngle = useRef<number | null>(null) // Normalized target angle (0-2PI, should match baseAngle)
 	const initialAngle = useRef(0)
+const animationRef = useRef<number | null>(null)
+const duration = 3000; // or any duration you want in ms
+const audioCtxRef = useRef<AudioContext | null>(null);
+const lastTickSegment = useRef<number | null>(null);
+
+
 
 	const centerX = 300
 	const centerY = 300
@@ -137,6 +144,61 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 		return segmentsWithAngles
 	}, [segments])
+
+
+	// Calculate which segment the needle is pointing to
+const computeNeedleIndex = (angleRad: number) => {
+	const change = angleRad + Math.PI / 2;
+
+	let normalized = change % (Math.PI * 2);
+	if (normalized < 0) normalized += Math.PI * 2;
+
+	const anglePerSegment = (Math.PI * 2) / segmentsWithDefault.length;
+	let index = Math.floor(normalized / anglePerSegment);
+
+	if (index < 0) index += segmentsWithDefault.length;
+	if (index >= segmentsWithDefault.length) index -= segmentsWithDefault.length;
+
+	return index;
+};
+// Tick-tick sound using WebAudio API
+const playTick = () => {
+	try {
+		if (!audioCtxRef.current) {
+			audioCtxRef.current = new (window.AudioContext ||
+				(window as any).webkitAudioContext)();
+		}
+		const ctx = audioCtxRef.current;
+		const t0 = ctx.currentTime;
+
+		// oscillator + quick decay
+		const osc = ctx.createOscillator();
+		const gain = ctx.createGain();
+
+		osc.type = "square";
+		osc.frequency.value = 1000; // tick sharpness
+
+		// Quick attack → decay
+		gain.gain.setValueAtTime(0.0001, t0);
+		gain.gain.exponentialRampToValueAtTime(0.25, t0 + 0.001);
+		gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+
+		osc.connect(gain);
+		gain.connect(ctx.destination);
+
+		osc.start(t0);
+		osc.stop(t0 + 0.06);
+
+		osc.onended = () => {
+			try {
+				osc.disconnect();
+				gain.disconnect();
+			} catch {}
+		};
+	} catch (e) {
+		console.warn("Tick sound error:", e);
+	}
+};
 
 	// Helper function to get the "No discount" segment
 	const getNoDiscountSegment = (): SpinWheelSegment => {
@@ -822,7 +884,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		return { absolute: targetAngle, normalized: normalizedTarget }
 	}
 
-	const spinWithContentManager = async () => {
+/* 	const spinWithContentManager = async () => {
 		if (!canSpin || isSpinning) {
 			return
 		}
@@ -835,8 +897,16 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 
 		// Disable spinning during API call
 		setIsSpinning(true)
+		setIsLoadingApi(true)
 		setCanSpin(false)
 		setFinished(false)
+
+		// Clear any existing interval and reset animation state
+		if (timerHandle.current) {
+			clearInterval(timerHandle.current)
+			timerHandle.current = 0
+		}
+		isStarted.current = false
 
 		try {
 			// Reset error state
@@ -854,6 +924,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				)
 				setShowErrorModal(true)
 				setIsSpinning(false)
+				setIsLoadingApi(false)
 				setCanSpin(true)
 				return // Don't proceed with spinning
 			}
@@ -890,13 +961,74 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			// Store initial angle
 			initialAngle.current = angleCurrent.current
 
-			// Start the spinning animation
-			if (!isStarted.current) {
+			// Hide loading overlay first
+			setIsLoadingApi(false)
+			
+			// Clear any existing interval and reset state
+			if (timerHandle.current) {
+				clearInterval(timerHandle.current)
+				timerHandle.current = 0
+			}
+			isStarted.current = false
+			
+			// Ensure canvas is ready
+			const ctx = canvasRef.current?.getContext("2d")
+			if (!ctx) {
+				console.error("Canvas context not available")
+				setIsSpinning(false)
+				setIsLoadingApi(false)
+				setCanSpin(true)
+				return
+			}
+			
+			// Start the animation immediately - synchronous execution
+			// This ensures it always starts regardless of browser timing
+			try {
+				// Set animation state
 				isStarted.current = true
 				spinStart.current = new Date().getTime()
 				maxSpeed.current = Math.PI / segmentsWithDefault.length
 				frames.current = 0
-				timerHandle.current = window.setInterval(onTimerTick, 16) // ~60fps
+				
+				// Force initial draw to show the wheel
+				draw(ctx)
+				
+				// Start the interval - this MUST succeed
+				const intervalId = window.setInterval(() => {
+					onTimerTick()
+				}, 16) // ~60fps
+				
+				// Verify interval was created
+				if (!intervalId || intervalId <= 0) {
+					throw new Error("Failed to create animation interval")
+				}
+				
+				timerHandle.current = intervalId
+				
+				// Verify animation actually started by checking after a brief moment
+				setTimeout(() => {
+					if (!isStarted.current || !timerHandle.current) {
+						console.error("Animation failed to start, attempting recovery")
+						// Recovery attempt
+						if (canvasRef.current) {
+							const recoveryCtx = canvasRef.current.getContext("2d")
+							if (recoveryCtx && !isStarted.current) {
+								isStarted.current = true
+								spinStart.current = new Date().getTime()
+								if (!timerHandle.current) {
+									timerHandle.current = window.setInterval(onTimerTick, 16)
+								}
+							}
+						}
+					}
+				}, 100)
+				
+			} catch (error) {
+				console.error("Error starting animation:", error)
+				isStarted.current = false
+				setIsSpinning(false)
+				setIsLoadingApi(false)
+				setCanSpin(true)
 			}
 		} catch (error: any) {
 			// Catch all errors: network errors, API errors, parsing errors, etc.
@@ -910,10 +1042,166 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			setApiError(errorMessage)
 			setShowErrorModal(true)
 			setIsSpinning(false)
+			setIsLoadingApi(false)
 			setCanSpin(true)
 			// Don't proceed with spinning on error
 		}
+	} */
+// FIX 3 — missing easing function
+const easeOutCubic = (t: number) => {
+    return 1 - Math.pow(1 - t, 3);
+};
+
+	const spinWithContentManager = async () => {
+    if (!canSpin || isSpinning) return;
+
+    if (!spinnerId) {
+        setSpinMessage("Spinner not available");
+        return;
+    }
+
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) {
+        console.error("Canvas not ready");
+        setSpinMessage("Unable to start spin, try again");
+        return;
+    }
+
+    // Stop previous animation
+    if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+    }
+
+    // Reset UI state
+    setIsSpinning(true);
+    setIsLoadingApi(true);
+    setCanSpin(false);
+    setFinished(false);
+    setApiError(null);
+    setShowErrorModal(false);
+
+    try {
+        // -----------------------
+        // 1. CALL API
+        // -----------------------
+        const apiResult = await spinSpinner(spinnerId);
+
+        if (!apiResult) throw new Error("Unable to reach server.");
+
+        let segment: SpinWheelSegment | null = null;
+
+        if (!apiResult.offer) {
+            segment = getNoDiscountSegment();
+        } else {
+            segment = matchSegmentToApiResponse(apiResult) ?? getNoDiscountSegment();
+        }
+
+        // -----------------------
+        // 2. CALCULATE TARGET
+        // -----------------------
+        const result = calculateTargetAngle(segment);
+        targetSegment.current = segment;
+        targetAngle.current = result.absolute;
+        normalizedTargetAngle.current = result.normalized;
+
+        initialAngle.current = angleCurrent.current;
+
+        setIsLoadingApi(false);
+
+        // -----------------------
+        // 3. ANIMATION CONFIG
+        // -----------------------
+        const FAST_SPIN_SPEED = 0.35;        // fast rotation speed
+        const FAST_SPIN_TIME = 1600;         // 1.6 sec high-speed spin
+        const DECEL_TIME = 1200;             // 1.2 sec smooth deceleration
+
+        spinStart.current = performance.now();
+
+        // -----------------------
+        // 4. main animation loop
+        // -----------------------
+        const animate = (timestamp: number) => {
+	const elapsed = timestamp - spinStart.current;
+
+	// FAST SPIN phase
+	if (elapsed < FAST_SPIN_TIME) {
+		angleCurrent.current += FAST_SPIN_SPEED;
+		angleCurrent.current %= Math.PI * 2;
+
+        // PLAY TICK on segment change
+		const idx = computeNeedleIndex(angleCurrent.current);
+		if (lastTickSegment.current !== idx) {
+			lastTickSegment.current = idx;
+			playTick();
+		}
+
+		draw(ctx);
+		animationRef.current = requestAnimationFrame(animate);
+		return;
 	}
+
+	// DECEL phase
+	const t = (elapsed - FAST_SPIN_TIME) / DECEL_TIME;
+	const eased = easeOutCubic(Math.min(1, t));
+
+	const start = initialAngle.current;
+	const target = normalizedTargetAngle.current!;
+	let diff = target - start;
+	if (diff < 0) diff += Math.PI * 2;
+
+	angleCurrent.current = start + diff * eased;
+
+    // PLAY TICKS while slowing down
+	const idx = computeNeedleIndex(angleCurrent.current);
+	if (lastTickSegment.current !== idx) {
+		lastTickSegment.current = idx;
+		playTick();
+	}
+
+	draw(ctx);
+
+	// FINISHED
+	if (t < 1) {
+		animationRef.current = requestAnimationFrame(animate);
+		return;
+	}
+
+	// Final lock-in
+	angleCurrent.current = target;
+	draw(ctx);
+
+	setIsSpinning(false);
+	setFinished(true);
+	setCanSpin(true);
+
+	if (targetSegment.current) {
+		onFinished(targetSegment.current.text, targetSegment.current);
+	}
+};
+
+
+        // Start animation
+        draw(ctx);
+        animationRef.current = requestAnimationFrame(animate);
+
+    } catch (err: any) {
+        // -----------------------
+        // ERROR HANDLING
+        // -----------------------
+        if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+        const msg =
+            err?.message || "Failed to connect. Please try again.";
+
+        setApiError(msg);
+        setShowErrorModal(true);
+
+        setIsSpinning(false);
+        setIsLoadingApi(false);
+        setCanSpin(true);
+    }
+};
+
 
 	const instaUserId = getInstagramUsername()
 
@@ -973,6 +1261,60 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 							transition: "all 0.3s ease-in-out"
 						}}
 					/>
+
+					{/* Loading Overlay - Shows while API is fetching data */}
+					{isLoadingApi && (
+						<div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-full pointer-events-auto">
+							{/* Animated background glow */}
+							<div className="absolute inset-0 overflow-hidden pointer-events-none rounded-full">
+								<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+								<div
+									className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full blur-2xl opacity-25 animate-pulse"
+									style={{ animationDelay: "0.5s" }}
+								></div>
+							</div>
+
+							{/* Loading content */}
+							<div className="relative z-10 flex flex-col items-center justify-center space-y-4 pointer-events-none">
+								{/* Spinning wheel loader */}
+								<div className="relative">
+									{/* Outer spinning ring */}
+									<div className="w-20 h-20 border-4 border-transparent border-t-purple-500 border-r-pink-500 rounded-full animate-spin"></div>
+									{/* Inner spinning ring */}
+									<div
+										className="absolute top-0 left-0 w-20 h-20 border-4 border-transparent border-b-indigo-500 border-l-purple-500 rounded-full animate-spin"
+										style={{
+											animationDirection: "reverse",
+											animationDuration: "0.8s"
+										}}
+									></div>
+									{/* Center glow */}
+									<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-md opacity-60 animate-pulse"></div>
+								</div>
+
+								{/* Loading text */}
+								<div className="text-center space-y-2">
+									<p className="text-white font-bold text-lg bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-lg">
+										Preparing your spin...
+									</p>
+									<div className="flex items-center justify-center space-x-1">
+										<div
+											className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+											style={{ animationDelay: "0s" }}
+										></div>
+										<div
+											className="w-2 h-2 bg-pink-400 rounded-full animate-bounce"
+											style={{ animationDelay: "0.2s" }}
+										></div>
+										<div
+											className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"
+											style={{ animationDelay: "0.4s" }}
+										></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					)}
 
 					{/* Spin button with enhanced design */}
 					<SpinButton

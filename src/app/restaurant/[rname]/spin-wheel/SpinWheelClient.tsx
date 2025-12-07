@@ -33,25 +33,29 @@ export default function SpinWheelClient({
 	const [, setShowScrollToTop] = useState(false)
 
 	// Extract review links from restaurant data
-	const getReviewLinks = () => {
-		if (!restaurantData?.detail?.details?.platform_details) {
-			return { googleReviewLink: "", zomatoReviewLink: "" }
-		}
+const getReviewLinks = () => {
+    if (!restaurantData?.detail?.details?.platform_details) {
+        return {
+            googleReviewLink: "https://www.google.com",
+            zomatoReviewLink: "https://www.zomato.com"
+        }
+    }
 
-		const platformDetails = restaurantData.detail.details.platform_details
-		const links: Record<string, string> = {}
+    const platformDetails = restaurantData.detail.details.platform_details
+    const links: Record<string, string> = {}
 
-		platformDetails.forEach(
-			(item: { platform_name: string; platform_uri: string }) => {
-				links[item.platform_name] = item.platform_uri
-			}
-		)
+    platformDetails.forEach(
+        (item: { platform_name: string; platform_uri: string }) => {
+            links[item.platform_name] = item.platform_uri
+        }
+    )
 
-		return {
-			googleReviewLink: links["google-review"] || "",
-			zomatoReviewLink: links["zomato-dine-in"] || ""
-		}
-	}
+    return {
+        googleReviewLink: links["google-review"] || "https://www.google.com",
+        zomatoReviewLink: links["zomato-dine-in"] || "https://www.zomato.com"
+    }
+}
+
 
 	const { googleReviewLink, zomatoReviewLink } = getReviewLinks()
 

@@ -1034,11 +1034,24 @@ const playTick = () => {
 			// Catch all errors: network errors, API errors, parsing errors, etc.
 			console.error("Error spinning spinner:", error)
 
-			// Show error modal to user
-			const errorMessage =
-				error?.message ||
-				error?.networkError?.message ||
-				"Unable to connect to the server. Please check your connection and try again."
+			// Enhanced error message handling
+			let errorMessage = "Unable to connect to the server. Please check your connection and try again."
+			
+			if (error?.isNetworkError || error?.networkError) {
+				// Network error - provide helpful message
+				errorMessage = error?.message || 
+					"Unable to connect to the server. Please check your internet connection and ensure the server is running."
+			} else if (error?.message) {
+				// Use the error message if available
+				errorMessage = error.message
+			} else if (error?.networkError?.message) {
+				// Fallback to network error message
+				errorMessage = error.networkError.message
+			} else if (error?.graphQLErrors && error.graphQLErrors.length > 0) {
+				// GraphQL errors
+				errorMessage = error.graphQLErrors[0].message || errorMessage
+			}
+			
 			setApiError(errorMessage)
 			setShowErrorModal(true)
 			setIsSpinning(false)

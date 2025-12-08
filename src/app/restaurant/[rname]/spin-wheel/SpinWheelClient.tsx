@@ -98,11 +98,11 @@ const getReviewLinks = () => {
 		// Only show referral popup if there's an actual discount (not "Better Luck Next Time")
 		if (
 			segment.discountType !== "no_prize" &&
-			winner !== "Better Luck Next Time!"
+			winner !== "No discount"
 		) {
 			setShowPopup(true)
 		} else {
-			// Go directly to thank you page for "Better Luck Next Time"
+			// Go directly to thank you page for "No discount"
 			setShowThankYouPopup(true)
 		}
 	}
@@ -257,9 +257,9 @@ const getReviewLinks = () => {
 						<div className="min-h-full flex flex-col justify-start">
 							<div className="max-w-md mx-auto w-full space-y-6">
 								{/* Result Header - Clean and spacious */}
+						
 								<div className="text-center space-y-4">
-									{currentPrize !== "Better Luck Next Time!" ? (
-										<>
+									
 											{/* Success Message */}
 											<div className="space-y-2">
 												<h2
@@ -280,7 +280,7 @@ const getReviewLinks = () => {
 															: "bg-gradient-to-r from-green-400 to-emerald-500"
 													}`}
 												></div>
-												<p className="text-md font-medium text-gray-700">
+												<p className="text-3xl font-medium text-gray-700">
 													You have won:{" "}
 													<span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
 														{currentPrize}
@@ -297,18 +297,18 @@ const getReviewLinks = () => {
 													className="object-contain drop-shadow-lg"
 												/>
 											</div>
-										</>
-									) : (
-										<>
+										
+									
+										
 											{/* Better Luck Message */}
-											<div className="space-y-2">
+										{/* 	<div className="space-y-2">
 												<h2 className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-600 bg-clip-text text-transparent">
 													Better Luck Next Time!
 												</h2>
 												<div className="w-24 h-1 bg-gradient-to-r from-red-400 to-pink-500 rounded-full mx-auto"></div>
 											</div>
 
-											{/* Better Luck Image */}
+											
 											<div className="flex justify-center relative mt-4">
 												<Image
 													src="/unfortunate.png"
@@ -317,15 +317,15 @@ const getReviewLinks = () => {
 													height={40}
 													className="object-contain drop-shadow-lg"
 												/>
-											</div>
-										</>
-									)}
+											</div> */}
+									
+									
 								</div>
 
 								{/* Feedback Section - Clean and spacious */}
 								<div className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
 									<div className="text-center space-y-3 mb-2">
-										<div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-md">
+										{/* <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-md">
 											<svg
 												className="w-6 h-6 text-white"
 												fill="none"
@@ -339,7 +339,7 @@ const getReviewLinks = () => {
 													d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
 												/>
 											</svg>
-										</div>
+										</div> */}
 										<h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
 											Your Feedback is Important to Us
 										</h3>

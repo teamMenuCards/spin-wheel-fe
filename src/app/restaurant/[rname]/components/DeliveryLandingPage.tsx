@@ -14,6 +14,7 @@ import Modal from "../shared/Modal"
 import PopupContent from "../shared/PopUpContent"
 import ReviewsCarousel from "../shared/ReviewsCarousel"
 import { FEATURES, IOption } from "../types"
+import { useSpinnerForRestaurant } from "@/hooks/useSpinnerForRestaurant"
 
 function DeliveryLandingPage({
 	rname,
@@ -25,7 +26,10 @@ function DeliveryLandingPage({
 	const dispatch = useDispatch()
 	const { hasFeature } = useFeatureList(rname)
 	const { hideSnackbar } = useSnackbar()
-
+const { data: spinnerData, loading: spinnerLoading } = useSpinnerForRestaurant(
+		restaurantInfo?.id || ""
+	)
+	const hasSpinWheelFeature = !spinnerLoading && spinnerData
 	const showZomatoNudgePopup = hasFeature(
 		FEATURES.RESTAURANT_PRE_PLATFORM_ORDER_FLOW
 	)
@@ -53,7 +57,7 @@ function DeliveryLandingPage({
 		}
 	}, [dispatch, restaurantInfo, rname])
 
-	useEffect(() => {}, [rname])
+	useEffect(() => { }, [rname])
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 
@@ -63,6 +67,8 @@ function DeliveryLandingPage({
 		const details = data?.detail?.details
 
 		const linksList: Record<string, string> = {}
+
+		const whatsappLink = details?.wa_api_details.wa_number
 
 		const platformDetails = details?.platform_details ?? []
 
@@ -90,10 +96,17 @@ function DeliveryLandingPage({
 			},
 			{
 				id: 2,
+				value: "Spin For Discount",
+				path: `/restaurant/${rid}/spin-wheel`,
+				icon: "/spin-wheel2.png",
+				show: !!hasSpinWheelFeature
+			},
+			{
+				id: 3,
 				value: "Contact Us",
-				path: linksList["whatsapp-link"],
+				path: `https://wa.me/${whatsappLink}`,
 				icon: "/whatsapp.svg",
-				show: !!linksList["whatsapp-link"]
+				show: !!whatsappLink
 			},
 			// {
 			// 	id: 3,
@@ -165,7 +178,7 @@ function DeliveryLandingPage({
 			{restaurantInfo && (
 				<BackgroundImage
 					restaurantInfo={restaurantInfo}
-					// imagesRef={imagesRef}
+				// imagesRef={imagesRef}
 				/>
 			)}
 
@@ -178,12 +191,12 @@ function DeliveryLandingPage({
 				)}
 
 				{restaurantInfo?.dashboardLinks &&
-				isSafeArray(restaurantInfo?.dashboardLinks) ? (
+					isSafeArray(restaurantInfo?.dashboardLinks) ? (
 					<DineInButtons dynamicOptions={restaurantInfo?.dashboardLinks} />
 				) : defualtBtns ? (
 					<DineInButtons
 						options={defualtBtns}
-						// setActivePopup={setActivePopup}
+					// setActivePopup={setActivePopup}
 					/>
 				) : null}
 

@@ -83,7 +83,7 @@ const DineInButtons = ({
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
 			{/* DYNAMIC Menu for IS_DELIVERY page */}
-			{dynamicOptions &&
+			{/* {dynamicOptions &&
 				dynamicOptions?.map((item: IDynamicLink, index) => {
 					return item.active ? (
 						<InfoButton
@@ -95,7 +95,7 @@ const DineInButtons = ({
 							onClick={handleClick(item)}
 						/>
 					) : null
-				})}
+				})} */}
 
 			{activeFeedback && hasReviewFeature && (
 				<FeedbackPopup

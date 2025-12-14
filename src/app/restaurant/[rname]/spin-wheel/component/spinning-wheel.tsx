@@ -61,13 +61,11 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const targetAngle = useRef<number | null>(null) // Absolute target angle (with rotations)
 	const normalizedTargetAngle = useRef<number | null>(null) // Normalized target angle (0-2PI, should match baseAngle)
 	const initialAngle = useRef(0)
-const animationRef = useRef<number | null>(null)
-const duration = 3000; // or any duration you want in ms
-const audioCtxRef = useRef<AudioContext | null>(null);
-const lastTickSegment = useRef<number | null>(null);
-
-
-
+	const SPIN_COOLDOWN = 2 * 60 * 60 * 1000 // 2 hours
+	const animationRef = useRef<number | null>(null)
+	const duration = 3000 // or any duration you want in ms
+	const audioCtxRef = useRef<AudioContext | null>(null)
+	const lastTickSegment = useRef<number | null>(null)
 	const centerX = 300
 	const centerY = 300
 	const [closeModal, setCloseModal] = useState(true)
@@ -145,60 +143,59 @@ const lastTickSegment = useRef<number | null>(null);
 		return segmentsWithAngles
 	}, [segments])
 
-
 	// Calculate which segment the needle is pointing to
-const computeNeedleIndex = (angleRad: number) => {
-	const change = angleRad + Math.PI / 2;
+	const computeNeedleIndex = (angleRad: number) => {
+		const change = angleRad + Math.PI / 2
 
-	let normalized = change % (Math.PI * 2);
-	if (normalized < 0) normalized += Math.PI * 2;
+		let normalized = change % (Math.PI * 2)
+		if (normalized < 0) normalized += Math.PI * 2
 
-	const anglePerSegment = (Math.PI * 2) / segmentsWithDefault.length;
-	let index = Math.floor(normalized / anglePerSegment);
+		const anglePerSegment = (Math.PI * 2) / segmentsWithDefault.length
+		let index = Math.floor(normalized / anglePerSegment)
 
-	if (index < 0) index += segmentsWithDefault.length;
-	if (index >= segmentsWithDefault.length) index -= segmentsWithDefault.length;
+		if (index < 0) index += segmentsWithDefault.length
+		if (index >= segmentsWithDefault.length) index -= segmentsWithDefault.length
 
-	return index;
-};
-// Tick-tick sound using WebAudio API
-const playTick = () => {
-	try {
-		if (!audioCtxRef.current) {
-			audioCtxRef.current = new (window.AudioContext ||
-				(window as any).webkitAudioContext)();
-		}
-		const ctx = audioCtxRef.current;
-		const t0 = ctx.currentTime;
-
-		// oscillator + quick decay
-		const osc = ctx.createOscillator();
-		const gain = ctx.createGain();
-
-		osc.type = "square";
-		osc.frequency.value = 1000; // tick sharpness
-
-		// Quick attack → decay
-		gain.gain.setValueAtTime(0.0001, t0);
-		gain.gain.exponentialRampToValueAtTime(0.25, t0 + 0.001);
-		gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
-
-		osc.connect(gain);
-		gain.connect(ctx.destination);
-
-		osc.start(t0);
-		osc.stop(t0 + 0.06);
-
-		osc.onended = () => {
-			try {
-				osc.disconnect();
-				gain.disconnect();
-			} catch {}
-		};
-	} catch (e) {
-		console.warn("Tick sound error:", e);
+		return index
 	}
-};
+	// Tick-tick sound using WebAudio API
+	const playTick = () => {
+		try {
+			if (!audioCtxRef.current) {
+				audioCtxRef.current = new (window.AudioContext ||
+					(window as any).webkitAudioContext)()
+			}
+			const ctx = audioCtxRef.current
+			const t0 = ctx.currentTime
+
+			// oscillator + quick decay
+			const osc = ctx.createOscillator()
+			const gain = ctx.createGain()
+
+			osc.type = "square"
+			osc.frequency.value = 1000 // tick sharpness
+
+			// Quick attack → decay
+			gain.gain.setValueAtTime(0.0001, t0)
+			gain.gain.exponentialRampToValueAtTime(0.25, t0 + 0.001)
+			gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05)
+
+			osc.connect(gain)
+			gain.connect(ctx.destination)
+
+			osc.start(t0)
+			osc.stop(t0 + 0.06)
+
+			osc.onended = () => {
+				try {
+					osc.disconnect()
+					gain.disconnect()
+				} catch {}
+			}
+		} catch (e) {
+			console.warn("Tick sound error:", e)
+		}
+	}
 
 	// Helper function to get the "No discount" segment
 	const getNoDiscountSegment = (): SpinWheelSegment => {
@@ -235,6 +232,43 @@ const playTick = () => {
 	useEffect(() => {
 		maxSpeed.current = Math.PI / segmentsWithDefault.length
 	}, [segmentsWithDefault])
+
+	// Spin cooldown
+	useEffect(() => {
+		const lastSpin = localStorage.getItem("lastSpinTime")
+		const storedCanSpin = localStorage.getItem("canSpin")
+	
+		if (!lastSpin) {
+			setCanSpin(true)
+			localStorage.setItem("canSpin", "true")
+			return
+		}
+	
+		if (storedCanSpin === "false") {
+			setCanSpin(false)
+		}
+	
+		const elapsed = Date.now() - Number(lastSpin)
+		const SPIN_COOLDOWN = 2 * 60 * 60 * 1000
+	
+		if (elapsed >= SPIN_COOLDOWN) {
+			setCanSpin(true)
+			localStorage.setItem("canSpin", "true")
+		} else {
+			setCanSpin(false)
+			localStorage.setItem("canSpin", "false")
+	
+			const remaining = SPIN_COOLDOWN - elapsed
+			setTimeout(() => {
+				setCanSpin(true)
+				localStorage.setItem("canSpin", "true")
+			}, remaining)
+		}
+	}, [])
+	
+	
+	
+
 
 	// Random winners data
 	const previousWinners = [
@@ -519,7 +553,7 @@ const playTick = () => {
 			ctx.fillStyle = segColors[key]
 			ctx.fill()
 
-			// Add attractive glow effect to segment borders
+			// Glow effect for borders
 			ctx.shadowColor = "rgba(255, 255, 255, 0.6)"
 			ctx.shadowBlur = 6
 			ctx.strokeStyle = "rgba(255, 255, 255, 0.9)"
@@ -527,32 +561,27 @@ const playTick = () => {
 			ctx.stroke()
 			ctx.shadowBlur = 0
 
-			// Draw horizontal text (not rotated) with better positioning
+			// Draw text
 			ctx.save()
 
-			// Calculate text position to keep it horizontal and centered
 			const textAngle = (lastAngle + angle) / 2
-			const textRadius = size / 2 + 30 // Moved much further from center for more space
+			const textRadius = size / 2 + 30
 			const textX = Math.cos(textAngle) * textRadius
 			const textY = Math.sin(textAngle) * textRadius
 
-			// Draw text horizontally at the calculated position with line breaks
 			ctx.fillStyle = contrastColor
-			ctx.font = `bold 1.5em ${fontFamily}` // Optimized font size for better spacing
+			ctx.font = `bold 1.5em ${fontFamily}`
 			ctx.textAlign = "center"
 			ctx.textBaseline = "middle"
 
-			// Split text into lines for better readability
 			const displayText = segmentTexts[key]
 			const words = displayText.split(" ")
 			const lines = []
 			let currentLine = ""
 
-			// Create lines with appropriate word wrapping for better text distribution
 			for (let i = 0; i < words.length; i++) {
 				const testLine = currentLine + (currentLine ? " " : "") + words[i]
 				if (testLine.length <= 12) {
-					// Increased character limit for more space
 					currentLine = testLine
 				} else {
 					if (currentLine) {
@@ -563,37 +592,21 @@ const playTick = () => {
 					}
 				}
 			}
-			if (currentLine) {
-				lines.push(currentLine)
-			}
+			if (currentLine) lines.push(currentLine)
 
-			// Draw each line with proper spacing
-			const lineHeight = 20 // Increased line height for better spacing and less congestion
+			const lineHeight = 20
 			const startY = centerY + textY - ((lines.length - 1) * lineHeight) / 2
 
-			// Add enhanced text glow effect for better visibility
-			ctx.shadowColor = "rgba(0, 0, 0, 1.0)"
-			ctx.shadowBlur = 6
-			ctx.shadowOffsetX = 2
-			ctx.shadowOffsetY = 2
-
-			// Draw text outline for better contrast
-			ctx.strokeStyle = "rgba(0, 0, 0, 0.8)"
-			ctx.lineWidth = 3
-			ctx.lineJoin = "round"
+			// ❌ Removed: text shadow
+			// ❌ Removed: text black border/stroke
+			// No stroke, only clean fillText
 
 			lines.forEach((line, index) => {
 				const x = centerX + textX
 				const y = startY + index * lineHeight
-				// Draw outline first
-				ctx.strokeText(line, x, y)
-				// Then draw filled text
 				ctx.fillText(line, x, y)
 			})
 
-			ctx.shadowBlur = 0
-			ctx.shadowOffsetX = 0
-			ctx.shadowOffsetY = 0
 			ctx.restore()
 		},
 		[centerX, centerY, size, segColors, contrastColor, fontFamily, segmentTexts]
@@ -884,325 +897,158 @@ const playTick = () => {
 		return { absolute: targetAngle, normalized: normalizedTarget }
 	}
 
-/* 	const spinWithContentManager = async () => {
-		if (!canSpin || isSpinning) {
-			return
-		}
+	const easeOutCubic = (t: number) => {
+		return 1 - Math.pow(1 - t, 3)
+	}
 
+	const spinWithContentManager = async () => {
+		// --- EARLY RETURNS ---
+		if (!canSpin || isSpinning) return
+	
 		if (!spinnerId) {
-			console.error("Spinner ID is required to spin")
 			setSpinMessage("Spinner not available")
 			return
 		}
-
-		// Disable spinning during API call
+	
+		const ctx = canvasRef.current?.getContext("2d")
+		if (!ctx) {
+			console.error("Canvas not ready")
+			setSpinMessage("Unable to start spin, try again")
+			return
+		}
+	
+		// --- LOCK SPIN FOR 2-HOUR COOLDOWN ---
+		setCanSpin(false)
+		localStorage.setItem("canSpin", "false")
+		localStorage.setItem("lastSpinTime", Date.now().toString())
+	
+		// --- STOP PREVIOUS ANIMATION IF ANY ---
+		if (animationRef.current) {
+			cancelAnimationFrame(animationRef.current)
+		}
+	
+		// --- RESET UI STATE ---
 		setIsSpinning(true)
 		setIsLoadingApi(true)
-		setCanSpin(false)
 		setFinished(false)
-
-		// Clear any existing interval and reset animation state
-		if (timerHandle.current) {
-			clearInterval(timerHandle.current)
-			timerHandle.current = 0
-		}
-		isStarted.current = false
-
+		setApiError(null)
+		setShowErrorModal(false)
+	
 		try {
-			// Reset error state
-			setApiError(null)
-			setShowErrorModal(false)
-
+			// -----------------------
+			// 1. CALL API
+			// -----------------------
 			const apiResult = await spinSpinner(spinnerId)
-
-			let targetSegmentToUse: SpinWheelSegment | null = null
-
-			// Case 1: API returned null (entire response is null)
-			if (!apiResult) {
-				setApiError(
-					"Unable to connect to the server. Please check your connection and try again."
-				)
-				setShowErrorModal(true)
-				setIsSpinning(false)
-				setIsLoadingApi(false)
-				setCanSpin(true)
-				return // Don't proceed with spinning
-			}
-			// Case 2: API returned result but offer is null
-			else if (!apiResult.offer) {
-				targetSegmentToUse = getNoDiscountSegment()
-			}
-			// Case 3: API returned result with offer - try to match it
-			else {
-				const matchedSegment = matchSegmentToApiResponse(apiResult)
-
-				if (!matchedSegment) {
-					targetSegmentToUse = getNoDiscountSegment()
-				} else {
-					targetSegmentToUse = matchedSegment
-				}
-			}
-
-			// Set the target segment and angle
-			if (targetSegmentToUse) {
-				targetSegment.current = targetSegmentToUse
-				const targetAngleResult = calculateTargetAngle(targetSegmentToUse)
-				targetAngle.current = targetAngleResult.absolute
-				normalizedTargetAngle.current = targetAngleResult.normalized
+			if (!apiResult) throw new Error("Unable to reach server.")
+	
+			let segment: SpinWheelSegment | null = null
+			if (!apiResult.offer) {
+				segment = getNoDiscountSegment()
 			} else {
-				// Fallback: should never happen, but just in case
-				const noDiscountSegment = getNoDiscountSegment()
-				targetSegment.current = noDiscountSegment
-				const targetAngleResult = calculateTargetAngle(noDiscountSegment)
-				targetAngle.current = targetAngleResult.absolute
-				normalizedTargetAngle.current = targetAngleResult.normalized
+				segment = matchSegmentToApiResponse(apiResult) ?? getNoDiscountSegment()
 			}
-
-			// Store initial angle
+	
+			// -----------------------
+			// 2. CALCULATE TARGET
+			// -----------------------
+			const result = calculateTargetAngle(segment)
+			targetSegment.current = segment
+			targetAngle.current = result.absolute
+			normalizedTargetAngle.current = result.normalized
 			initialAngle.current = angleCurrent.current
-
-			// Hide loading overlay first
+	
 			setIsLoadingApi(false)
-			
-			// Clear any existing interval and reset state
-			if (timerHandle.current) {
-				clearInterval(timerHandle.current)
-				timerHandle.current = 0
-			}
-			isStarted.current = false
-			
-			// Ensure canvas is ready
-			const ctx = canvasRef.current?.getContext("2d")
-			if (!ctx) {
-				console.error("Canvas context not available")
-				setIsSpinning(false)
-				setIsLoadingApi(false)
-				setCanSpin(true)
-				return
-			}
-			
-			// Start the animation immediately - synchronous execution
-			// This ensures it always starts regardless of browser timing
-			try {
-				// Set animation state
-				isStarted.current = true
-				spinStart.current = new Date().getTime()
-				maxSpeed.current = Math.PI / segmentsWithDefault.length
-				frames.current = 0
-				
-				// Force initial draw to show the wheel
-				draw(ctx)
-				
-				// Start the interval - this MUST succeed
-				const intervalId = window.setInterval(() => {
-					onTimerTick()
-				}, 16) // ~60fps
-				
-				// Verify interval was created
-				if (!intervalId || intervalId <= 0) {
-					throw new Error("Failed to create animation interval")
-				}
-				
-				timerHandle.current = intervalId
-				
-				// Verify animation actually started by checking after a brief moment
-				setTimeout(() => {
-					if (!isStarted.current || !timerHandle.current) {
-						console.error("Animation failed to start, attempting recovery")
-						// Recovery attempt
-						if (canvasRef.current) {
-							const recoveryCtx = canvasRef.current.getContext("2d")
-							if (recoveryCtx && !isStarted.current) {
-								isStarted.current = true
-								spinStart.current = new Date().getTime()
-								if (!timerHandle.current) {
-									timerHandle.current = window.setInterval(onTimerTick, 16)
-								}
-							}
-						}
+	
+			// -----------------------
+			// 3. ANIMATION CONFIG
+			// -----------------------
+			const FAST_SPIN_SPEED = 0.35 // fast rotation speed
+			const FAST_SPIN_TIME = 1600 // 1.6 sec high-speed spin
+			const DECEL_TIME = 1200 // 1.2 sec smooth deceleration
+	
+			spinStart.current = performance.now()
+	
+			// -----------------------
+			// 4. MAIN ANIMATION LOOP
+			// -----------------------
+			const animate = (timestamp: number) => {
+				const elapsed = timestamp - spinStart.current
+	
+				// --- FAST SPIN PHASE ---
+				if (elapsed < FAST_SPIN_TIME) {
+					angleCurrent.current += FAST_SPIN_SPEED
+					angleCurrent.current %= Math.PI * 2
+	
+					const idx = computeNeedleIndex(angleCurrent.current)
+					if (lastTickSegment.current !== idx) {
+						lastTickSegment.current = idx
+						playTick()
 					}
-				}, 100)
-				
-			} catch (error) {
-				console.error("Error starting animation:", error)
-				isStarted.current = false
+	
+					draw(ctx)
+					animationRef.current = requestAnimationFrame(animate)
+					return
+				}
+	
+				// --- DECELERATION PHASE ---
+				const t = (elapsed - FAST_SPIN_TIME) / DECEL_TIME
+				const eased = easeOutCubic(Math.min(1, t))
+	
+				const start = initialAngle.current
+				const target = normalizedTargetAngle.current!
+				let diff = target - start
+				if (diff < 0) diff += Math.PI * 2
+	
+				angleCurrent.current = start + diff * eased
+	
+				const idx = computeNeedleIndex(angleCurrent.current)
+				if (lastTickSegment.current !== idx) {
+					lastTickSegment.current = idx
+					playTick()
+				}
+	
+				draw(ctx)
+	
+				// --- FINISHED SPIN ---
+				if (t < 1) {
+					animationRef.current = requestAnimationFrame(animate)
+					return
+				}
+	
+				// Final lock-in
+				angleCurrent.current = target
+				draw(ctx)
+	
 				setIsSpinning(false)
-				setIsLoadingApi(false)
-				setCanSpin(true)
+				setFinished(true)
+	
+				if (targetSegment.current) {
+					onFinished(targetSegment.current.text, targetSegment.current)
+				}
+	
+				// ❌ DO NOT unlock spin here; cooldown is handled by useEffect
 			}
-		} catch (error: any) {
-			// Catch all errors: network errors, API errors, parsing errors, etc.
-			console.error("Error spinning spinner:", error)
-
-			// Show error modal to user
-			const errorMessage =
-				error?.message ||
-				error?.networkError?.message ||
-				"Unable to connect to the server. Please check your connection and try again."
-			setApiError(errorMessage)
+	
+			// START ANIMATION
+			draw(ctx)
+			animationRef.current = requestAnimationFrame(animate)
+		} catch (err: any) {
+			// -----------------------
+			// ERROR HANDLING
+			// -----------------------
+			if (animationRef.current) cancelAnimationFrame(animationRef.current)
+	
+			const msg = err?.message || "Failed to connect. Please try again."
+	
+			setApiError(msg)
 			setShowErrorModal(true)
 			setIsSpinning(false)
 			setIsLoadingApi(false)
-			setCanSpin(true)
-			// Don't proceed with spinning on error
+	
+			// ❌ DO NOT unlock spin here; cooldown is still enforced
 		}
-	} */
-// FIX 3 — missing easing function
-const easeOutCubic = (t: number) => {
-    return 1 - Math.pow(1 - t, 3);
-};
-
-	const spinWithContentManager = async () => {
-    if (!canSpin || isSpinning) return;
-
-    if (!spinnerId) {
-        setSpinMessage("Spinner not available");
-        return;
-    }
-
-    const ctx = canvasRef.current?.getContext("2d");
-    if (!ctx) {
-        console.error("Canvas not ready");
-        setSpinMessage("Unable to start spin, try again");
-        return;
-    }
-
-    // Stop previous animation
-    if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-    }
-
-    // Reset UI state
-    setIsSpinning(true);
-    setIsLoadingApi(true);
-    setCanSpin(false);
-    setFinished(false);
-    setApiError(null);
-    setShowErrorModal(false);
-
-    try {
-        // -----------------------
-        // 1. CALL API
-        // -----------------------
-        const apiResult = await spinSpinner(spinnerId);
-
-        if (!apiResult) throw new Error("Unable to reach server.");
-
-        let segment: SpinWheelSegment | null = null;
-
-        if (!apiResult.offer) {
-            segment = getNoDiscountSegment();
-        } else {
-            segment = matchSegmentToApiResponse(apiResult) ?? getNoDiscountSegment();
-        }
-
-        // -----------------------
-        // 2. CALCULATE TARGET
-        // -----------------------
-        const result = calculateTargetAngle(segment);
-        targetSegment.current = segment;
-        targetAngle.current = result.absolute;
-        normalizedTargetAngle.current = result.normalized;
-
-        initialAngle.current = angleCurrent.current;
-
-        setIsLoadingApi(false);
-
-        // -----------------------
-        // 3. ANIMATION CONFIG
-        // -----------------------
-        const FAST_SPIN_SPEED = 0.35;        // fast rotation speed
-        const FAST_SPIN_TIME = 1600;         // 1.6 sec high-speed spin
-        const DECEL_TIME = 1200;             // 1.2 sec smooth deceleration
-
-        spinStart.current = performance.now();
-
-        // -----------------------
-        // 4. main animation loop
-        // -----------------------
-        const animate = (timestamp: number) => {
-	const elapsed = timestamp - spinStart.current;
-
-	// FAST SPIN phase
-	if (elapsed < FAST_SPIN_TIME) {
-		angleCurrent.current += FAST_SPIN_SPEED;
-		angleCurrent.current %= Math.PI * 2;
-
-        // PLAY TICK on segment change
-		const idx = computeNeedleIndex(angleCurrent.current);
-		if (lastTickSegment.current !== idx) {
-			lastTickSegment.current = idx;
-			playTick();
-		}
-
-		draw(ctx);
-		animationRef.current = requestAnimationFrame(animate);
-		return;
 	}
-
-	// DECEL phase
-	const t = (elapsed - FAST_SPIN_TIME) / DECEL_TIME;
-	const eased = easeOutCubic(Math.min(1, t));
-
-	const start = initialAngle.current;
-	const target = normalizedTargetAngle.current!;
-	let diff = target - start;
-	if (diff < 0) diff += Math.PI * 2;
-
-	angleCurrent.current = start + diff * eased;
-
-    // PLAY TICKS while slowing down
-	const idx = computeNeedleIndex(angleCurrent.current);
-	if (lastTickSegment.current !== idx) {
-		lastTickSegment.current = idx;
-		playTick();
-	}
-
-	draw(ctx);
-
-	// FINISHED
-	if (t < 1) {
-		animationRef.current = requestAnimationFrame(animate);
-		return;
-	}
-
-	// Final lock-in
-	angleCurrent.current = target;
-	draw(ctx);
-
-	setIsSpinning(false);
-	setFinished(true);
-	setCanSpin(true);
-
-	if (targetSegment.current) {
-		onFinished(targetSegment.current.text, targetSegment.current);
-	}
-};
-
-
-        // Start animation
-        draw(ctx);
-        animationRef.current = requestAnimationFrame(animate);
-
-    } catch (err: any) {
-        // -----------------------
-        // ERROR HANDLING
-        // -----------------------
-        if (animationRef.current) cancelAnimationFrame(animationRef.current);
-
-        const msg =
-            err?.message || "Failed to connect. Please try again.";
-
-        setApiError(msg);
-        setShowErrorModal(true);
-
-        setIsSpinning(false);
-        setIsLoadingApi(false);
-        setCanSpin(true);
-    }
-};
-
-
+	
 	const instaUserId = getInstagramUsername()
 
 	return (

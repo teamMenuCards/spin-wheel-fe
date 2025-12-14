@@ -85,7 +85,6 @@ const DineInButtons = ({
 			{/* DYNAMIC Menu for IS_DELIVERY page */}
 			{dynamicOptions &&
 				dynamicOptions?.map((item: IDynamicLink, index) => {
-					console.log("item--", item)
 					return item.active ? (
 						<InfoButton
 							key={index}
@@ -136,7 +135,7 @@ const DineInButtons = ({
 							key={index}
 							href={
 								item.value === "Order from Zomato" ||
-								item.value === "Order from Swiggy"
+									item.value === "Order from Swiggy"
 									? "#"
 									: item.path || "#"
 							}

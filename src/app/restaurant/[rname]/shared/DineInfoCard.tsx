@@ -24,7 +24,7 @@ const RestaurantInfoCard = ({
 		order_count_display = 500
 	} = restaurantInfo?.detail || {}
 
-	console.log("restaurantInfollnan---", restaurantInfo.detail)
+	console.log("restaurantInfo---", restaurantInfo.detail)
 
 	const whatsappNumber =
 		restaurantInfo?.detail.details.wa_api_details?.wa_number
@@ -68,8 +68,8 @@ const RestaurantInfoCard = ({
 
 					<div
 						className={` flex w-full justify-between items-start mt-4 ${isDineIn
-								? "flex justify-evenly"
-								: "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
+							? "flex justify-evenly"
+							: "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
 							}`}
 					>
 						{/* Restaurant Details Section */}
@@ -125,8 +125,8 @@ const RestaurantInfoCard = ({
 						{/* Ratings Section */}
 						<div
 							className={` ${isDineIn
-									? "max-w-[800px] flex"
-									: "justify-center text-right grid md:grid-cols-1 gap-1"
+								? "max-w-[800px] flex"
+								: "justify-center text-right grid md:grid-cols-1 gap-1"
 								}`}
 						>
 							{platformReviews &&

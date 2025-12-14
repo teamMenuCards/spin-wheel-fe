@@ -190,7 +190,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				try {
 					osc.disconnect()
 					gain.disconnect()
-				} catch {}
+				} catch { }
 			}
 		} catch (e) {
 			console.warn("Tick sound error:", e)
@@ -237,27 +237,27 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	useEffect(() => {
 		const lastSpin = localStorage.getItem("lastSpinTime")
 		const storedCanSpin = localStorage.getItem("canSpin")
-	
+
 		if (!lastSpin) {
 			setCanSpin(true)
 			localStorage.setItem("canSpin", "true")
 			return
 		}
-	
+
 		if (storedCanSpin === "false") {
 			setCanSpin(false)
 		}
-	
+
 		const elapsed = Date.now() - Number(lastSpin)
 		const SPIN_COOLDOWN = 2 * 60 * 60 * 1000
-	
+
 		if (elapsed >= SPIN_COOLDOWN) {
 			setCanSpin(true)
 			localStorage.setItem("canSpin", "true")
 		} else {
 			setCanSpin(false)
 			localStorage.setItem("canSpin", "false")
-	
+
 			const remaining = SPIN_COOLDOWN - elapsed
 			setTimeout(() => {
 				setCanSpin(true)
@@ -265,9 +265,9 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			}, remaining)
 		}
 	}, [])
-	
-	
-	
+
+
+
 
 
 	// Random winners data
@@ -394,7 +394,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				normalizedTargetAngle.current !== null
 					? normalizedTargetAngle.current
 					: ((targetAngle.current % (Math.PI * 2)) + Math.PI * 2) %
-					  (Math.PI * 2)
+					(Math.PI * 2)
 
 			// Calculate the shortest angle difference to target (always forward direction)
 			let angleDiff = normalizedTarget - angleCurrent.current
@@ -904,50 +904,50 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const spinWithContentManager = async () => {
 		// --- EARLY RETURNS ---
 		if (!canSpin || isSpinning) return
-	
+
 		if (!spinnerId) {
 			setSpinMessage("Spinner not available")
 			return
 		}
-	
+
 		const ctx = canvasRef.current?.getContext("2d")
 		if (!ctx) {
 			console.error("Canvas not ready")
 			setSpinMessage("Unable to start spin, try again")
 			return
 		}
-	
+
 		// --- LOCK SPIN FOR 2-HOUR COOLDOWN ---
 		setCanSpin(false)
 		localStorage.setItem("canSpin", "false")
 		localStorage.setItem("lastSpinTime", Date.now().toString())
-	
+
 		// --- STOP PREVIOUS ANIMATION IF ANY ---
 		if (animationRef.current) {
 			cancelAnimationFrame(animationRef.current)
 		}
-	
+
 		// --- RESET UI STATE ---
 		setIsSpinning(true)
 		setIsLoadingApi(true)
 		setFinished(false)
 		setApiError(null)
 		setShowErrorModal(false)
-	
+
 		try {
 			// -----------------------
 			// 1. CALL API
 			// -----------------------
 			const apiResult = await spinSpinner(spinnerId)
 			if (!apiResult) throw new Error("Unable to reach server.")
-	
+
 			let segment: SpinWheelSegment | null = null
 			if (!apiResult.offer) {
 				segment = getNoDiscountSegment()
 			} else {
 				segment = matchSegmentToApiResponse(apiResult) ?? getNoDiscountSegment()
 			}
-	
+
 			// -----------------------
 			// 2. CALCULATE TARGET
 			// -----------------------
@@ -956,79 +956,79 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			targetAngle.current = result.absolute
 			normalizedTargetAngle.current = result.normalized
 			initialAngle.current = angleCurrent.current
-	
+
 			setIsLoadingApi(false)
-	
+
 			// -----------------------
 			// 3. ANIMATION CONFIG
 			// -----------------------
 			const FAST_SPIN_SPEED = 0.35 // fast rotation speed
 			const FAST_SPIN_TIME = 1600 // 1.6 sec high-speed spin
 			const DECEL_TIME = 1200 // 1.2 sec smooth deceleration
-	
+
 			spinStart.current = performance.now()
-	
+
 			// -----------------------
 			// 4. MAIN ANIMATION LOOP
 			// -----------------------
 			const animate = (timestamp: number) => {
 				const elapsed = timestamp - spinStart.current
-	
+
 				// --- FAST SPIN PHASE ---
 				if (elapsed < FAST_SPIN_TIME) {
 					angleCurrent.current += FAST_SPIN_SPEED
 					angleCurrent.current %= Math.PI * 2
-	
+
 					const idx = computeNeedleIndex(angleCurrent.current)
 					if (lastTickSegment.current !== idx) {
 						lastTickSegment.current = idx
 						playTick()
 					}
-	
+
 					draw(ctx)
 					animationRef.current = requestAnimationFrame(animate)
 					return
 				}
-	
+
 				// --- DECELERATION PHASE ---
 				const t = (elapsed - FAST_SPIN_TIME) / DECEL_TIME
 				const eased = easeOutCubic(Math.min(1, t))
-	
+
 				const start = initialAngle.current
 				const target = normalizedTargetAngle.current!
 				let diff = target - start
 				if (diff < 0) diff += Math.PI * 2
-	
+
 				angleCurrent.current = start + diff * eased
-	
+
 				const idx = computeNeedleIndex(angleCurrent.current)
 				if (lastTickSegment.current !== idx) {
 					lastTickSegment.current = idx
 					playTick()
 				}
-	
+
 				draw(ctx)
-	
+
 				// --- FINISHED SPIN ---
 				if (t < 1) {
 					animationRef.current = requestAnimationFrame(animate)
 					return
 				}
-	
+
 				// Final lock-in
 				angleCurrent.current = target
 				draw(ctx)
-	
+
 				setIsSpinning(false)
 				setFinished(true)
-	
+
 				if (targetSegment.current) {
 					onFinished(targetSegment.current.text, targetSegment.current)
 				}
-	
+
 				// ❌ DO NOT unlock spin here; cooldown is handled by useEffect
 			}
-	
+
 			// START ANIMATION
 			draw(ctx)
 			animationRef.current = requestAnimationFrame(animate)
@@ -1037,18 +1037,18 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 			// ERROR HANDLING
 			// -----------------------
 			if (animationRef.current) cancelAnimationFrame(animationRef.current)
-	
+
 			const msg = err?.message || "Failed to connect. Please try again."
-	
+
 			setApiError(msg)
 			setShowErrorModal(true)
 			setIsSpinning(false)
 			setIsLoadingApi(false)
-	
+
 			// ❌ DO NOT unlock spin here; cooldown is still enforced
 		}
 	}
-	
+
 	const instaUserId = getInstagramUsername()
 
 	return (
@@ -1093,9 +1093,8 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 						ref={canvasRef}
 						width="600"
 						height="600"
-						className={`transition-all duration-500 relative z-10 ${
-							closeModal ? "opacity-50 scale-95" : "opacity-100 scale-100"
-						}`}
+						className={`transition-all duration-500 relative z-10 ${closeModal ? "opacity-50 scale-95" : "opacity-100 scale-100"
+							}`}
 						style={{
 							pointerEvents:
 								(isFinished && isOnlyOnce) || closeModal ? "none" : "auto",

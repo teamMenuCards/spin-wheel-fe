@@ -145,6 +145,22 @@ const DineInButtons = ({
 						/>
 					) : null
 				)}
+
+			{/* DYNAMIC Menu for IS_DELIVERY page */}
+			{dynamicOptions &&
+				dynamicOptions?.map((item: IDynamicLink, index) => {
+					console.log("item--", item)
+					return item.active ? (
+						<InfoButton
+							key={index}
+							value={item.name}
+							href={item?.url ?? "/"}
+							icon={item.image_url}
+							premium={item?.is_premium}
+							onClick={handleClick(item)}
+						/>
+					) : null
+				})}
 		</div>
 	)
 }

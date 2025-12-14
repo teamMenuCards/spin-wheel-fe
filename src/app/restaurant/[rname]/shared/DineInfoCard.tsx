@@ -67,11 +67,10 @@ const RestaurantInfoCard = ({
 					</div>
 
 					<div
-						className={` flex w-full justify-between items-start mt-4 ${
-							isDineIn
+						className={` flex w-full justify-between items-start mt-4 ${isDineIn
 								? "flex justify-evenly"
 								: "grid grid-cols-[1fr_1fr] gap-4 items-start w-full"
-						}`}
+							}`}
 					>
 						{/* Restaurant Details Section */}
 
@@ -125,16 +124,15 @@ const RestaurantInfoCard = ({
 
 						{/* Ratings Section */}
 						<div
-							className={` ${
-								isDineIn
+							className={` ${isDineIn
 									? "max-w-[800px] flex"
 									: "justify-center text-right grid md:grid-cols-1 gap-1"
-							}`}
+								}`}
 						>
 							{platformReviews &&
 								platformReviews?.map((item) => {
 									const platformName =
-										item.platform_name as keyof typeof socialIcons
+										item.platform_name?.toLowerCase() as keyof typeof socialIcons
 
 									return (
 										<div key={item.platform_name} className="ml-2">

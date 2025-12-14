@@ -2,6 +2,10 @@
 	"name": "me-fe",
 	"version": "0.1.0",
 	"private": true,
+	"engines": {
+		"node": ">=20.0.0",
+		"npm": ">=10.0.0"
+	},
 	"scripts": {
 		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 next dev",
 		"build": "next build",

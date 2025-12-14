@@ -1,9 +1,8 @@
 import React from "react"
 import DineinLandingPage from "./dineInLandingPage"
 
-import { axiosServerQuery } from "@/services/http-server"
-import { apiRoutes } from "@/services/api-routes"
-import { parseDynamicURL } from "@/services/utils"
+import { getRestaurantDetails } from "@/lib/api-cache"
+import { RestaurantDetailResponse } from "@/services/graphql/restaurant"
 import Footer from "@/shared/Footer"
 import ScrollButton from "../shared/ScrollButton"
 
@@ -19,17 +18,27 @@ export default async function Page({
 	params: Promise<{ rname: string }>
 }) {
 	const { rname } = await params
+	const restaurantDetails = await getRestaurantDetails(rname)
 
-	const { data: restaurantDetails } = await axiosServerQuery({
-		url: parseDynamicURL(apiRoutes.restaurantDetail, { name: rname }),
-		method: "GET"
-	})
+	// Handle null restaurant details
+	if (!restaurantDetails) {
+		return (
+			<div>
+				<div className="mt-6 flex justify-center font-md font-semibold font-metropolis">
+					Restaurant not found!
+				</div>
+				<ScrollButton />
+				<Footer />
+			</div>
+		)
+	}
 
 	return (
 		<div>
-			{restaurantDetails && (
-				<DineinLandingPage rname={rname} restaurantInfo={restaurantDetails} />
-			)}
+			<DineinLandingPage
+				rname={rname}
+				restaurantInfo={restaurantDetails as RestaurantDetailResponse}
+			/>
 			{/* changes for ScrollButton */}
 			<ScrollButton />
 			<Footer />

@@ -26,7 +26,7 @@ function DeliveryLandingPage({
 	const dispatch = useDispatch()
 	const { hasFeature } = useFeatureList(rname)
 	const { hideSnackbar } = useSnackbar()
-const { data: spinnerData, loading: spinnerLoading } = useSpinnerForRestaurant(
+	const { data: spinnerData, loading: spinnerLoading } = useSpinnerForRestaurant(
 		restaurantInfo?.id || ""
 	)
 	const hasSpinWheelFeature = !spinnerLoading && spinnerData
@@ -190,15 +190,21 @@ const { data: spinnerData, loading: spinnerLoading } = useSpinnerForRestaurant(
 					/>
 				)}
 
-				{restaurantInfo?.dashboardLinks &&
-					isSafeArray(restaurantInfo?.dashboardLinks) ? (
-					<DineInButtons dynamicOptions={restaurantInfo?.dashboardLinks} />
-				) : defualtBtns ? (
+				{restaurantInfo && (
 					<DineInButtons
-						options={defualtBtns}
-					// setActivePopup={setActivePopup}
+						options={
+							defualtBtns
+								? {
+									...defualtBtns,
+									deliveryOptions: defualtBtns.deliveryOptions.filter(
+										(d) => d.id === 1 || d.id === 2
+									)
+								}
+								: undefined
+						}
+						dynamicOptions={restaurantInfo?.dashboardLinks}
 					/>
-				) : null}
+				)}
 
 				{reviews && (
 					<div ref={reviewsRef}>

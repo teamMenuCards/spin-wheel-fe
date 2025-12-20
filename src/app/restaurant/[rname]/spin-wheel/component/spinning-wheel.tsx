@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { spinSpinner, SpinSpinnerResult } from "@/services/graphql/spinner-spin"
 import { CopyNotification } from "./CopyNotification"
 import { InitialInstructionModal } from "./InitialInstructionModal"
+import VerificationPage from "./VerificationPage"
 import { PreviousWinnersModal } from "./PreviousWinnersModal"
 import { SpinButton } from "./SpinButton"
 
@@ -73,6 +74,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const [isCopying, setIsCopying] = useState(false)
 	const [copySuccess, setCopySuccess] = useState(false)
 	const [showWinnersModal, setShowWinnersModal] = useState(false)
+	const [verificationModal, setVerificationModal] = useState(false)
 
 	const segmentsWithDefault = React.useMemo(() => {
 		// Separate "No discount" segment from other segments
@@ -267,7 +269,11 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	}, [])
 
 
-
+/* handleVerificationComplete */
+const handleVerificationComplete = () => {
+	setVerificationModal(false)
+	setCloseModal(false)
+}
 
 
 	// Random winners data
@@ -293,9 +299,20 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 	const getInstagramLink = () => {
 		const links = restaurantData?.dashboardLinks || []
 
+		// First, try to find link with type === "INSTAGRAM"
 		const instagramLink = links.find((link: any) => link.type === "INSTAGRAM")
 
-		return instagramLink?.url || null
+		if (instagramLink) {
+			return instagramLink.url || null
+		}
+
+		// Fallback: Check if any link has instagram domain in its URL
+		const instagramDomainLink = links.find((link: any) => {
+			const url = link.url || ""
+			return url.includes("instagram.com") || url.includes("instagram")
+		})
+
+		return instagramDomainLink?.url || null
 	}
 
 	// Extract Instagram username from the link
@@ -1183,6 +1200,7 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				isOpen={closeModal}
 				onClose={() => setCloseModal(false)}
 				onShowWinners={() => setShowWinnersModal(true)}
+				setVerificationModal={setVerificationModal}
 				instagramUsername={instaUserId}
 				onCopyText={copyText}
 				isCopying={isCopying}
@@ -1196,6 +1214,15 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 				onClose={() => setShowWinnersModal(false)}
 				winners={previousWinners}
 			/>
+
+			{/* Verification page */}
+			{verificationModal && (
+			<VerificationPage
+			onVerificationComplete={handleVerificationComplete}
+			duration={10}
+			
+			/>	
+			)}	
 
 			{/* Error Modal for API errors */}
 			{showErrorModal && (

@@ -31,30 +31,62 @@ export default function SpinWheelClient({
 	)
 	const [spinFinished, setSpinFinished] = useState(false)
 	const [, setShowScrollToTop] = useState(false)
+	const [billDate, setBillDate] = useState("")
+
+	const getDateAndTime = () => {
+		const dateAndTime = Number(localStorage.getItem("lastSpinTime")); // convert to number
+
+		if (!dateAndTime) {
+			console.log("No lastSpinTime found");
+			return;
+		}
+
+		const formatted = formatDate(dateAndTime);
+		setBillDate(formatted)
+	};
+
+
+
+	function formatDate(timestamp) {
+		const d = new Date(timestamp);
+
+		const dd = String(d.getDate()).padStart(2, '0');
+		const mm = String(d.getMonth() + 1).padStart(2, '0');
+		const yyyy = d.getFullYear();
+
+		const hh = String(d.getHours()).padStart(2, '0');
+		const min = String(d.getMinutes()).padStart(2, '0');
+
+		return `${dd}-${mm}-${yyyy}@${hh}:${min}`;
+	}
+
+
+	// example
+
 
 	// Extract review links from restaurant data
-const getReviewLinks = () => {
-    if (!restaurantData?.detail?.details?.platform_details) {
-        return {
-            googleReviewLink: "https://www.google.com",
-            zomatoReviewLink: "https://www.zomato.com"
-        }
-    }
+	const getReviewLinks = () => {
+		if (!restaurantData?.detail?.details?.platform_details) {
+			return {
+				googleReviewLink: "https://www.google.com",
+				zomatoReviewLink: "https://www.zomato.com"
+			}
+		}
 
-    const platformDetails = restaurantData.detail.details.platform_details
-    const links: Record<string, string> = {}
+		const platformDetails = restaurantData.detail.details.platform_details
+		const links: Record<string, string> = {}
 
-    platformDetails.forEach(
-        (item: { platform_name: string; platform_uri: string }) => {
-            links[item.platform_name] = item.platform_uri
-        }
-    )
+		platformDetails.forEach(
+			(item: { platform_name: string; platform_uri: string }) => {
+				links[item.platform_name] = item.platform_uri
+			}
+		)
 
-    return {
-        googleReviewLink: links["google-review"] || "https://www.google.com",
-        zomatoReviewLink: links["zomato-dine-in"] || "https://www.zomato.com"
-    }
-}
+		return {
+			googleReviewLink: links["google-review"] || "https://www.google.com",
+			zomatoReviewLink: links["zomato-dine-in"] || "https://www.zomato.com"
+		}
+	}
 
 
 	const { googleReviewLink, zomatoReviewLink } = getReviewLinks()
@@ -101,9 +133,11 @@ const getReviewLinks = () => {
 			winner !== "No discount"
 		) {
 			setShowPopup(true)
+			getDateAndTime();
 		} else {
 			// Go directly to thank you page for "No discount"
 			setShowThankYouPopup(true)
+			getDateAndTime();
 		}
 	}
 
@@ -243,7 +277,24 @@ const getReviewLinks = () => {
 			)}
 
 			{showThankYouPopup && (
+
 				<div className="fixed inset-0 z-50 bg-white flex flex-col">
+					{/* Confetti elements */}
+					{currentPrize !== "No discount" && (
+						<div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+							{[...Array(20)].map((_, i) => (
+								<div
+									key={i}
+									className="confetti absolute w-2.5 h-2.5 -top-2.5 opacity-80"
+									style={{
+										left: `${Math.random() * 100}%`,
+										animationDelay: `${Math.random() * 2}s`,
+										backgroundColor: ['#FFD700', '#FF69B4', '#9D4EDD', '#06FFA5', '#FF6B6B'][Math.floor(Math.random() * 5)]
+									}}
+								/>
+							))}
+						</div>
+					)}
 					{/* Subtle background decorative elements */}
 					<div className="absolute inset-0 overflow-hidden pointer-events-none">
 						<div className="absolute top-12 left-8 w-32 h-32 bg-gradient-to-r from-purple-50 to-pink-50 rounded-full blur-3xl opacity-40"></div>
@@ -257,51 +308,81 @@ const getReviewLinks = () => {
 						<div className="min-h-full flex flex-col justify-start">
 							<div className="max-w-md mx-auto w-full space-y-6">
 								{/* Result Header - Clean and spacious */}
-						
+
 								<div className="text-center space-y-4">
-									
-											{/* Success Message */}
-											<div className="space-y-2">
-												<h2
-													className={`text-2xl font-bold bg-clip-text text-transparent ${
-														currentSegment?.discountType === "no_prize"
-															? "bg-gradient-to-r from-gray-500 to-gray-600"
-															: "bg-gradient-to-r from-green-500 to-emerald-600"
-													}`}
+
+									{/* Success Message */}
+									<div className="space-y-2">
+										<h2
+											className={`text-2xl font-bold bg-clip-text text-transparent ${currentSegment?.discountType === "no_prize"
+												? "bg-gradient-to-r from-gray-500 to-gray-600"
+												: "bg-gradient-to-r from-green-500 to-emerald-600"
+												}`}
+										>
+											{currentSegment?.discountType === "no_prize"
+												? "No Discount This Time"
+												: "Congratulations!"}
+										</h2>
+										<div
+											className={`w-24 h-1 rounded-full mx-auto ${currentSegment?.discountType === "no_prize"
+												? "bg-gradient-to-r from-gray-400 to-gray-500"
+												: "bg-gradient-to-r from-green-400 to-emerald-500"
+												}`}
+										></div>
+										<p className="text-3xl font-medium text-gray-700">
+											You have won:{" "}
+											<span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
+												{currentPrize}
+											</span>
+										</p>
+									</div>
+									{/* Celebration Image */}
+									<div className="flex justify-center relative mt-2">
+										<Image
+											src="/gift-open.png"
+											alt="Celebration"
+											width={90}
+											height={40}
+											className="object-contain drop-shadow-lg"
+										/>
+									</div>
+									{/* Bill Date - Straight line badge design */}
+									<div className="flex justify-center relative mt-4 px-4">
+										<div className="relative group">
+											{/* Animated gradient glow */}
+											<div className="absolute -inset-0.5 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 rounded-full blur opacity-40 group-hover:opacity-60 transition duration-500 animate-pulse"></div>
+
+											{/* Main horizontal badge */}
+											<div className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 rounded-full px-6 py-2.5 shadow-lg flex items-center gap-3">
+												{/* Calendar icon */}
+												<svg
+													className="w-5 h-5 text-white flex-shrink-0"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
 												>
-													{currentSegment?.discountType === "no_prize"
-														? "No Discount This Time"
-														: "Congratulations!"}
-												</h2>
-												<div
-													className={`w-24 h-1 rounded-full mx-auto ${
-														currentSegment?.discountType === "no_prize"
-															? "bg-gradient-to-r from-gray-400 to-gray-500"
-															: "bg-gradient-to-r from-green-400 to-emerald-500"
-													}`}
-												></div>
-												<p className="text-3xl font-medium text-gray-700">
-													You have won:{" "}
-													<span className="bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent font-bold text-1xl">
-														{currentPrize}
-													</span>
-												</p>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2.5}
+														d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+													/>
+												</svg>
+
+												{/* Vertical separator */}
+												<div className="w-px h-6 bg-white/30"></div>
+
+												{/* Date text - inline */}
+												<span className="text-white font-bold text-base whitespace-nowrap">
+													Bill Date: {billDate}
+												</span>
 											</div>
-											{/* Celebration Image */}
-											<div className="flex justify-center relative mt-2">
-												<Image
-													src="/gift-open.png"
-													alt="Celebration"
-													width={90}
-													height={40}
-													className="object-contain drop-shadow-lg"
-												/>
-											</div>
-										
-									
-										
-											{/* Better Luck Message */}
-										{/* 	<div className="space-y-2">
+										</div>
+									</div>
+
+
+									{/* Better Luck Message */}
+									{/* 	<div className="space-y-2">
 												<h2 className="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-600 bg-clip-text text-transparent">
 													Better Luck Next Time!
 												</h2>
@@ -318,8 +399,8 @@ const getReviewLinks = () => {
 													className="object-contain drop-shadow-lg"
 												/>
 											</div> */}
-									
-									
+
+
 								</div>
 
 								{/* Feedback Section - Clean and spacious */}

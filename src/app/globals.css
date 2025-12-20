@@ -25,7 +25,7 @@ html {
 @font-face {
   font-family: 'Metropolis';
   src: url('/fonts/Metropolis-Bold.otf') format('opentype');
-  font-weight: 700; 
+  font-weight: 700;
   font-style: normal;
 }
 
@@ -50,33 +50,38 @@ html {
 
 
 .recaptcha-container {
-  transform: scale(0.85); /* Adjust as needed */
+  transform: scale(0.85);
+  /* Adjust as needed */
   transform-origin: 0 0;
 }
 
 .recaptcha-wrapper {
-  transform: scale(0.85);       /* Shrink to fit */
-  transform-origin: top left;   /* Anchor scale */
+  transform: scale(0.85);
+  /* Shrink to fit */
+  transform-origin: top left;
+  /* Anchor scale */
   max-width: 100%;
   overflow: hidden;
 }
 
 
 @keyframes slideUp {
-	from {
-		transform: translateY(100%);
-		opacity: 0;
-	}
-	to {
-		transform: translateY(0);
-		opacity: 1;
-	}
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
   from {
     transform: translateY(100%);
   }
+
   to {
     transform: translateY(0);
   }
@@ -87,6 +92,7 @@ html {
     transform: translate(-50%, -100%);
     opacity: 0;
   }
+
   to {
     transform: translate(-50%, 0);
     opacity: 1;
@@ -103,9 +109,29 @@ html {
 
 /* Hide scrollbar while maintaining scroll functionality */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
+}
+
+.confetti {
+  animation: confetti-fall 3s infinite ease-in;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
 }

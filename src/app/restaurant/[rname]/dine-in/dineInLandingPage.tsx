@@ -57,7 +57,7 @@ function DineInLandingPage({
 
 	const diningLinks =
 		isSafeArray(dashboardLinks) &&
-		dashboardLinks?.filter((link: IDynamicLink) => link.link_type === "DINING")
+		dashboardLinks?.filter((link: IDynamicLink) => link.channelType === CLIENT_APP_MODE.DINE_IN)
 
 	const reviewsRef = useRef<HTMLDivElement>(null!)
 

@@ -10,7 +10,7 @@
 		"dev": "cross-env NEXT_WEBPACK_USE_TURBOPACK=1 next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint",
+		"lint": "next lint --max-warnings 999",
 		"prepare": "husky",
 		"codegen": "graphql-codegen --config codegen.ts",
 		"codegen:watch": "graphql-codegen --config codegen.ts --watch",

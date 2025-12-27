@@ -150,7 +150,7 @@ export default function VerificationPage({
                             Almost there! 🎉
                         </h1>
                         <p className="text-lg md:text-xl text-white/95 leading-relaxed font-medium">
-                            We're verifying your story<br />
+                            We&apos;re verifying your story<br />
                             to unlock your Lucky Spin!
                         </p>
                     </div>

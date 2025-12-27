@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { API_CONFIG } from "@/config/api"
 import { getMenuListClient } from "../graphql/menu"
 import { getRestaurantDetailsClient } from "../graphql/restaurant"

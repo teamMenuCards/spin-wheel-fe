@@ -6,6 +6,7 @@ import { useState } from "react"
 import FeedbackPopup from "../components/feedback"
 import { IOption } from "../types"
 import InfoButton from "./InfoButton"
+import { CLIENT_APP_MODE } from "@/store/features/app.slice"
 // import { useFeatureList } from "@/hooks/useFeatureList"
 
 // type RestaurantConfig = {
@@ -82,20 +83,6 @@ const DineInButtons = ({
 		<div className="relative flex flex-col items-center w-full max-w-[400px] mt-8 mx-auto px-4">
 			<div className="absolute top-[-16px] left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
 
-			{/* DYNAMIC Menu for IS_DELIVERY page */}
-			{/* {dynamicOptions &&
-				dynamicOptions?.map((item: IDynamicLink, index) => {
-					return item.active ? (
-						<InfoButton
-							key={index}
-							value={item.name}
-							href={item?.url ?? "/"}
-							icon={item.image_url}
-							premium={item?.is_premium}
-							onClick={handleClick(item)}
-						/>
-					) : null
-				})} */}
 
 			{activeFeedback && hasReviewFeature && (
 				<FeedbackPopup
@@ -146,11 +133,25 @@ const DineInButtons = ({
 					) : null
 				)}
 
+			{/* DYNAMIC Menu for DINE_IN page */}
+			{dynamicOptions &&
+				dynamicOptions?.map((item: IDynamicLink, index) => {
+					return item.active && item.channelType === CLIENT_APP_MODE.DINE_IN ? (
+						<InfoButton
+							key={index}
+							value={item.name}
+							href={item?.url ?? "/"}
+							icon={item.image_url}
+							premium={item?.is_premium}
+							onClick={handleClick(item)}
+						/>
+					) : null
+				})}
+
 			{/* DYNAMIC Menu for IS_DELIVERY page */}
 			{dynamicOptions &&
 				dynamicOptions?.map((item: IDynamicLink, index) => {
-					console.log("item--", item)
-					return item.active ? (
+					return item.active && item.channelType === CLIENT_APP_MODE.DELIVERY ? (
 						<InfoButton
 							key={index}
 							value={item.name}

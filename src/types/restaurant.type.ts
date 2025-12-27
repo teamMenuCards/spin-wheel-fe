@@ -38,7 +38,7 @@ export type IDynamicLink = {
 	active: boolean
 	createdAt?: string
 	updatedAt?: string
-	link_type?: "DINING" | "DELIVERY"
+	channelType?: "DINE_IN" | "DELIVERY"
 	is_premium?: boolean
 }
 export type RestaurantDetailType = {

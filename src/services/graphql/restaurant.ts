@@ -69,8 +69,8 @@ export const getRestaurantDetailsClient = async (
 				details: {
 					wa_api_details: restaurant.whatsapp
 						? {
-								wa_number: restaurant.whatsapp
-						  }
+							wa_number: restaurant.whatsapp
+						}
 						: undefined,
 					platform_reviews:
 						restaurant.thirdPartyReviews?.map((review: any) => ({
@@ -81,11 +81,11 @@ export const getRestaurantDetailsClient = async (
 					reviews_image_url_details: restaurant.settings?.uiThemeData
 						?.reviewImageUrl?.length
 						? [
-								{
-									review_image_url:
-										restaurant.settings.uiThemeData.reviewImageUrl.join(",")
-								}
-						  ]
+							{
+								review_image_url:
+									restaurant.settings.uiThemeData.reviewImageUrl.join(",")
+							}
+						]
 						: [],
 					platform_details: [],
 					meta_details: {
@@ -155,7 +155,9 @@ export const getRestaurantDetailsServer = async (
 					id: link.id,
 					name: link.name,
 					url: link.url,
-					active: true
+					channelType: link.channelType,
+					active: link.isActive || true,
+					type: link.type
 				})) || [],
 
 			detail: {
@@ -183,8 +185,8 @@ export const getRestaurantDetailsServer = async (
 				details: {
 					wa_api_details: restaurant.whatsapp
 						? {
-								wa_number: restaurant.whatsapp
-						  }
+							wa_number: restaurant.whatsapp
+						}
 						: undefined,
 					platform_reviews:
 						restaurant.thirdPartyReviews?.map((review: any) => ({
@@ -195,13 +197,13 @@ export const getRestaurantDetailsServer = async (
 					reviews_image_url_details: restaurant.settings?.uiThemeData
 						?.reviewImageUrl?.length
 						? [
-								{
-									review_image_url:
-										restaurant.settings.uiThemeData.reviewImageUrl
-											.map((url: string) => url.trim())
-											.join(", ")
-								}
-						  ]
+							{
+								review_image_url:
+									restaurant.settings.uiThemeData.reviewImageUrl
+										.map((url: string) => url.trim())
+										.join(", ")
+							}
+						]
 						: [],
 					platform_details: [],
 					meta_details: {

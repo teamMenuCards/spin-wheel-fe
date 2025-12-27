@@ -33,6 +33,9 @@ export const GET_RESTAURANT_DETAILS = gql`
 				url
 				channelType
 				type
+				imageUrl
+				isActive
+				displayOrder
 			}
 			theme {
 				logo

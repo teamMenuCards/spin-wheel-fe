@@ -192,6 +192,7 @@ function DeliveryLandingPage({
 
 				{restaurantInfo && (
 					<DineInButtons
+						isDineIn={false}
 						options={
 							defualtBtns
 								? {

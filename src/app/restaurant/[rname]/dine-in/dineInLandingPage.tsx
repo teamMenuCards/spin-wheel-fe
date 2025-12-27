@@ -167,12 +167,14 @@ function DineInLandingPage({
 
 				{diningLinks && isSafeArray(diningLinks) ? (
 					<DineInButtons
+						isDineIn
 						dynamicOptions={diningLinks}
 						restaurantInfo={restaurantInfo}
 						hasReviewFeature={hasReviewFeature}
 					/>
 				) : options && Object.keys(options).length > 0 ? (
 					<DineInButtons
+						isDineIn
 						hasReviewFeature={hasReviewFeature}
 						options={options}
 						restaurantInfo={restaurantInfo}

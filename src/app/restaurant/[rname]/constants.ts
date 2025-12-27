@@ -9,6 +9,7 @@ export type IconKey =
 	| "menu"
 	| "contact us"
 	| "instagram"
+	| "google"
 
 export const ICON_MAP: Record<IconKey, string> = {
 	whatsapp: "/whatsapp.svg",
@@ -16,7 +17,8 @@ export const ICON_MAP: Record<IconKey, string> = {
 	swiggy: "/swiggy-logo.webp",
 	zomato: "/zomato-logo.webp",
 	menu: "/menu-icon.webp",
-	instagram: "/instagram-icon.webp"
+	instagram: "/instagram-icon.webp",
+	google: "/google-logo.webp"
 }
 
 export const URL_PATTERNS: Record<string, string> = {
@@ -26,5 +28,6 @@ export const URL_PATTERNS: Record<string, string> = {
 	"zomato.com": "zomato",
 	"instagram.com": "instagram",
 	menu: "menu",
-	"contact us": "contact us"
+	"contact us": "contact us",
+	"google.com": "google"
 }

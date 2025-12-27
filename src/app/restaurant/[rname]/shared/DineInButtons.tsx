@@ -134,7 +134,8 @@ const DineInButtons = ({
 				)}
 
 			{/* DYNAMIC Menu for DINE_IN page */}
-			{dynamicOptions &&
+			{isDineIn &&
+				dynamicOptions &&
 				dynamicOptions?.map((item: IDynamicLink, index) => {
 					return item.active && item.channelType === CLIENT_APP_MODE.DINE_IN ? (
 						<InfoButton
@@ -149,7 +150,8 @@ const DineInButtons = ({
 				})}
 
 			{/* DYNAMIC Menu for IS_DELIVERY page */}
-			{dynamicOptions &&
+			{!isDineIn &&
+				dynamicOptions &&
 				dynamicOptions?.map((item: IDynamicLink, index) => {
 					return item.active && item.channelType === CLIENT_APP_MODE.DELIVERY ? (
 						<InfoButton

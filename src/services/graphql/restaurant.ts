@@ -41,7 +41,10 @@ export const getRestaurantDetailsClient = async (
 					name: link.name,
 					url: link.url,
 					type: link.type,
-					active: true
+					active: link.isActive,
+					channelType: link.channelType,
+					displayOrder: link.displayOrder,
+					image_url: link.imageUrl
 				})) || [],
 
 			detail: {
@@ -62,7 +65,10 @@ export const getRestaurantDetailsClient = async (
 						id: link.id,
 						name: link.name,
 						url: link.url,
-						active: true
+						active: link.isActive,
+						channelType: link.channelType,
+						displayOrder: link.displayOrder,
+						image_url: link.imageUrl
 					})) || [],
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),
@@ -156,7 +162,9 @@ export const getRestaurantDetailsServer = async (
 					name: link.name,
 					url: link.url,
 					channelType: link.channelType,
-					active: link.isActive || true,
+					image_url: link.imageUrl,
+					displayOrder: link.displayOrder,
+					active: link.isActive,
 					type: link.type
 				})) || [],
 
@@ -178,7 +186,10 @@ export const getRestaurantDetailsServer = async (
 						id: link.id,
 						name: link.name,
 						url: link.url,
-						active: true
+						active: link.isActive,
+						displayOrder: link.displayOrder,
+						channelType: link.channelType,
+						image_url: link.imageUrl,
 					})) || [],
 				createdAt: new Date().toISOString(),
 				updatedAt: new Date().toISOString(),

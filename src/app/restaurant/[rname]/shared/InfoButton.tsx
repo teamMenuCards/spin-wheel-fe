@@ -13,6 +13,8 @@ interface Props {
 
 const Default_Icon = "/star.webp"
 
+
+
 const InfoButton: React.FC<Props> = (props) => {
 	const matchedKey = Object.keys(URL_PATTERNS).find((key) =>
 		props.href.toLowerCase().includes(key)
@@ -21,7 +23,7 @@ const InfoButton: React.FC<Props> = (props) => {
 	const iconKey = matchedKey ? URL_PATTERNS[matchedKey] : undefined
 	const iconValue =
 		props.icon || (iconKey ? ICON_MAP[iconKey as IconKey] : Default_Icon)
-
+	
 	const premiumBtn = () => (
 		<NextLink href={props?.href} prefetch={true} rel="noopener noreferrer">
 			<div

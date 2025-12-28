@@ -21,7 +21,9 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
         if (!canSpin || closeModal || isSpinning) return
 
         // 🔥 Lock spinning immediately when user clicks
-        localStorage.setItem("canSpin", "false")
+
+        
+        // localStorage.setItem("canSpin", "false")
 
         setIsClicked(true)
         onClick()
@@ -56,11 +58,10 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
     return (
         <div className="flex flex-col items-center space-y-3 mt-6">
             <button
-                className={`relative overflow-hidden font-black py-5 px-12 rounded-3xl transition-all duration-200 group text-lg min-w-[200px] touch-manipulation ${
-                    !canSpin || closeModal || isSpinning
+                className={`relative overflow-hidden font-black py-5 px-12 rounded-3xl transition-all duration-200 group text-lg min-w-[200px] touch-manipulation ${!canSpin || closeModal || isSpinning
                         ? "bg-gradient-to-r from-gray-400 to-gray-500 text-gray-200 cursor-not-allowed shadow-lg"
                         : "bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white shadow-2xl active:scale-[0.97] active:bg-gradient-to-r active:from-purple-600 active:via-pink-600 active:to-red-600 focus:bg-gradient-to-r focus:from-purple-600 focus:via-pink-600 focus:to-red-600 focus:outline-none focus-visible:outline-none"
-                }`}
+                    }`}
                 style={{
                     boxShadow:
                         !canSpin || closeModal || isSpinning
@@ -69,10 +70,10 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
                     ...(!canSpin || closeModal || isSpinning
                         ? {}
                         : {
-                              WebkitTapHighlightColor: "transparent",
-                              WebkitTouchCallout: "none",
-                              userSelect: "none"
-                          })
+                            WebkitTapHighlightColor: "transparent",
+                            WebkitTouchCallout: "none",
+                            userSelect: "none"
+                        })
                 }}
                 onClick={handleClick}
                 disabled={!canSpin || closeModal || isSpinning}
@@ -102,11 +103,10 @@ export const SpinButton: React.FC<SpinButtonProps> = ({
                         SPIN TO WIN
                     </span>
                     <svg
-                        className={`w-6 h-6 transform transition-all duration-300 ${
-                            isSpinning || isClicked
+                        className={`w-6 h-6 transform transition-all duration-300 ${isSpinning || isClicked
                                 ? "animate-spin"
                                 : "group-active:scale-110 group-active:rotate-180"
-                        }`}
+                            }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

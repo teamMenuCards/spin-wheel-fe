@@ -235,45 +235,45 @@ const WheelComponent: React.FC<WheelComponentProps> = ({
 		maxSpeed.current = Math.PI / segmentsWithDefault.length
 	}, [segmentsWithDefault])
 
-	// Spin cooldown
-	useEffect(() => {
-		const lastSpin = localStorage.getItem("lastSpinTime")
-		const storedCanSpin = localStorage.getItem("canSpin")
-
-		if (!lastSpin) {
-			setCanSpin(true)
-			localStorage.setItem("canSpin", "true")
-			return
-		}
-
-		if (storedCanSpin === "false") {
-			setCanSpin(false)
-		}
-
-		const elapsed = Date.now() - Number(lastSpin)
-		const SPIN_COOLDOWN = 2 * 60 * 60 * 1000
-
-		if (elapsed >= SPIN_COOLDOWN) {
-			setCanSpin(true)
-			localStorage.setItem("canSpin", "true")
-		} else {
-			setCanSpin(false)
-			localStorage.setItem("canSpin", "false")
-
-			const remaining = SPIN_COOLDOWN - elapsed
-			setTimeout(() => {
+	/* 	// Spin cooldown
+		useEffect(() => {
+			const lastSpin = localStorage.getItem("lastSpinTime")
+			const storedCanSpin = localStorage.getItem("canSpin")
+	
+			if (!lastSpin) {
 				setCanSpin(true)
 				localStorage.setItem("canSpin", "true")
-			}, remaining)
-		}
-	}, [])
+				return
+			}
+	
+			if (storedCanSpin === "false") {
+				setCanSpin(false)
+			}
+	
+			const elapsed = Date.now() - Number(lastSpin)
+			const SPIN_COOLDOWN = 2 * 60 * 60 * 1000
+	
+			if (elapsed >= SPIN_COOLDOWN) {
+				setCanSpin(true)
+				localStorage.setItem("canSpin", "true")
+			} else {
+				setCanSpin(false)
+				localStorage.setItem("canSpin", "false")
+	
+				const remaining = SPIN_COOLDOWN - elapsed
+				setTimeout(() => {
+					setCanSpin(true)
+					localStorage.setItem("canSpin", "true")
+				}, remaining)
+			}
+		}, []) */
 
 
-/* handleVerificationComplete */
-const handleVerificationComplete = () => {
-	setVerificationModal(false)
-	setCloseModal(false)
-}
+	/* handleVerificationComplete */
+	const handleVerificationComplete = () => {
+		setVerificationModal(false)
+		setCloseModal(false)
+	}
 
 
 	// Random winners data
@@ -935,8 +935,8 @@ const handleVerificationComplete = () => {
 		}
 
 		// --- LOCK SPIN FOR 2-HOUR COOLDOWN ---
-		setCanSpin(false)
-		localStorage.setItem("canSpin", "false")
+		// setCanSpin(false)
+		// localStorage.setItem("canSpin", "false")
 		localStorage.setItem("lastSpinTime", Date.now().toString())
 
 		// --- STOP PREVIOUS ANIMATION IF ANY ---
@@ -1217,12 +1217,12 @@ const handleVerificationComplete = () => {
 
 			{/* Verification page */}
 			{verificationModal && (
-			<VerificationPage
-			onVerificationComplete={handleVerificationComplete}
-			duration={10}
-			
-			/>	
-			)}	
+				<VerificationPage
+					onVerificationComplete={handleVerificationComplete}
+					duration={10}
+
+				/>
+			)}
 
 			{/* Error Modal for API errors */}
 			{showErrorModal && (

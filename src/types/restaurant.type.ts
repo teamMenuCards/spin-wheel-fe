@@ -7,7 +7,7 @@ export type RestaurantType = {
 	active: boolean
 	createdAt: string
 	updatedAt: string
-	dashboardLinks?: []
+	dashboardLinks?: IDynamicLink[]
 }
 
 export type IReviews = {

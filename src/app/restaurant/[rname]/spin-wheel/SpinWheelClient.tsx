@@ -66,28 +66,38 @@ export default function SpinWheelClient({
 
 	// Extract review links from restaurant data
 	const getReviewLinks = () => {
-		if (!restaurantData?.detail?.details?.platform_details) {
-			return {
-				googleReviewLink: "https://www.google.com",
-				zomatoReviewLink: "https://www.zomato.com"
+		const links = restaurantData?.dashboardLinks || []
+
+		const googleLinkNode = links.find((link: any) => {
+			const url = link.url || ""
+			return url.includes("google.com") || url.includes("google")
+		})
+
+		const zomatoLinkNode = links.find((link: any) => {
+			const url = link.url || ""
+			return url.includes("zomato.com") || url.includes("zomato")
+		})
+
+		const googleReviewLink = googleLinkNode?.url || "https://www.google.com"
+		let zomatoReviewLink = zomatoLinkNode?.url || "https://www.zomato.com"
+
+		// Ensure Zomato URL ends with /reviews
+		if (zomatoReviewLink && zomatoReviewLink.includes("zomato.com")) {
+			// Remove trailing slash if exists
+			const baseZomato = zomatoReviewLink.replace(/\/$/, "")
+			if (!baseZomato.endsWith("/reviews")) {
+				zomatoReviewLink = `${baseZomato}/reviews`
 			}
 		}
 
-		const platformDetails = restaurantData.detail.details.platform_details
-		const links: Record<string, string> = {}
-
-		platformDetails.forEach(
-			(item: { platform_name: string; platform_uri: string }) => {
-				links[item.platform_name] = item.platform_uri
-			}
-		)
+		console.log("googleReviewLink", googleReviewLink)
+		console.log("zomatoReviewLink", zomatoReviewLink)
 
 		return {
-			googleReviewLink: links["google-review"] || "https://www.google.com",
-			zomatoReviewLink: links["zomato-dine-in"] || "https://www.zomato.com"
+			googleReviewLink,
+			zomatoReviewLink
 		}
 	}
-
 
 	const { googleReviewLink, zomatoReviewLink } = getReviewLinks()
 

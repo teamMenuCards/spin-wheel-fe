@@ -30,6 +30,8 @@ export const getSpinnerForRestaurantServer = async (
 			fetchPolicy: "network-only"
 		})
 
+		console.log("resultId---", result, restaurantId)
+
 		const { data, error } = result
 
 		if (error) {
